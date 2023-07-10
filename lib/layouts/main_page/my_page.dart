@@ -10,6 +10,6 @@ class MyPage extends StatefulWidget{
 class _MyPage extends State<MyPage>{
   @override
   Widget build(BuildContext context) {
-    return Text("None");
+    return const Text("None");
   }
 }

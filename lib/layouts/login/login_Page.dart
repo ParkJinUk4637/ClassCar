@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:my_classcar/component/login/autoLogin.dart';
+import 'package:my_classcar/component/login/auto_login.dart';
 import 'package:my_classcar/component/logo.dart';
 import 'package:my_classcar/layouts/main_page/main_layout.dart';
 
@@ -10,13 +10,13 @@ class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _Login_Page();
+  State<LoginPage> createState() => _LoginPage();
 }
 
-class _Login_Page extends State<LoginPage> {
+class _LoginPage extends State<LoginPage> {
   final  _formKey = GlobalKey<FormState>();
   var logger = Logger( printer: PrettyPrinter(),);
-  final _firebaseAuth = FirebaseAuth.instance;
+  //final _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -149,7 +149,7 @@ class _Login_Page extends State<LoginPage> {
             const SizedBox(height: 20),
             _userPw(),
             _find(),
-            const Auto_Login(),
+            const AutoLogin(),
             TextButton(
                 style: TextButton.styleFrom(
                     backgroundColor: const Color(0xff1200B3),
@@ -186,10 +186,10 @@ class _Login_Page extends State<LoginPage> {
 
   Future<bool> _login(String email, String password) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      /*final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password
-      );
+      );*/
       Get.offAll(() => const MainPage());
     } on FirebaseAuthException catch (e) {
       String m = '';

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Auto_Login extends StatefulWidget {
-  const Auto_Login({super.key});
+class AutoLogin extends StatefulWidget {
+  const AutoLogin({super.key});
 
   @override
-  State<Auto_Login> createState() => _autoLogin();
+  State<AutoLogin> createState() => _AutoLogin();
 }
 
-class _autoLogin extends State<Auto_Login> {
-  bool? _IDsave = false;
+class _AutoLogin extends State<AutoLogin> {
+  bool? _idSave = false;
   bool? _auto = false;
 
   @override
@@ -26,10 +26,10 @@ class _autoLogin extends State<Auto_Login> {
         const Text("자동 로그인"),
         const SizedBox(width: 20.0,),
         Checkbox(
-            value: _IDsave,
+            value: _idSave,
             onChanged: (value) {
               setState(() {
-                _IDsave = value;
+                _idSave = value;
               });
             }
         ),

@@ -4,14 +4,14 @@ import 'package:get/get.dart';
 import 'package:my_classcar/layouts/login/login_Page.dart';
 import 'package:my_classcar/layouts/main_page/main_layout.dart';
 
-class Roding extends StatefulWidget {
-  const Roding({super.key});
+class LoadPage extends StatefulWidget {
+  const LoadPage({super.key});
 
   @override
-  State<Roding> createState() => _roding();
+  State<LoadPage> createState() => _LoadPage();
 }
 
-class _roding extends State<Roding> {
+class _LoadPage extends State<LoadPage> {
   @override
   Widget build(BuildContext context){
     return const Scaffold(

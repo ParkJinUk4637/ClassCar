@@ -4,7 +4,6 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:logger/logger.dart';
 import 'package:my_classcar/layouts/login/loding.dart';
 import 'firebase_options.dart';
-import 'layouts/main_page/main_layout.dart';
 
 // Logger 세팅
 var logger = Logger(
@@ -25,7 +24,7 @@ class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key : key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -36,7 +35,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: const Roding(),
+      home: const LoadPage(),
     );
   }
 

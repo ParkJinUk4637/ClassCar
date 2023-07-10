@@ -4,16 +4,16 @@ import 'package:logger/logger.dart';
 import 'package:my_classcar/layouts/login/login_Page.dart';
 
 
-class authManage{
+class AuthManage{
   var logger = Logger( printer: PrettyPrinter(),);
 
   /// 회원가입
   Future<bool> createUser(String email, String pw) async{
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      /*final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: pw,
-      );
+      );*/
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         logger.w('The password provided is too weak.');
@@ -68,7 +68,7 @@ class authManage{
   /// 현재 유저 정보 조회
   User? getUser(){
     final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
+    /*if (user != null) {
       // Name, email address, and profile photo URL
       final name = user.displayName;
       final email = user.email;
@@ -81,12 +81,13 @@ class authManage{
       // authenticate with your backend server, if you have one. Use
       // User.getIdToken() instead.
       final uid = user.uid;
-    }
+    }*/
     return user;
   }
   /// 공급자로부터 유저 정보 조회
   User? getUserFromSocial(){
     final user = FirebaseAuth.instance.currentUser;
+    /*
     if (user != null) {
       for (final providerProfile in user.providerData) {
         // ID of the provider (google.com, apple.cpm, etc.)
@@ -100,7 +101,7 @@ class authManage{
         final emailAddress = providerProfile.email;
         final profilePhoto = providerProfile.photoURL;
       }
-    }
+    }*/
     return user;
   }
   /// 유저 이름 업데이트

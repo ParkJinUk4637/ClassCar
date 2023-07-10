@@ -14,10 +14,10 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final String projectName = NameConst.projectName.name;
   final List _widgetOptions = [
-    Text('메인 페이지'),
-    Text('대여 현황'),
-    Text('DM'),
-    Text('My Page')
+    const Text('메인 페이지'),
+    const Text('대여 현황'),
+    const Text('DM'),
+    const Text('My Page')
   ];
   int _selectedIndex = 0;
 

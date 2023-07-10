@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_classcar/const/name_const.dart';
+
+import '../../component/name_const.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({

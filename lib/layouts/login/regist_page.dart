@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:my_classcar/models/car_render.dart';
 
 /// *
 /// memo
@@ -34,8 +37,9 @@ class _RegistPage extends State<RegistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        body: Padding(
-            key: _formKey,
+        body: Form(
+        key: _formKey,
+        child : Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(
               children: [
@@ -57,7 +61,24 @@ class _RegistPage extends State<RegistPage> {
                 const SizedBox(height: 10),
                 _registRequest(),
               ],
-            )));
+            ))));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // 해당 클래스 사라질 때
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    passwordConfigController.dispose();
+    nameController.dispose();
+    phoneNumberController.dispose();
+    validNumberController.dispose();
+    super.dispose();
   }
 
   Widget _userId() {
@@ -323,11 +344,53 @@ class _RegistPage extends State<RegistPage> {
             ),
 
             /// 버튼 스타일 설정
-            onPressed: () {},
+            onPressed: () {
+              if(_formKey.currentState!.validate()){
+                _formKey.currentState!.save();
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${emailController!.text}/${passwordController!.text}')),
+                );
+
+                createUser(emailController.text, passwordController!.text);
+              }
+            },
             child: const Text("회원가입", style: TextStyle(color: Colors.white),)
         ),
       ],
     );
   }
 
+  Future<bool> createUser(String email, String pw) async{
+    try {
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: pw,
+      );
+      final docData = {
+        "email" : email,
+        "password" : pw,
+        "name" : nameController.text,
+        "phoneNumber" : phoneNumberController.text
+      };
+      FirebaseFirestore.instance
+          .collection("User")
+          .doc(email)
+          .set(docData)
+          .onError((e, _) => print("Error writing document: $e"));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        logger.w('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('이미 존재하는 이메일 회원입니다.')),
+        );
+        logger.w('The account already exists for that email.');
+      }
+    } catch (e) {
+      logger.e(e);
+      return false;
+    }
+    // authPersistence(); // 인증 영속
+    return true;
+  }
 }

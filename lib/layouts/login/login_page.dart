@@ -191,10 +191,10 @@ class _LoginPage extends State<LoginPage> {
   // 로그인
   Future<bool> _login(String email, String password) async {
     try {
-      /*final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password
-      );*/
+      );
       Get.offAll(() => const MainPage());
     } on FirebaseAuthException catch (e) {
       String m = '';

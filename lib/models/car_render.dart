@@ -1,4 +1,3 @@
-/// uid : 0
 /// email : "email"
 /// password : "password"
 /// name : "name"
@@ -11,7 +10,6 @@
 
 class CarRender {
   CarRender({
-    num? uid,
     String? email,
     String? password,
     String? name,
@@ -21,7 +19,6 @@ class CarRender {
     bool? isCheckedAgreementAD,
     String? bank,
     String? account,}) {
-    _uid = uid;
     _email = email;
     _password = password;
     _name = name;
@@ -34,7 +31,6 @@ class CarRender {
   }
 
   CarRender.fromJson(dynamic json) {
-    _uid = json['uid'];
     _email = json['email'];
     _password = json['password'];
     _name = json['name'];
@@ -46,7 +42,6 @@ class CarRender {
     _account = json['account'];
   }
 
-  num? _uid;
   String? _email;
   String? _password;
   String? _name;
@@ -57,7 +52,7 @@ class CarRender {
   String? _bank;
   String? _account;
 
-  CarRender copyWith({ num? uid,
+  CarRender copyWith({
     String? email,
     String? password,
     String? name,
@@ -69,7 +64,6 @@ class CarRender {
     String? account,
   }) =>
       CarRender(
-        uid: uid ?? _uid,
         email: email ?? _email,
         password: password ?? _password,
         name: name ?? _name,
@@ -80,8 +74,6 @@ class CarRender {
         bank: bank ?? _bank,
         account: account ?? _account,
       );
-
-  num? get uid => _uid;
 
   String? get email => _email;
 
@@ -103,7 +95,6 @@ class CarRender {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['uid'] = _uid;
     map['email'] = _email;
     map['password'] = _password;
     map['name'] = _name;

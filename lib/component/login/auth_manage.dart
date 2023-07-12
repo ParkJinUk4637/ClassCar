@@ -10,10 +10,10 @@ class AuthManage{
   /// 회원가입
   Future<bool> createUser(String email, String pw) async{
     try {
-      /*final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: pw,
-      );*/
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         logger.w('The password provided is too weak.');

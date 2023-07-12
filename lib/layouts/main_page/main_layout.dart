@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_classcar/layouts/main_page/my_page/my_page.dart';
 
-import '../../component/name_const.dart';
+import '../../component/const/name_const.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({
@@ -17,7 +18,7 @@ class _MainPageState extends State<MainPage> {
     const Text('메인 페이지'),
     const Text('대여 현황'),
     const Text('DM'),
-    const Text('My Page')
+    const MyPage(),
   ];
   int _selectedIndex = 0;
 
@@ -36,6 +37,16 @@ class _MainPageState extends State<MainPage> {
           body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
           bottomNavigationBar: _bottomNavigationBar(),
         ));
+  }
+
+  @override
+  void initState(){
+    super.initState();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
   }
 
   PreferredSizeWidget _appBar() {

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:my_classcar/component/login/auto_login.dart';
 import 'package:my_classcar/component/logo.dart';
+import 'package:my_classcar/layouts/login/regist_page.dart';
 import 'package:my_classcar/layouts/main_page/main_layout.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,21 +27,24 @@ class _LoginPage extends State<LoginPage> {
       children: [
         TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, "/find_ID_page");
+            Navigator.pushNamed(context, "/find_pw_page");
           },
           child: const Text(
             "아이디 찾기 |  ", style: TextStyle(color: Colors.black),),
         ),
         TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, "/find_PW_page");
+            Navigator.pushNamed(context, "/find_pw_page");
           },
           child: const Text(
             "비밀번호 찾기 |  ", style: TextStyle(color: Colors.black),),
         ),
         TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, "/join_page");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RegistPage()),
+            );
           },
           child: const Text("회원가입", style: TextStyle(color: Colors.black),),
         ),
@@ -136,7 +140,7 @@ class _LoginPage extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Padding(
         // key: _formKey,
         padding: const EdgeInsets.all(16.0),
@@ -170,20 +174,21 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
+  // 해당 클래스 호출 되었을 때
   @override
   void initState() {
-    //해당 클래스가 호출되었을떄
     super.initState();
   }
 
+  // 해당 클래스 사라질 때
   @override
   void dispose() {
-    // 해당 클래스가 사라질떄
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
+  // 로그인
   Future<bool> _login(String email, String password) async {
     try {
       /*final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(

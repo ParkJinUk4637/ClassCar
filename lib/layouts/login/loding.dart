@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_classcar/layouts/login/login_Page.dart';
+import 'package:my_classcar/layouts/login/login_page.dart';
 import 'package:my_classcar/layouts/main_page/main_layout.dart';
 
 class LoadPage extends StatefulWidget {

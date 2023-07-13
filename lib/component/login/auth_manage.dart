@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:my_classcar/layouts/login/login_Page.dart';
+import 'package:my_classcar/layouts/login/login_page.dart';
 
 
 class AuthManage{
@@ -10,10 +10,10 @@ class AuthManage{
   /// 회원가입
   Future<bool> createUser(String email, String pw) async{
     try {
-      /*final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: pw,
-      );*/
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         logger.w('The password provided is too weak.');

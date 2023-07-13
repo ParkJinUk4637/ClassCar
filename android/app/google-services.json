@@ -1,0 +1,134 @@
+{
+  "project_info": {
+    "project_number": "505038605485",
+    "project_id": "carsharingdatabase-f3ff2",
+    "storage_bucket": "carsharingdatabase-f3ff2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505038605485:android:e17f6762e1b9bdbb8a0a24",
+        "android_client_info": {
+          "package_name": "com.classcar.client_app_classcar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505038605485-fp3mu7fk0o7qiglmphtf2bqej4qkvu52.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.classcar.client_app_classcar",
+            "certificate_hash": "47e04fc7edba646397235b9087d13ad3e31808b6"
+          }
+        },
+        {
+          "client_id": "505038605485-g5d01aqdvd2coumhkrev0j17a4pva9n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6YScERJefk6F4T3xqWA8jgNeYKg2An60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505038605485-g5d01aqdvd2coumhkrev0j17a4pva9n4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "505038605485-b6f1mr159peju4u5p8unpcub1daiqmcv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.classcar.clientApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505038605485:android:dae461af01a29a798a0a24",
+        "android_client_info": {
+          "package_name": "com.example.exam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505038605485-g5d01aqdvd2coumhkrev0j17a4pva9n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6YScERJefk6F4T3xqWA8jgNeYKg2An60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505038605485-g5d01aqdvd2coumhkrev0j17a4pva9n4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "505038605485-b6f1mr159peju4u5p8unpcub1daiqmcv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.classcar.clientApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505038605485:android:ca9bac4876eee1de8a0a24",
+        "android_client_info": {
+          "package_name": "com.example.my_classcar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505038605485-si8tg1avan65rlhoel9eekn6l664882f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.my_classcar",
+            "certificate_hash": "2854399243e59211c696bfd1b1dbb21a7b3c90da"
+          }
+        },
+        {
+          "client_id": "505038605485-g5d01aqdvd2coumhkrev0j17a4pva9n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6YScERJefk6F4T3xqWA8jgNeYKg2An60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505038605485-g5d01aqdvd2coumhkrev0j17a4pva9n4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "505038605485-b6f1mr159peju4u5p8unpcub1daiqmcv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.classcar.clientApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

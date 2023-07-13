@@ -24,16 +24,12 @@ class _MyPage extends State<MyPage> {
               const Divider(
                 height: 2,
                 thickness: 2,
-                indent: 20,
-                endIndent: 0,
                 color: Colors.black,
               ),
               _myPage(),
               const Divider(
                 height: 1,
                 thickness: 1,
-                indent: 1,
-                endIndent: 0,
               ),
               _help(),
               TextButton(

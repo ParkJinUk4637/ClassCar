@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:my_classcar/component/login/auto_login.dart';
 import 'package:my_classcar/component/logo.dart';
 import 'package:my_classcar/layouts/login/regist_page.dart';
 import 'package:my_classcar/layouts/main_page/main_layout.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -15,11 +15,71 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  final  _formKey = GlobalKey<FormState>();
-  var logger = Logger( printer: PrettyPrinter(),);
+  final _formKey = GlobalKey<FormState>();
+  var logger = Logger(printer: PrettyPrinter(),);
+
   //final _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  static const storage = FlutterSecureStorage();
+  bool? _idSave = false;
+  bool? _auto = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Padding(
+        // key: _formKey,
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            const SizedBox(height: 30),
+            const Logo('Login'),
+            const SizedBox(height: 20),
+            _userId(),
+            const SizedBox(height: 20),
+            _userPw(),
+            _find(),
+            _autoLogin(),
+            TextButton(
+                style: TextButton.styleFrom(
+                    backgroundColor: const Color(0xff1200B3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    minimumSize: const Size(370, 55)
+                ),
+
+                /// 버튼 스타일 설정
+                onPressed: () =>
+                {
+                  _login(emailController.text, passwordController.text),
+                  _autoLoginSave(),
+                },
+                child: const Text("로그인", style: TextStyle(color: Colors.white),)
+            ),
+          ],
+        ),)
+      ,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  // 해당 클래스 사라질 때
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   Widget _find() {
     return Row(
@@ -137,61 +197,10 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Padding(
-        // key: _formKey,
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            const SizedBox(height: 30),
-            const Logo('Login'),
-            const SizedBox(height: 20),
-            _userId(),
-            const SizedBox(height: 20),
-            _userPw(),
-            _find(),
-            const AutoLogin(),
-            TextButton(
-                style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xff1200B3),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    minimumSize: const Size(370, 55)
-                ),
-
-                /// 버튼 스타일 설정
-                onPressed: () =>
-                    _login(emailController.text, passwordController.text),
-                child: const Text("로그인", style: TextStyle(color: Colors.white),)
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 해당 클래스 호출 되었을 때
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  // 해당 클래스 사라질 때
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
   // 로그인
   Future<bool> _login(String email, String password) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password
       );
@@ -215,7 +224,47 @@ class _LoginPage extends State<LoginPage> {
       logger.e(e);
       return false;
     }
-    // authPersistence(); // 인증 영속
     return true;
+  }
+
+  Widget _autoLogin() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Checkbox(
+            value: _auto,
+            onChanged: (bool? value) {
+              setState(() {
+                _auto = value;
+              });
+            }),
+        const Text("자동 로그인"),
+        const SizedBox(width: 20.0,),
+        Checkbox(
+            value: _idSave,
+            onChanged: (value) {
+              setState(() {
+                _idSave = value;
+              });
+            }
+        ),
+        const Text("아이디 저장"),
+      ],
+    );
+  }
+
+  _autoLoginSave() async {
+    if (_auto == true) {
+      storage.write(key: "email", value: emailController.text);
+      storage.write(key: "password", value: passwordController.text);
+    }
+  }
+
+  _asyncMethod() async {
+    final String? email = await storage.read(key: 'email');
+    final String? password = await storage.read(key: 'password');
+    if (email != null && password != null) {
+      _login(email, password);
+    }
   }
 }

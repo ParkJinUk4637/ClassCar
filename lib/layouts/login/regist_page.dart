@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:my_classcar/models/car_render.dart';
 
 /// *
 /// memo
@@ -38,30 +36,28 @@ class _RegistPage extends State<RegistPage> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: Form(
-        key: _formKey,
-        child : Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ListView(
-              children: [
-                const Text("회원가입"),
-                const SizedBox(height: 10),
-                _userId(),
-                const SizedBox(height: 10),
-                _userPw(),
-                const SizedBox(height: 10),
-                _userPwConfig(),
-                const SizedBox(height: 10),
-                _userName(),
-                const SizedBox(height: 10),
-                _userPhoneNumber(),
-                const SizedBox(height: 10),
-                _validNumberRequest(),
-                const SizedBox(height: 10),
-                _validNumber(),
-                const SizedBox(height: 10),
-                _registRequest(),
-              ],
-            ))));
+            key: _formKey,
+            child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView(
+                  children: [
+                    const Text("회원가입"),
+                    const SizedBox(height: 10),
+                    _userId(),
+                    const SizedBox(height: 10),
+                    _userPw(),
+                    const SizedBox(height: 10),
+                    _userPwConfig(),
+                    const SizedBox(height: 10),
+                    _userName(),
+                    const SizedBox(height: 10),
+                    _userPhoneNumber(),
+                    const SizedBox(height: 10),
+                    _validNumberRequest(),
+                    const SizedBox(height: 10),
+                    _registRequest(),
+                  ],
+                ))));
   }
 
   @override
@@ -243,7 +239,7 @@ class _RegistPage extends State<RegistPage> {
           validator: (String? value) {
             if (value!.isEmpty) {
               return '휴대전화 번호를 입력하세요';
-            } else if (!RegExp(r'^01?([0-9])-?([0-9]{4})-?([0-9]{4})$')
+            } else if (!RegExp(r'^01?([0-9]{9})$')
                 .hasMatch(value)) {
               return '휴대전화 번호가 잘못되었습니다';
             }
@@ -267,34 +263,11 @@ class _RegistPage extends State<RegistPage> {
                   // 에러 발생 후 포커스 되었을 경우 모양
                   borderRadius: BorderRadius.circular(20))),
         ),
-
-      ],
-
-    );
-  }
-
-  Widget _validNumberRequest(){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextButton(
-            style: TextButton.styleFrom(
-                backgroundColor: const Color(0xff1200B3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                minimumSize: const Size(370, 55)
-            ),
-
-            /// 버튼 스타일 설정
-            onPressed: () {},
-            child: const Text("인증번호 받기", style: TextStyle(color: Colors.white),)
-        ),
       ],
     );
   }
 
-  Widget _validNumber(){
+  Widget _validNumberRequest() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -326,11 +299,57 @@ class _RegistPage extends State<RegistPage> {
                 // 에러 발생 후 포커스 되었을 경우 모양
                   borderRadius: BorderRadius.circular(20))),
         ),
+
+        TextButton(
+            style: TextButton.styleFrom(
+                backgroundColor: const Color(0xff1200B3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                minimumSize: const Size(370, 55)),
+            onPressed: () async {
+              FirebaseAuth auth = FirebaseAuth.instance;
+              await auth.verifyPhoneNumber(
+                phoneNumber: '+82${phoneNumberController.text.substring(1)}',
+                timeout: const Duration(seconds: 120),
+                verificationCompleted: (PhoneAuthCredential credential) async {
+                  // ANDROID ONLY!
+
+                  // Sign the user in (or link) with the auto-generated credential
+                  await auth.signInWithCredential(credential);
+                },
+                verificationFailed: (FirebaseAuthException e) {
+                  if (e.code == 'invalid-phone-number') {
+                    print('The provided phone number is not valid.');
+                  }
+
+                  // Handle other errors
+                },
+                codeSent: (String verificationId, int? resendToken) async {
+                  // Update the UI - wait for the user to enter the SMS code
+                  String smsCode = 'xxxx';
+
+                  // Create a PhoneAuthCredential with the code
+                  PhoneAuthCredential credential = PhoneAuthProvider.credential(
+                      verificationId: verificationId, smsCode: smsCode);
+
+                  // Sign the user in (or link) with the credential
+                  await auth.signInWithCredential(credential);
+                },
+                codeAutoRetrievalTimeout: (String verificationId) {
+                  // Auto-resolution timed out...
+                },
+              );
+            },
+            child: const Text(
+              "인증번호 받기",
+              style: TextStyle(color: Colors.white),
+            )),
       ],
     );
   }
 
-  Widget _registRequest(){
+  Widget _registRequest() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -340,43 +359,40 @@ class _RegistPage extends State<RegistPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                minimumSize: const Size(370, 55)
-            ),
+                minimumSize: const Size(370, 55)),
 
             /// 버튼 스타일 설정
             onPressed: () {
-              if(_formKey.currentState!.validate()){
+              if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
                 ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${emailController!.text}/${passwordController!.text}')),
+                  SnackBar(
+                      content: Text(
+                          '${emailController.text}/${passwordController.text}')),
                 );
 
-                createUser(emailController.text, passwordController!.text);
+                createUser(emailController.text, passwordController.text,
+                    nameController.text);
               }
             },
-            child: const Text("회원가입", style: TextStyle(color: Colors.white),)
-        ),
+            child: const Text(
+              "회원가입",
+              style: TextStyle(color: Colors.white),
+            )),
       ],
     );
   }
 
-  Future<bool> createUser(String email, String pw) async{
+  Future<bool> createUser(
+      String email, String password, String name) async {
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
-        password: pw,
+        password: password,
       );
-      final docData = {
-        "email" : email,
-        "password" : pw,
-        "name" : nameController.text,
-        "phoneNumber" : phoneNumberController.text
-      };
-      FirebaseFirestore.instance
-          .collection("User")
-          .doc(email)
-          .set(docData)
-          .onError((e, _) => print("Error writing document: $e"));
+      final initialUserInfo = FirebaseAuth.instance.currentUser;
+      initialUserInfo!.updateDisplayName(name);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         logger.w('The password provided is too weak.');

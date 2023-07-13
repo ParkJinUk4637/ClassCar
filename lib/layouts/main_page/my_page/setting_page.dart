@@ -16,6 +16,7 @@ class SettingPage extends StatelessWidget{
             Text("비밀번호 설정"),
             Text("휴대폰 번호 재설정"),
             Text("계정 연동 설정"),
+            Text("회원 탈퇴"),
             SizedBox(height: 20),
             Text("결제 및 할인"),
             SizedBox(height: 10),
@@ -27,10 +28,12 @@ class SettingPage extends StatelessWidget{
             Text("약관 및 정책"),
             Text("사용 메뉴얼"),
             Text("앱 버전"),
-            Text("회원 탈퇴"),
+            Text("로그아웃")
           ],
         )
       )
     );
   }
+
+
 }

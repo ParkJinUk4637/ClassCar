@@ -1,0 +1,35 @@
+import 'package:flutter/material.dart';
+
+PreferredSizeWidget mainAppBar(String appBarName, [BuildContext? context]) {
+  return AppBar(
+    elevation: 1,
+    leading: const IconButton(icon: Icon(Icons.ac_unit), onPressed: null),
+    actions: const [
+      IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: null,
+      )
+    ],
+    foregroundColor: Colors.black,
+    backgroundColor: Colors.white,
+    title: Text(appBarName),
+  );
+}
+
+PreferredSizeWidget settingAppBar(String appBarName, BuildContext context) {
+  return AppBar(
+    elevation: 1,
+    leading: const IconButton(icon: Icon(Icons.ac_unit), onPressed: null),
+    actions: [
+      IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      )
+    ],
+    foregroundColor: Colors.black,
+    backgroundColor: Colors.white,
+    title: Text(appBarName),
+  );
+}

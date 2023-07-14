@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:my_classcar/layouts/login/login_page.dart';
+import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_detail_pages/delete_user.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_detail_pages/password_reset.dart';
 
@@ -19,6 +20,7 @@ class _SettingPage extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
+        appBar: settingAppBar("설정", context),
         body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(
@@ -40,6 +42,7 @@ class _SettingPage extends State<SettingPage> {
                 Text("약관 및 정책"),
                 Text("사용 메뉴얼"),
                 Text("앱 버전"),
+                const SizedBox(height: 10,),
                 _logoutButton(),
               ],
             )));
@@ -65,7 +68,10 @@ class _SettingPage extends State<SettingPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                minimumSize: const Size(370, 55)
+                minimumSize: const Size(370, 55),
+              side: const BorderSide(
+                color: Colors.redAccent,
+              )
             ),
 
             onPressed: () async =>

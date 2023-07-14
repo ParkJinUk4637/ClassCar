@@ -94,6 +94,4 @@ class _MyPage extends State<MyPage> {
       ],
     );
   }
-
-
 }

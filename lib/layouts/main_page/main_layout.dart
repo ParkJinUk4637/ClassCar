@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:my_classcar/layouts/main_page/my_page/my_page.dart';
 
 import '../../component/const/name_const.dart';
@@ -33,7 +34,7 @@ class _MainPageState extends State<MainPage> {
     return MaterialApp(
         title: "Main Layout",
         home: Scaffold(
-          appBar: _appBar(),
+          appBar: mainAppBar(projectName),
           body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
           bottomNavigationBar: _bottomNavigationBar(),
         ));
@@ -47,22 +48,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void dispose(){
     super.dispose();
-  }
-
-  PreferredSizeWidget _appBar() {
-    return AppBar(
-      elevation: 1,
-      leading: const IconButton(icon: Icon(Icons.ac_unit), onPressed: null),
-      actions: const [
-        IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: null,
-        )
-      ],
-      foregroundColor: Colors.black,
-      backgroundColor: Colors.white,
-      title: Text(projectName),
-    );
   }
 
   Widget _bottomNavigationBar() {

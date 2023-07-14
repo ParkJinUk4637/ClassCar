@@ -34,7 +34,7 @@ class _MainPageState extends State<MainPage> {
     return MaterialApp(
         title: "Main Layout",
         home: Scaffold(
-          appBar: mainAppBar(projectName),
+          appBar: customAppBar(projectName),
           body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
           bottomNavigationBar: _bottomNavigationBar(),
         ));

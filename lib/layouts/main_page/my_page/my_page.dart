@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_classcar/layouts/main_page/my_page/setting_detail_pages/password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page.dart';
 
 class MyPage extends StatefulWidget {
@@ -26,25 +27,29 @@ class _MyPage extends State<MyPage> {
                 thickness: 2,
                 color: Colors.black,
               ),
-              _myPage(),
+              _part1(),
               const Divider(
-                height: 1,
-                thickness: 1,
+                height: 2,
+                thickness: 2,
+                color: Colors.black,
               ),
-              _help(),
+              _part2(),
               TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SettingPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const SettingPage()),
                   );
                 },
-                child: const Text("설정", style: TextStyle(color: Colors.black),),
+                child: const Text(
+                  "설정",
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ],
           ),
-        )
-    );
+        ));
   }
 
   @override
@@ -61,7 +66,10 @@ class _MyPage extends State<MyPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const Icon(Icons.person, size: 140,),
+        const Icon(
+          Icons.person,
+          size: 140,
+        ),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -73,25 +81,60 @@ class _MyPage extends State<MyPage> {
     );
   }
 
-  Widget _myPage() {
+  Widget _part1() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("이용내역(구현안됨)"),
-        Text("쿠폰(구현안됨)"),
-        Text("이벤트(구현안됨)"),
+        _myPageButton("이용 내역", const PasswordReset()),
+        const Divider(
+          height: 1,
+          thickness: 1,
+        ),
+        _myPageButton("쿠폰", const PasswordReset()),
+        const Divider(
+          height: 1,
+          thickness: 1,
+        ),
+        _myPageButton("이벤트/혜택", const PasswordReset()),
       ],
     );
   }
 
-  Widget _help() {
+  Widget _part2() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("문의 내역(구현안됨)"),
-        Text("공지사항(구현안됨)"),
-        Text("고객센터(구현안됨)")
+        _myPageButton("문의 내역", const PasswordReset()),
+        const Divider(
+          height: 1,
+          thickness: 1,
+        ),
+        _myPageButton("고객센터 (QnA, FAQ)", const PasswordReset()),
+        const Divider(
+          height: 1,
+          thickness: 1,
+        ),
+        _myPageButton("공지사항", const PasswordReset()),
       ],
     );
   }
+
+  Widget _myPageButton(String name, Widget widget) {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => widget),
+        );
+      },
+      child: ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+        title: Text(name),
+        trailing: const Icon(Icons.arrow_forward_ios),
+      ),
+    );
+  }
+
+
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-PreferredSizeWidget mainAppBar(String appBarName, [BuildContext? context]) {
+PreferredSizeWidget customAppBar(String appBarName, [BuildContext? context]) {
   return AppBar(
     elevation: 1,
     leading: const IconButton(icon: Icon(Icons.ac_unit), onPressed: null),

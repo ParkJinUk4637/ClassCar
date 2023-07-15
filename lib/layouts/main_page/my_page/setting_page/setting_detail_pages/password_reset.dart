@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:my_classcar/layouts/main_page/app_bar.dart';
 
-class DeleteUser extends StatefulWidget{
-  const DeleteUser({super.key});
+class PasswordReset extends StatefulWidget{
+  const PasswordReset({super.key});
 
-  State<DeleteUser> createState() => _DeleteUser();
+  State<PasswordReset> createState() => _PasswordReset();
 }
 
-class _DeleteUser extends State<DeleteUser>{
+class _PasswordReset extends State<PasswordReset>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: closeAppBar("비밀번호 재설정", context),
       resizeToAvoidBottomInset: true,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Text("회원탈퇴페이지")
+            Text("비밀번호재설정페이지")
           ],
         ),
       ),

@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:my_classcar/layouts/main_page/app_bar.dart';
 
-class PasswordReset extends StatefulWidget{
-  const PasswordReset({super.key});
+class PhoneNumberReset extends StatefulWidget{
+  const PhoneNumberReset({super.key});
 
-  State<PasswordReset> createState() => _PasswordReset();
+  State<PhoneNumberReset> createState() => _PhoneNumberReset();
 }
 
-class _PasswordReset extends State<PasswordReset>{
+class _PhoneNumberReset extends State<PhoneNumberReset>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: closeAppBar("휴대전화 번호 재설정", context),
       resizeToAvoidBottomInset: true,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Text("비밀번호재설정페이지")
+            Text("휴대전화 번호 재설정페이지")
           ],
         ),
       ),

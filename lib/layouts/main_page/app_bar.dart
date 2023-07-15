@@ -16,7 +16,7 @@ PreferredSizeWidget customAppBar(String appBarName, [BuildContext? context]) {
   );
 }
 
-PreferredSizeWidget settingAppBar(String appBarName, BuildContext context) {
+PreferredSizeWidget closeAppBar(String appBarName, BuildContext context) {
   return AppBar(
     elevation: 1,
     leading: const IconButton(icon: Icon(Icons.ac_unit), onPressed: null),

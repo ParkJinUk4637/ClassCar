@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_classcar/layouts/main_page/my_page/setting_detail_pages/password_reset.dart';
-import 'package:my_classcar/layouts/main_page/my_page/setting_page.dart';
+import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
+import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/password_reset.dart';
+import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_page.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -85,17 +86,17 @@ class _MyPage extends State<MyPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _myPageButton("이용 내역", const PasswordReset()),
+        listTileButton("이용 내역(아직 미구현)", const PasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        _myPageButton("쿠폰", const PasswordReset()),
+        listTileButton("쿠폰(아직 미구현)", const PasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        _myPageButton("이벤트/혜택", const PasswordReset()),
+        listTileButton("이벤트/혜택(아직 미구현)", const PasswordReset(), context),
       ],
     );
   }
@@ -104,37 +105,19 @@ class _MyPage extends State<MyPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _myPageButton("문의 내역", const PasswordReset()),
+        listTileButton("문의 내역(아직 미구현)", const PasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        _myPageButton("고객센터 (QnA, FAQ)", const PasswordReset()),
+        listTileButton(
+            "고객센터 (QnA, FAQ)(아직 미구현)", const PasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        _myPageButton("공지사항", const PasswordReset()),
+        listTileButton("공지사항(아직 미구현)", const PasswordReset(), context),
       ],
     );
   }
-
-  Widget _myPageButton(String name, Widget widget) {
-    return TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => widget),
-        );
-      },
-      child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-        title: Text(name),
-        trailing: const Icon(Icons.arrow_forward_ios),
-      ),
-    );
-  }
-
-
 }

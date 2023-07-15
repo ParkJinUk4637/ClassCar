@@ -204,7 +204,7 @@ class _LoginPage extends State<LoginPage> {
           email: email,
           password: password
       );
-      Get.offAll(() => const MainPage());
+      Get.offAll(() => const MainLayout());
     } on FirebaseAuthException catch (e) {
       String m = '';
       if (e.code == 'user-not-found') {

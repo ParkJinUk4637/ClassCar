@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
+import 'package:my_classcar/layouts/main_page/main_page/main_page.dart';
 import 'package:my_classcar/layouts/main_page/my_page/my_page.dart';
 
 import '../../component/const/name_const.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({
+class MainLayout extends StatefulWidget {
+  const MainLayout({
     super.key,
   });
 
   @override
-  State<StatefulWidget> createState() => _MainPageState();
+  State<StatefulWidget> createState() => _MainLayoutState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainLayoutState extends State<MainLayout> {
   final String projectName = NameConst.projectName.name;
-  final List _widgetOptions = [
-    const Text('메인 페이지'),
+  final List<Widget> _widgetOptions = <Widget>[
+    const MainPage(),
     const Text('대여 현황'),
     const Text('DM'),
     const MyPage(),
@@ -31,22 +32,21 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: "Main Layout",
-        home: Scaffold(
-          appBar: customAppBar(projectName),
-          body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-          bottomNavigationBar: _bottomNavigationBar(),
-        ));
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: customAppBar(projectName),
+      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+      bottomNavigationBar: _bottomNavigationBar(),
+    );
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
   }
 

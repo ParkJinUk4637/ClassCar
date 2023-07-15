@@ -76,6 +76,7 @@ class _MyPage extends State<MyPage> {
           children: [
             Text('${user?.displayName}'),
             Text('${user?.email}'),
+            const Text("Credit : (TestCredit)"),
           ],
         )
       ],

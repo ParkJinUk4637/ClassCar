@@ -1,15 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-
-/// *
-/// memo
-/// - 주소는 아직 넣지말기
-///
-/// todo
-/// - 비밀번호 validation (8자 이상, 20자이하)
-/// - 휴대전화 인증
-/// - Firebase Auth에 회원 등록 +
+import 'package:my_classcar/layouts/main_page/app_bar.dart';
 
 class RegistPage extends StatefulWidget {
   const RegistPage({super.key});
@@ -31,33 +23,36 @@ class _RegistPage extends State<RegistPage> {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController validNumberController = TextEditingController();
 
+  bool authOk = false;
+  bool requestedAuth=false;
+  bool showLoading = false;
+  late String verificationId;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: closeAppBar("회원가입", context),
         resizeToAvoidBottomInset: true,
-        body: Form(
+        body: Padding(
             key: _formKey,
-            child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  children: [
-                    const Text("회원가입"),
-                    const SizedBox(height: 10),
-                    _userId(),
-                    const SizedBox(height: 10),
-                    _userPw(),
-                    const SizedBox(height: 10),
-                    _userPwConfig(),
-                    const SizedBox(height: 10),
-                    _userName(),
-                    const SizedBox(height: 10),
-                    _userPhoneNumber(),
-                    const SizedBox(height: 10),
-                    _validNumberRequest(),
-                    const SizedBox(height: 10),
-                    _registRequest(),
-                  ],
-                ))));
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
+              children: [
+                _userId(),
+                const SizedBox(height: 10),
+                _userPw(),
+                const SizedBox(height: 10),
+                _userPwConfig(),
+                const SizedBox(height: 10),
+                _userName(),
+                const SizedBox(height: 10),
+                _userPhoneNumber(),
+                const SizedBox(height: 10),
+                _validNumberRequest(),
+                const SizedBox(height: 10),
+                _registRequest(),
+              ],
+            )));
   }
 
   @override
@@ -239,8 +234,7 @@ class _RegistPage extends State<RegistPage> {
           validator: (String? value) {
             if (value!.isEmpty) {
               return '휴대전화 번호를 입력하세요';
-            } else if (!RegExp(r'^01?([0-9]{9})$')
-                .hasMatch(value)) {
+            } else if (!RegExp(r'^01?([0-9]{9})$').hasMatch(value)) {
               return '휴대전화 번호가 잘못되었습니다';
             }
             return null;
@@ -268,83 +262,88 @@ class _RegistPage extends State<RegistPage> {
   }
 
   Widget _validNumberRequest() {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextFormField(
-          controller: validNumberController,
-          autovalidateMode: AutovalidateMode.always,
-          keyboardType: TextInputType.phone,
-          validator: (String? value) {
-            if (value!.isEmpty) {
-              return '인증번호를 입력하세요';
-            }
-            return null;
-          },
-          decoration: InputDecoration(
-              labelText: '인증번호',
-              hintText: "인증번호 입력",
-              enabledBorder: OutlineInputBorder(
-                // 기본 모양
-                borderRadius: BorderRadius.circular(20),
-              ),
-              focusedBorder: OutlineInputBorder(
-                // 포커스 되었을 경우 모양
-                borderRadius: BorderRadius.circular(20),
-              ),
-              errorBorder: OutlineInputBorder(
-                // 에러 발생 시 모양
-                  borderRadius: BorderRadius.circular(20)),
-              focusedErrorBorder: OutlineInputBorder(
-                // 에러 발생 후 포커스 되었을 경우 모양
-                  borderRadius: BorderRadius.circular(20))),
-        ),
-
-        TextButton(
-            style: TextButton.styleFrom(
-                backgroundColor: const Color(0xff1200B3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                minimumSize: const Size(370, 55)),
-            onPressed: () async {
-              FirebaseAuth auth = FirebaseAuth.instance;
-              await auth.verifyPhoneNumber(
-                phoneNumber: '+82${phoneNumberController.text.substring(1)}',
-                timeout: const Duration(seconds: 120),
-                verificationCompleted: (PhoneAuthCredential credential) async {
-                  // ANDROID ONLY!
-
-                  // Sign the user in (or link) with the auto-generated credential
-                  await auth.signInWithCredential(credential);
-                },
-                verificationFailed: (FirebaseAuthException e) {
-                  if (e.code == 'invalid-phone-number') {
-                    print('The provided phone number is not valid.');
-                  }
-
-                  // Handle other errors
-                },
-                codeSent: (String verificationId, int? resendToken) async {
-                  // Update the UI - wait for the user to enter the SMS code
-                  String smsCode = 'xxxx';
-
-                  // Create a PhoneAuthCredential with the code
-                  PhoneAuthCredential credential = PhoneAuthProvider.credential(
-                      verificationId: verificationId, smsCode: smsCode);
-
-                  // Sign the user in (or link) with the credential
-                  await auth.signInWithCredential(credential);
-                },
-                codeAutoRetrievalTimeout: (String verificationId) {
-                  // Auto-resolution timed out...
-                },
-              );
-            },
-            child: const Text(
-              "인증번호 받기",
-              style: TextStyle(color: Colors.white),
+        Expanded(
+            flex: 7,
+            child: TextFormField(
+              controller: validNumberController,
+              autovalidateMode: AutovalidateMode.always,
+              keyboardType: TextInputType.phone,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return '인증번호를 입력하세요';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                  labelText: '인증번호',
+                  hintText: "인증번호 입력",
+                  enabledBorder: OutlineInputBorder(
+                    // 기본 모양
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    // 포커스 되었을 경우 모양
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                      // 에러 발생 시 모양
+                      borderRadius: BorderRadius.circular(20)),
+                  focusedErrorBorder: OutlineInputBorder(
+                      // 에러 발생 후 포커스 되었을 경우 모양
+                      borderRadius: BorderRadius.circular(20))),
             )),
+        const SizedBox(width: 5),
+        Expanded(
+          flex: 3,
+          child: TextButton(
+              style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xff1200B3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: const Size(370, 55)),
+              onPressed: () async {
+                FirebaseAuth auth = FirebaseAuth.instance;
+                await auth.verifyPhoneNumber(
+                  phoneNumber: '+82${phoneNumberController.text.substring(1)}',
+                  timeout: const Duration(seconds: 60),
+                  verificationCompleted:
+                      (PhoneAuthCredential credential) async {
+                    // ANDROID ONLY!
+
+                    // Sign the user in (or link) with the auto-generated credential
+                    await auth.signInWithCredential(credential);
+                  },
+                  verificationFailed: (FirebaseAuthException e) {
+                    if (e.code == 'invalid-phone-number') {
+                      print('The provided phone number is not valid.');
+                    }
+
+                    // Handle other errors
+                  },
+                  codeSent: (String verificationId, int? resendToken) async {
+                    // Update the UI - wait for the user to enter the SMS code
+                    String smsCode = 'xxxx';
+
+                    // Create a PhoneAuthCredential with the code
+                    PhoneAuthCredential credential =
+                        PhoneAuthProvider.credential(
+                            verificationId: verificationId, smsCode: smsCode);
+
+                  },
+                  codeAutoRetrievalTimeout: (String verificationId) {
+                    // Auto-resolution timed out...
+                  },
+                );
+              },
+              child: const Text(
+                "인증번호 받기",
+                style: TextStyle(color: Colors.white),
+              )),
+        )
       ],
     );
   }
@@ -362,7 +361,7 @@ class _RegistPage extends State<RegistPage> {
                 minimumSize: const Size(370, 55)),
 
             /// 버튼 스타일 설정
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -370,6 +369,7 @@ class _RegistPage extends State<RegistPage> {
                       content: Text(
                           '${emailController.text}/${passwordController.text}')),
                 );
+
 
                 createUser(emailController.text, passwordController.text,
                     nameController.text);
@@ -383,8 +383,7 @@ class _RegistPage extends State<RegistPage> {
     );
   }
 
-  Future<bool> createUser(
-      String email, String password, String name) async {
+  Future<bool> createUser(String email, String password, String name) async {
     try {
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(

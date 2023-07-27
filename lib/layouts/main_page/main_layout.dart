@@ -34,7 +34,7 @@ class _MainLayoutState extends State<MainLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: customAppBar(projectName),
+      //appBar: customAppBar(projectName),
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: _bottomNavigationBar(),
     );

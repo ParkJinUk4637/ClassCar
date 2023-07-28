@@ -62,8 +62,8 @@ class _MainPage extends State<MainPage> {
         final index = i~/2;
         if(index >= _suggestions.length){
           for(int j=1;j<=10;j++){
-            _suggestions.add(i.toString());
-            i++;
+            _suggestions.add(count.toString());
+            count++;
           }
           print("@@@build@@@");
         }

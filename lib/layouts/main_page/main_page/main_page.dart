@@ -89,10 +89,5 @@ class _MainPage extends State<MainPage> {
 
 
 
-/*CollectionReference<Car> car() {
-    return db.collection("car").withConverter(
-          fromFirestore: (snapshot, options) => Car.fromJson(snapshot.data()!),
-          toFirestore: (value, options) => value.toJson(),
-        );
-  }*/
+
 }

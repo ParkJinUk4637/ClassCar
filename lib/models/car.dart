@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 /// isExhibit : false
 /// carNumber : "carNumber"
 /// carModel : "carModel"
@@ -38,7 +40,7 @@ class Car {
       num? cancelPolicyPercent,
       String? oilType,
       String? description,
-      DateTime? createdAt}) {
+      Timestamp? createdAt}) {
     _isExhibit = isExhibit;
     _carNumber = carNumber;
     _carModel = carModel;
@@ -82,6 +84,34 @@ class Car {
     _createdAt = json['createdAt'];
   }
 
+  factory Car.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot,
+      SnapshotOptions? options,
+      ){
+    final data =snapshot.data();
+    return Car(
+        isExhibit : data?['isExhibit'],
+        carNumber : data?['carNumber'],
+        carModel : data?['carModel'],
+        carType : data?['carType'],
+        carDrivetrain : data?['carDrivetrain'],
+        maker : data?['maker'],
+        seats : data?['seats'],
+        carGasMil : data?['carGasMil'],
+        carLocation : data?['carLocation'],
+        fwd : data?['FWD'],
+        years : data?['years'],
+        score : data?['score'],
+        sharedCount : data?['sharedCount'],
+        sharingPrice : data?['sharingPrice'],
+        cancelPolicyDate : data?['cancelPolicyDate'],
+        cancelPolicyPercent : data?['cancelPolicyPercent'],
+        oilType : data?['oilType'],
+        description : data?['description'],
+        createdAt : data?['createdAt'],
+    );
+  }
+
   bool? _isExhibit;
   String? _carNumber;
   String? _carModel;
@@ -100,7 +130,7 @@ class Car {
   num? _cancelPolicyPercent;
   String? _oilType;
   String? _description;
-  DateTime? _createdAt;
+  Timestamp? _createdAt;
 
   Car copyWith({
     num? uid,
@@ -182,7 +212,7 @@ class Car {
 
   String? get description => _description;
 
-  DateTime? get createdAt => _createdAt;
+  Timestamp? get createdAt => _createdAt;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

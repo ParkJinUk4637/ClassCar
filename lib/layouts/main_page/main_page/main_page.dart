@@ -55,15 +55,46 @@ class _MainPage extends State<MainPage> {
                           child: ListView.builder(
                               controller: _controller,
                               itemCount: _suggestions.length,
-                              itemBuilder: (context, index) => Card(
-                                  margin: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 10),
-                                  child: ListTile(
-                                    title: Text(
-                                        "${_suggestions[index].description}"),
-                                    subtitle: Text(
-                                        "${_suggestions[index].createdAt}"),
-                                  )))),
+                              itemBuilder: (context, index) => ListTile(
+                                title: OutlinedButton(
+                                  onPressed: (){
+                                    for(int i=0;i<10;i++){
+                                      db.collection('Car').add(
+                                          Car(
+                                            fwd: true,
+                                            cancelPolicyDate: Random().nextInt(10),
+                                            cancelPolicyPercent: Random().nextInt(100),
+                                            carDrivetrain: "carDrivetrain",
+                                            carGasMil: Random().nextInt(20),
+                                            carLocation: "주차된 위치",
+                                            carModel: "모델",
+                                            carNumber : "차 번호",
+                                            carType: "타입",
+                                            description: "설명입니다${Random().nextInt(9999)}",
+                                            isExhibit: true,
+                                            maker: "메이커",
+                                            oilType: "기름 종류",
+                                            score: Random().nextInt(5),
+                                            seats: Random().nextInt(10),
+                                            sharedCount: Random().nextInt(100),
+                                            sharingPrice: Random().nextInt(100000),
+                                            years: "년식",
+                                            createdAt: Timestamp.now(),
+                                          ).toJson()
+                                      );
+                                    }
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Image.network(
+                                          "https://taegon.kim/wp-content/uploads/2018/05/image-5.png"),
+                                      Text("차량 모델 : ${_suggestions[index].carModel}"),
+                                      Text("메이커 : ${_suggestions[index].maker}"),
+                                      Text("별점 : ${_suggestions[index].score}"),
+                                    ],
+                                  ),
+                                )
+                              ))),
                       if (_isLoadMoreRunning == true)
                         Container(
                           padding: const EdgeInsets.all(30),

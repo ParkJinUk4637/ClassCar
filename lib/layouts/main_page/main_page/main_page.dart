@@ -31,6 +31,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
+  final db = FirebaseFirestore.instance;
   final CollectionReference<Map<String, dynamic>> _collectionReference =
       FirebaseFirestore.instance.collection("Car");
   final _suggestions = <Car>[];
@@ -58,31 +59,7 @@ class _MainPage extends State<MainPage> {
                               itemBuilder: (context, index) => ListTile(
                                 title: OutlinedButton(
                                   onPressed: (){
-                                    for(int i=0;i<10;i++){
-                                      db.collection('Car').add(
-                                          Car(
-                                            fwd: true,
-                                            cancelPolicyDate: Random().nextInt(10),
-                                            cancelPolicyPercent: Random().nextInt(100),
-                                            carDrivetrain: "carDrivetrain",
-                                            carGasMil: Random().nextInt(20),
-                                            carLocation: "주차된 위치",
-                                            carModel: "모델",
-                                            carNumber : "차 번호",
-                                            carType: "타입",
-                                            description: "설명입니다${Random().nextInt(9999)}",
-                                            isExhibit: true,
-                                            maker: "메이커",
-                                            oilType: "기름 종류",
-                                            score: Random().nextInt(5),
-                                            seats: Random().nextInt(10),
-                                            sharedCount: Random().nextInt(100),
-                                            sharingPrice: Random().nextInt(100000),
-                                            years: "년식",
-                                            createdAt: Timestamp.now(),
-                                          ).toJson()
-                                      );
-                                    }
+
                                   },
                                   child: Column(
                                     children: [

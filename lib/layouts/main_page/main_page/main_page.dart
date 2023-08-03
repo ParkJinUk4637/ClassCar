@@ -1,27 +1,8 @@
 // 메인 페이지 위젯 작업 예정
 
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-
 import '../../../models/car.dart';
-
-/*TextButton(
-              onPressed: () {
-                db.collection("Car").limit(indexCount).get().then(
-                    (querySnapshot) {
-                      print("Successfully completed");
-                      for (var docSnapshot in querySnapshot.docs) {
-                        print('${docSnapshot.id} => ${docSnapshot.data()}');
-                      }
-                      (e) => print("Error completing: $e");
-                    }
-                );
-              },
-              child: const Text("테스트 호출"),
-            ),*/
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -35,7 +16,7 @@ class _MainPage extends State<MainPage> {
   final CollectionReference<Map<String, dynamic>> _collectionReference =
       FirebaseFirestore.instance.collection("Car");
   final _suggestions = <Car>[];
-  late var lastVisible;
+  late Timestamp? lastVisible;
   final int _limit = 10;
   bool _hasNextPage = true;
   bool _isFirstLoadRunning = false;
@@ -57,21 +38,21 @@ class _MainPage extends State<MainPage> {
                               controller: _controller,
                               itemCount: _suggestions.length,
                               itemBuilder: (context, index) => ListTile(
-                                title: OutlinedButton(
-                                  onPressed: (){
-
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Image.network(
-                                          "https://taegon.kim/wp-content/uploads/2018/05/image-5.png"),
-                                      Text("차량 모델 : ${_suggestions[index].carModel}"),
-                                      Text("메이커 : ${_suggestions[index].maker}"),
-                                      Text("별점 : ${_suggestions[index].score}"),
-                                    ],
-                                  ),
-                                )
-                              ))),
+                                      title: OutlinedButton(
+                                    onPressed: () {},
+                                    child: Column(
+                                      children: [
+                                        Image.network(
+                                            "https://taegon.kim/wp-content/uploads/2018/05/image-5.png"),
+                                        Text(
+                                            "차량 모델 : ${_suggestions[index].carModel}"),
+                                        Text(
+                                            "메이커 : ${_suggestions[index].maker}"),
+                                        Text(
+                                            "별점 : ${_suggestions[index].score}"),
+                                      ],
+                                    ),
+                                  )))),
                       if (_isLoadMoreRunning == true)
                         Container(
                           padding: const EdgeInsets.all(30),
@@ -115,10 +96,17 @@ class _MainPage extends State<MainPage> {
               toFirestore: (Car car, _) => car.toJson())
           .get();
 
-      for (var snapshot in querySnapshot.docs) {
-        _suggestions.add(snapshot.data());
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var snapshot in querySnapshot.docs) {
+          _suggestions.add(snapshot.data());
+        }
+        lastVisible =
+            querySnapshot.docs[querySnapshot.size - 1].data().createdAt;
+      } else {
+        setState(() {
+          _hasNextPage = false;
+        });
       }
-      lastVisible = querySnapshot.docs[querySnapshot.size-1].data().createdAt;
     } catch (e) {
       print(e.toString());
     }
@@ -146,10 +134,17 @@ class _MainPage extends State<MainPage> {
                 toFirestore: (Car car, _) => car.toJson())
             .get();
 
-        for (var snapshot in querySnapshot.docs) {
-          _suggestions.add(snapshot.data());
+        if (querySnapshot.docs.isNotEmpty) {
+          for (var snapshot in querySnapshot.docs) {
+            _suggestions.add(snapshot.data());
+          }
+          lastVisible =
+              querySnapshot.docs[querySnapshot.size - 1].data().createdAt;
+        } else {
+          setState(() {
+            _hasNextPage = false;
+          });
         }
-        lastVisible = querySnapshot.docs[querySnapshot.size-1].data().createdAt;
       } catch (e) {
         print(e.toString());
       }

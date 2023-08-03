@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/detail_car_page.dart';
 import '../../../models/car.dart';
 
 class MainPage extends StatefulWidget {
@@ -39,7 +40,14 @@ class _MainPage extends State<MainPage> {
                               itemCount: _suggestions.length,
                               itemBuilder: (context, index) => ListTile(
                                       title: OutlinedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailCarPage(car: _suggestions[index]),
+                                      ),
+                                      );
+                                    },
                                     child: Column(
                                       children: [
                                         Image.network(

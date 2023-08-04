@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_classcar/layouts/main_page/app_bar.dart';
 
 import '../../../../models/car.dart';
 
@@ -18,6 +19,7 @@ class _DetailCarPage extends State<DetailCarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      appBar: closeAppBar("${car.carModel}", context),
       body: ListView(
         controller: null,
         children: [

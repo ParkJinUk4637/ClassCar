@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 /// isExhibit : false
 /// carNumber : "carNumber"
@@ -22,7 +23,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Car {
   Car(
-      {bool? isExhibit,
+      {String? uuid,
+      bool? isExhibit,
       String? carNumber,
       String? carModel,
       String? carType,
@@ -63,6 +65,7 @@ class Car {
   }
 
   Car.fromJson(dynamic json) {
+    _uuid = json['uuid'];
     _isExhibit = json['isExhibit'];
     _carNumber = json['carNumber'];
     _carModel = json['carModel'];
@@ -85,33 +88,35 @@ class Car {
   }
 
   factory Car.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot,
-      SnapshotOptions? options,
-      ){
-    final data =snapshot.data();
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
     return Car(
-        isExhibit : data?['isExhibit'],
-        carNumber : data?['carNumber'],
-        carModel : data?['carModel'],
-        carType : data?['carType'],
-        carDrivetrain : data?['carDrivetrain'],
-        maker : data?['maker'],
-        seats : data?['seats'],
-        carGasMil : data?['carGasMil'],
-        carLocation : data?['carLocation'],
-        fwd : data?['FWD'],
-        years : data?['years'],
-        score : data?['score'],
-        sharedCount : data?['sharedCount'],
-        sharingPrice : data?['sharingPrice'],
-        cancelPolicyDate : data?['cancelPolicyDate'],
-        cancelPolicyPercent : data?['cancelPolicyPercent'],
-        oilType : data?['oilType'],
-        description : data?['description'],
-        createdAt : data?['createdAt'],
+      uuid: data?['uuid'],
+      isExhibit: data?['isExhibit'],
+      carNumber: data?['carNumber'],
+      carModel: data?['carModel'],
+      carType: data?['carType'],
+      carDrivetrain: data?['carDrivetrain'],
+      maker: data?['maker'],
+      seats: data?['seats'],
+      carGasMil: data?['carGasMil'],
+      carLocation: data?['carLocation'],
+      fwd: data?['FWD'],
+      years: data?['years'],
+      score: data?['score'],
+      sharedCount: data?['sharedCount'],
+      sharingPrice: data?['sharingPrice'],
+      cancelPolicyDate: data?['cancelPolicyDate'],
+      cancelPolicyPercent: data?['cancelPolicyPercent'],
+      oilType: data?['oilType'],
+      description: data?['description'],
+      createdAt: data?['createdAt'],
     );
   }
 
+  String? _uuid;
   bool? _isExhibit;
   String? _carNumber;
   String? _carModel;
@@ -133,6 +138,7 @@ class Car {
   Timestamp? _createdAt;
 
   Car copyWith({
+    String? uuid,
     num? uid,
     bool? isExhibit,
     String? carNumber,
@@ -155,6 +161,7 @@ class Car {
     DateTime? createdAt,
   }) =>
       Car(
+        uuid: uuid ?? _uuid,
         isExhibit: isExhibit ?? _isExhibit,
         carNumber: carNumber ?? _carNumber,
         carModel: carModel ?? _carModel,
@@ -175,6 +182,8 @@ class Car {
         description: description ?? _description,
         createdAt: _createdAt ?? _createdAt,
       );
+
+  String? get uuid => _uuid;
 
   bool? get isExhibit => _isExhibit;
 
@@ -216,6 +225,7 @@ class Car {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['uuid'] = _uuid;
     map['isExhibit'] = _isExhibit;
     map['carNumber'] = _carNumber;
     map['carModel'] = _carModel;

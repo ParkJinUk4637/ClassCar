@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/detail_car_page.dart';
+import 'package:uuid/uuid.dart';
 import '../../../models/car.dart';
 
 class MainPage extends StatefulWidget {
@@ -60,7 +61,8 @@ class _MainPage extends State<MainPage> {
                                             "별점 : ${_suggestions[index].score}"),
                                       ],
                                     ),
-                                  )))),
+                                  )))
+                      ),
                       if (_isLoadMoreRunning == true)
                         Container(
                           padding: const EdgeInsets.all(30),
@@ -68,7 +70,7 @@ class _MainPage extends State<MainPage> {
                             child: CircularProgressIndicator(),
                           ),
                         ),
-                      if (_hasNextPage == false)
+                      if (_hasNextPage == false && _suggestions.isEmpty)
                         Container(
                             padding: const EdgeInsets.all(20),
                             child: const Center(

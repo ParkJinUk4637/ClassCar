@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
+
+import 'login_page.dart';
 
 class RegistPage extends StatefulWidget {
   const RegistPage({super.key});
@@ -15,18 +18,62 @@ class _RegistPage extends State<RegistPage> {
   var logger = Logger(
     printer: PrettyPrinter(),
   );
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController passwordConfigController =
-      TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController validNumberController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordConfigController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController OTPController = TextEditingController();
+
+
+  // FocusNode passwordFocusNode = FocusNode();
+  // FocusNode passwordConfigFocusNode = FocusNode();
+  // FocusNode phoneNumberFocusNode = FocusNode();
+
 
   bool authOk = false;
   bool requestedAuth=false;
   bool showLoading = false;
+  bool allCheck = false; // 전체확인
+  bool regist = false;
+  bool otpCheck = false; //인증번호
   late String verificationId;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void signInWithPhoneAuthCredential(PhoneAuthCredential, phoneAuthCredential) async {
+    setState(() {
+      showLoading = true;
+    });
+    try {
+      final authCredential = await _auth.signInWithCredential(
+          phoneAuthCredential);
+      setState(() {
+        showLoading = false;
+      });
+      if (authCredential?.user != null && allCheck ) {
+        setState(() {
+          print("인증완료 및 가입성공");
+          authOk = true;
+          requestedAuth = false;
+          otpCheck = true;
+          regist = true;
+          allCheck = true;
+        });
+        await _auth.currentUser?.delete();
+        print("인증정보 삭제");
+        _auth.signOut();
+        print("로그아웃");
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        print("인증실패");
+        showLoading = false;
+      });
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +115,7 @@ class _RegistPage extends State<RegistPage> {
     passwordConfigController.dispose();
     nameController.dispose();
     phoneNumberController.dispose();
-    validNumberController.dispose();
+    OTPController.dispose();
     super.dispose();
   }
 
@@ -82,10 +129,12 @@ class _RegistPage extends State<RegistPage> {
           keyboardType: TextInputType.emailAddress,
           validator: (String? value) {
             if (value!.isEmpty) {
+              allCheck = false;
               return '이메일을 입력하세요';
             } else if (!RegExp(
                     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                 .hasMatch(value)) {
+              allCheck = false;
               return '이메일을 올바르게 입력하세요';
             }
             return null;
@@ -122,6 +171,7 @@ class _RegistPage extends State<RegistPage> {
           obscureText: true,
           validator: (String? value) {
             if (value!.isEmpty) {
+              allCheck = false;
               return '비밀번호를 입력하세요';
             }
             return null;
@@ -159,6 +209,7 @@ class _RegistPage extends State<RegistPage> {
           obscureText: true,
           validator: (String? value) {
             if (value!.isEmpty) {
+              allCheck = false;
               return '비밀번호 확인을 입력하세요';
             }
             return null;
@@ -195,10 +246,12 @@ class _RegistPage extends State<RegistPage> {
           autovalidateMode: AutovalidateMode.always,
           validator: (String? value) {
             if (value!.isEmpty) {
+              allCheck = false;
               return '이름을 입력하세요';
-            } else if (!RegExp(r'^[가-힣]{2,4}$').hasMatch(value)) {
-              return '이름은 2글자 이상, 4글자 이하의 한글로 입력하세요';
             }
+            // else if (!RegExp(r'^[가-힣]{2,4}$').hasMatch(value)) {
+            //   return '이름은 2글자 이상, 4글자 이하의 한글로 입력하세요';
+            // }
             return null;
           },
           decoration: InputDecoration(
@@ -224,38 +277,106 @@ class _RegistPage extends State<RegistPage> {
   }
 
   Widget _userPhoneNumber() {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextFormField(
-          controller: phoneNumberController,
-          autovalidateMode: AutovalidateMode.always,
-          keyboardType: TextInputType.phone,
-          validator: (String? value) {
-            if (value!.isEmpty) {
-              return '휴대전화 번호를 입력하세요';
-            } else if (!RegExp(r'^01?([0-9]{9})$').hasMatch(value)) {
-              return '휴대전화 번호가 잘못되었습니다';
-            }
-            return null;
-          },
-          decoration: InputDecoration(
-              labelText: '휴대전화 번호',
-              hintText: "휴대전화 번호 입력",
-              enabledBorder: OutlineInputBorder(
-                // 기본 모양
-                borderRadius: BorderRadius.circular(20),
-              ),
-              focusedBorder: OutlineInputBorder(
-                // 포커스 되었을 경우 모양
-                borderRadius: BorderRadius.circular(20),
-              ),
-              errorBorder: OutlineInputBorder(
-                  // 에러 발생 시 모양
+        Expanded(
+          flex: 7,
+          child: TextFormField(
+            controller: phoneNumberController,
+            // autovalidateMode: AutovalidateMode.always,
+            keyboardType: TextInputType.phone,
+            validator: (String? value) {
+              if (value!.isEmpty) {
+                allCheck = false;
+                 return '휴대전화 번호를 입력하세요';
+              } else if (!RegExp(r'^01?([0-9]{9})$').hasMatch(value)) {
+                allCheck = false;
+                 return '휴대전화 번호가 잘못되었습니다';
+              }
+                return null;
+            },
+            decoration: InputDecoration(
+                labelText: '휴대전화 번호',
+                hintText: "전화번호 입력",
+                enabledBorder: OutlineInputBorder(
+                  // 기본 모양
+                  borderRadius: BorderRadius.circular(20),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                  // 포커스 되었을 경우 모양
+                  borderRadius: BorderRadius.circular(20),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                 // 에러 발생 시 모양
                   borderRadius: BorderRadius.circular(20)),
-              focusedErrorBorder: OutlineInputBorder(
-                  // 에러 발생 후 포커스 되었을 경우 모양
+                  focusedErrorBorder: OutlineInputBorder(
+                // 에러 발생 후 포커스 되었을 경우 모양
                   borderRadius: BorderRadius.circular(20))),
+          ),
+        ),
+        const SizedBox(width: 5),
+        Expanded(
+          flex: 3,
+          child: authOk ? TextButton(
+            style: TextButton.styleFrom(
+                backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                minimumSize: const Size(370, 55)),
+            onPressed: () {},
+            child: const Text("인증완료",style: TextStyle(color: Colors.white)),) :
+          TextButton(
+              style: TextButton.styleFrom(
+                  backgroundColor:  const Color(0xff1200B3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: const Size(370, 55)),
+              onPressed: () async {
+                setState(() {
+                  showLoading = true;
+                });
+                await _auth.verifyPhoneNumber(
+                  timeout: const Duration(seconds: 60),
+                  codeAutoRetrievalTimeout: (String verificationId) {
+                  },
+                  phoneNumber: "+82${phoneNumberController.text.trim().substring(1)}",
+                  verificationCompleted: (phoneAuthCredential) async {
+                    print("OTP 문자 옴");
+                  },
+                  verificationFailed: (verificationFailed) async {
+                    print(verificationFailed.code);
+
+                    print("코드 발송 실패");
+                    setState(() {
+                      showLoading = false;
+                    });
+                  },
+                  codeSent: (verificationId, resendingToken) async {
+                    print("코드 보냄");
+                    setState(() {
+                      requestedAuth = true;
+                      showLoading = false;
+                      this.verificationId = verificationId;
+                    });
+                  },
+                );
+              },
+              child: const Text("인증요청",
+                  style: TextStyle(color: Colors.white)))
+              // : TextButton(
+              //     style: TextButton.styleFrom(
+              //     backgroundColor: Colors.grey,
+              //     shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(30),
+              //       ),
+              //     minimumSize: const Size(370, 55)),
+              //   onPressed: () {},
+              //   child: const Text(
+              //       "인증요청",
+              //     style: TextStyle(color: Colors.white)),)
         ),
       ],
     );
@@ -268,11 +389,12 @@ class _RegistPage extends State<RegistPage> {
         Expanded(
             flex: 7,
             child: TextFormField(
-              controller: validNumberController,
+              controller: OTPController,
               autovalidateMode: AutovalidateMode.always,
               keyboardType: TextInputType.phone,
               validator: (String? value) {
                 if (value!.isEmpty) {
+                  allCheck = false;
                   return '인증번호를 입력하세요';
                 }
                 return null;
@@ -306,41 +428,12 @@ class _RegistPage extends State<RegistPage> {
                   ),
                   minimumSize: const Size(370, 55)),
               onPressed: () async {
-                FirebaseAuth auth = FirebaseAuth.instance;
-                await auth.verifyPhoneNumber(
-                  phoneNumber: '+82${phoneNumberController.text.substring(1)}',
-                  timeout: const Duration(seconds: 60),
-                  verificationCompleted:
-                      (PhoneAuthCredential credential) async {
-                    // ANDROID ONLY!
-
-                    // Sign the user in (or link) with the auto-generated credential
-                    await auth.signInWithCredential(credential);
-                  },
-                  verificationFailed: (FirebaseAuthException e) {
-                    if (e.code == 'invalid-phone-number') {
-                      print('The provided phone number is not valid.');
-                    }
-
-                    // Handle other errors
-                  },
-                  codeSent: (String verificationId, int? resendToken) async {
-                    // Update the UI - wait for the user to enter the SMS code
-                    String smsCode = 'xxxx';
-
-                    // Create a PhoneAuthCredential with the code
-                    PhoneAuthCredential credential =
-                        PhoneAuthProvider.credential(
-                            verificationId: verificationId, smsCode: smsCode);
-
-                  },
-                  codeAutoRetrievalTimeout: (String verificationId) {
-                    // Auto-resolution timed out...
-                  },
-                );
+                PhoneAuthCredential phoneAuthCredential =
+                    PhoneAuthProvider.credential(verificationId: verificationId, smsCode: OTPController.text);
+                signInWithPhoneAuthCredential(PhoneAuthCredential, phoneAuthCredential);
               },
               child: const Text(
-                "인증번호 받기",
+                "확인",
                 style: TextStyle(color: Colors.white),
               )),
         )
@@ -352,29 +445,36 @@ class _RegistPage extends State<RegistPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextButton(
+        allCheck ? TextButton(
             style: TextButton.styleFrom(
                 backgroundColor: const Color(0xff1200B3),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(30,)
+                ),
+                minimumSize: const Size(370, 55)),
+            onPressed: ()  {
+              try{
+                createUser(emailController.text,passwordController.text,nameController.text);
+                print("Login Success!");
+
+                Get.offAll(() => const LoginPage());
+              } on FirebaseAuthException catch (e) {
+                print('Error $e');
+              }
+            },
+            child: const Text("회원가입",  style: TextStyle(color: Colors.white),)) :
+        
+        TextButton(
+            style: TextButton.styleFrom(
+                backgroundColor: Colors.grey,
+                // disabledBackgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30,)
                 ),
                 minimumSize: const Size(370, 55)),
 
             /// 버튼 스타일 설정
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(
-                          '${emailController.text}/${passwordController.text}')),
-                );
-
-
-                createUser(emailController.text, passwordController.text,
-                    nameController.text);
-              }
-            },
+            onPressed: () {},
             child: const Text(
               "회원가입",
               style: TextStyle(color: Colors.white),
@@ -408,4 +508,15 @@ class _RegistPage extends State<RegistPage> {
     // authPersistence(); // 인증 영속
     return true;
   }
+
+  // Future<bool> blankCheck() async {
+  //   if(emailController.text != null && passwordConfigController.text != null && passwordController.text != null && nameController.text != null && phoneNumberController.text.length == 11) {
+  //     allCheck = true;
+  //     return true;
+  //   }
+  //   else {
+  //     allCheck = false;
+  //     return false;
+  //   }
+  // }
 }

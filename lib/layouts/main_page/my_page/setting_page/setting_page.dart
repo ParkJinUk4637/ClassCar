@@ -7,6 +7,7 @@ import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
 import 'package:my_classcar/layouts/main_page/my_page/middle_title.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/delete_user.dart';
+import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/license_manage.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/phone_number_reset.dart';
 
@@ -83,7 +84,7 @@ class _SettingPage extends State<SettingPage> {
           height: 1,
           thickness: 1,
         ),
-        listTileButton("계정 연동 설정(아직 미구현)", const PasswordReset(), context),
+        listTileButton("면허 관리", const LicenseManage(), context),
       ],
     );
   }

@@ -120,8 +120,8 @@ class _MainPage extends State<MainPage> {
     } catch (e) {
       print(e.toString());
     }
-    setState(() {
-      _isFirstLoadRunning = false;
+     setState(() {
+       _isFirstLoadRunning = false;
     });
   }
 

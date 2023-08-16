@@ -74,12 +74,12 @@ class _SettingPage extends State<SettingPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("비밀번호 재설정", const PasswordReset(), context),
+        listTileButton("비밀번호 변경", const PasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("휴대전화 번호 재설정", const PhoneNumberReset(), context),
+        listTileButton("휴대전화 번호 변경", const PhoneNumberReset(), context),
         const Divider(
           height: 1,
           thickness: 1,

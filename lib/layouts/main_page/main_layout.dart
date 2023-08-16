@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:my_classcar/layouts/main_page/main_page/main_page.dart';
 import 'package:my_classcar/layouts/main_page/my_page/my_page.dart';
 

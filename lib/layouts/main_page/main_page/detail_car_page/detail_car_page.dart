@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
+import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/car_rent_page/car_rent_page.dart';
 
 import '../../../../models/car.dart';
 
@@ -52,28 +53,35 @@ class _DetailCarPage extends State<DetailCarPage> {
       //margin: const EdgeInsets.symmetric(vertical: 24,horizontal: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
-              children: [
-                Text(textAlign: TextAlign.left, "${car.sharingPrice}원/일"),
-                const Text(textAlign: TextAlign.left, "합계요금"),
-              ],
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              Text(textAlign: TextAlign.left, "${car.sharingPrice}원/일"),
+              const Text(textAlign: TextAlign.left, "합계요금"),
+            ],
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width / 360 * 200),
+          TextButton(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.all(12.0),
+              foregroundColor: Colors.white,
+              backgroundColor: const Color(0xff1200b3),
+              textStyle: const TextStyle(fontSize: 16),
             ),
-            SizedBox(width: MediaQuery.of(context).size.width/360*200),
-            TextButton(
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.all(12.0),
-                foregroundColor: Colors.white,
-                backgroundColor: const Color(0xff1200b3),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
-              onPressed: () {},
-              child: const Text("대여하기"),
-            )
-          ],
-        ),
-      );
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CarRentPage(car: car),
+                ),
+              );
+            },
+            child: const Text("대여하기"),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _info() {

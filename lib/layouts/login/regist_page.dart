@@ -15,6 +15,7 @@ class RegistPage extends StatefulWidget {
 
 class _RegistPage extends State<RegistPage> {
   final _formKey = GlobalKey<FormState>();
+  int blank_check = 0;
   var logger = Logger(
     printer: PrettyPrinter(),
   );
@@ -35,13 +36,12 @@ class _RegistPage extends State<RegistPage> {
   bool requestedAuth=false;
   bool showLoading = false;
   bool allCheck = false; // 전체확인
-  bool regist = false;
   bool otpCheck = false; //인증번호
   late String verificationId;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void signInWithPhoneAuthCredential(PhoneAuthCredential, phoneAuthCredential) async {
+  void signInWithPhoneAuthCredential(PhoneAuthCredential phoneAuthCredential) async {
     setState(() {
       showLoading = true;
     });
@@ -51,14 +51,14 @@ class _RegistPage extends State<RegistPage> {
       setState(() {
         showLoading = false;
       });
-      if (authCredential?.user != null && allCheck ) {
+      if (authCredential?.user != null) {
         setState(() {
           print("인증완료 및 가입성공");
           authOk = true;
+          blank_check += 1;
           requestedAuth = false;
-          otpCheck = true;
-          regist = true;
-          allCheck = true;
+          otpCheck = true; //인증번호 일치 유무 확인
+          print(blank_check);
         });
         await _auth.currentUser?.delete();
         print("인증정보 삭제");
@@ -68,12 +68,15 @@ class _RegistPage extends State<RegistPage> {
     } on FirebaseAuthException catch (e) {
       setState(() {
         print("인증실패");
+        blank_check += 0;
         showLoading = false;
       });
     }
   }
 
-
+  void setup(){
+    blank_check = 0;
+  } //빈칸 채크 초기화
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +120,7 @@ class _RegistPage extends State<RegistPage> {
     phoneNumberController.dispose();
     OTPController.dispose();
     super.dispose();
+    setup();
   }
 
   Widget _userId() {
@@ -129,14 +133,15 @@ class _RegistPage extends State<RegistPage> {
           keyboardType: TextInputType.emailAddress,
           validator: (String? value) {
             if (value!.isEmpty) {
-              allCheck = false;
+              blank_check += 0;
               return '이메일을 입력하세요';
             } else if (!RegExp(
                     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                 .hasMatch(value)) {
-              allCheck = false;
+              blank_check += 0;
               return '이메일을 올바르게 입력하세요';
             }
+            blank_check += 1;
             return null;
           },
           decoration: InputDecoration(
@@ -171,9 +176,10 @@ class _RegistPage extends State<RegistPage> {
           obscureText: true,
           validator: (String? value) {
             if (value!.isEmpty) {
-              allCheck = false;
+              blank_check += 0;
               return '비밀번호를 입력하세요';
             }
+            blank_check += 1;
             return null;
           },
           keyboardType: TextInputType.emailAddress,
@@ -209,9 +215,10 @@ class _RegistPage extends State<RegistPage> {
           obscureText: true,
           validator: (String? value) {
             if (value!.isEmpty) {
-              allCheck = false;
+              blank_check += 0;
               return '비밀번호 확인을 입력하세요';
             }
+            blank_check += 1;
             return null;
           },
           keyboardType: TextInputType.emailAddress,
@@ -246,12 +253,13 @@ class _RegistPage extends State<RegistPage> {
           autovalidateMode: AutovalidateMode.always,
           validator: (String? value) {
             if (value!.isEmpty) {
-              allCheck = false;
+              blank_check += 0;
               return '이름을 입력하세요';
             }
             // else if (!RegExp(r'^[가-힣]{2,4}$').hasMatch(value)) {
             //   return '이름은 2글자 이상, 4글자 이하의 한글로 입력하세요';
             // }
+            blank_check += 1;
             return null;
           },
           decoration: InputDecoration(
@@ -288,13 +296,14 @@ class _RegistPage extends State<RegistPage> {
             keyboardType: TextInputType.phone,
             validator: (String? value) {
               if (value!.isEmpty) {
-                allCheck = false;
+                blank_check += 0;
                  return '휴대전화 번호를 입력하세요';
               } else if (!RegExp(r'^01?([0-9]{9})$').hasMatch(value)) {
-                allCheck = false;
+                blank_check += 0;
                  return '휴대전화 번호가 잘못되었습니다';
               }
-                return null;
+              blank_check += 1;
+              return null;
             },
             decoration: InputDecoration(
                 labelText: '휴대전화 번호',
@@ -394,9 +403,10 @@ class _RegistPage extends State<RegistPage> {
               keyboardType: TextInputType.phone,
               validator: (String? value) {
                 if (value!.isEmpty) {
-                  allCheck = false;
+                  blank_check += 0;
                   return '인증번호를 입력하세요';
                 }
+                blank_check += 1;
                 return null;
               },
               decoration: InputDecoration(
@@ -430,7 +440,7 @@ class _RegistPage extends State<RegistPage> {
               onPressed: () async {
                 PhoneAuthCredential phoneAuthCredential =
                     PhoneAuthProvider.credential(verificationId: verificationId, smsCode: OTPController.text);
-                signInWithPhoneAuthCredential(PhoneAuthCredential, phoneAuthCredential);
+                signInWithPhoneAuthCredential(phoneAuthCredential);
               },
               child: const Text(
                 "확인",
@@ -445,7 +455,7 @@ class _RegistPage extends State<RegistPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        allCheck ? TextButton(
+        blank_check == 6 ? TextButton(
             style: TextButton.styleFrom(
                 backgroundColor: const Color(0xff1200B3),
                 shape: RoundedRectangleBorder(

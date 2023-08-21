@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:my_classcar/component/logo.dart';
+import 'package:my_classcar/layouts/login/find_id_page.dart';
 import 'package:my_classcar/layouts/login/regist_page.dart';
 import 'package:my_classcar/layouts/main_page/main_layout.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'find_pw_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -87,14 +90,16 @@ class _LoginPage extends State<LoginPage> {
       children: [
         TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, "/find_pw_page");
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const find_id_page()),);
           },
           child: const Text(
             "아이디 찾기 |  ", style: TextStyle(color: Colors.black),),
         ),
         TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, "/find_pw_page");
+            Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const find_pw_page()),);
           },
           child: const Text(
             "비밀번호 찾기 |  ", style: TextStyle(color: Colors.black),),

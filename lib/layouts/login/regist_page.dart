@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
-
 import 'login_page.dart';
 
 class RegistPage extends StatefulWidget {
@@ -15,7 +14,6 @@ class RegistPage extends StatefulWidget {
 
 class _RegistPage extends State<RegistPage> {
   final _formKey = GlobalKey<FormState>();
-  int blank_check = 0;
   var logger = Logger(
     printer: PrettyPrinter(),
   );
@@ -37,11 +35,25 @@ class _RegistPage extends State<RegistPage> {
   bool showLoading = false;
   bool allCheck = false; // 전체확인
   bool otpCheck = false; //인증번호
+  int blank_check = 0;
   late String verificationId;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  void setup() async {
+    blank_check = 0;
+  } //빈칸 채크 초기화
+
+  void check()  {
+    if (blank_check == 5) {
+      allCheck = true;
+    } else {
+      allCheck = false;
+    }
+  }
+
   void signInWithPhoneAuthCredential(PhoneAuthCredential phoneAuthCredential) async {
+    check();
     setState(() {
       showLoading = true;
     });
@@ -55,15 +67,14 @@ class _RegistPage extends State<RegistPage> {
         setState(() {
           print("인증완료 및 가입성공");
           authOk = true;
-          blank_check += 1;
           requestedAuth = false;
           otpCheck = true; //인증번호 일치 유무 확인
-          print(blank_check);
         });
         await _auth.currentUser?.delete();
         print("인증정보 삭제");
         _auth.signOut();
         print("로그아웃");
+        print(blank_check);
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -73,10 +84,6 @@ class _RegistPage extends State<RegistPage> {
       });
     }
   }
-
-  void setup(){
-    blank_check = 0;
-  } //빈칸 채크 초기화
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +128,11 @@ class _RegistPage extends State<RegistPage> {
     OTPController.dispose();
     super.dispose();
     setup();
+    check();
   }
 
   Widget _userId() {
+    setup();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -453,43 +462,41 @@ class _RegistPage extends State<RegistPage> {
 
   Widget _registRequest() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        blank_check == 6 ? TextButton(
-            style: TextButton.styleFrom(
-                backgroundColor: const Color(0xff1200B3),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30,)
-                ),
-                minimumSize: const Size(370, 55)),
-            onPressed: ()  {
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          allCheck ? TextButton(
+              style: TextButton.styleFrom(
+              backgroundColor: const Color(0xff1200B3),
+              shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30,)
+              ),
+              minimumSize: const Size(370, 55)),
+              onPressed: () {
+                check();
               try{
                 createUser(emailController.text,passwordController.text,nameController.text);
                 print("Login Success!");
-
                 Get.offAll(() => const LoginPage());
               } on FirebaseAuthException catch (e) {
                 print('Error $e');
-              }
-            },
-            child: const Text("회원가입",  style: TextStyle(color: Colors.white),)) :
-        
-        TextButton(
-            style: TextButton.styleFrom(
-                backgroundColor: Colors.grey,
-                // disabledBackgroundColor: Colors.grey,
-                shape: RoundedRectangleBorder(
+                }
+              },
+              child: const Text("회원가입",  style: TextStyle(color: Colors.white),)) :
+          TextButton(
+              style: TextButton.styleFrom(
+                  backgroundColor: Colors.grey,
+                  // disabledBackgroundColor: Colors.grey,
+                  shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30,)
-                ),
-                minimumSize: const Size(370, 55)),
-
-            /// 버튼 스타일 설정
-            onPressed: () {},
-            child: const Text(
-              "회원가입",
-              style: TextStyle(color: Colors.white),
-            )),
-      ],
+                  ),
+                  minimumSize: const Size(370, 55)),
+                  /// 버튼 스타일 설정
+                onPressed: () {},
+                child: const Text(
+                 "회원가입",
+                  style: TextStyle(color: Colors.white),
+                )),
+        ],
     );
   }
 

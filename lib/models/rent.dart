@@ -19,7 +19,7 @@ class Rent {
     String? requestStatus,
     Map<String,dynamic>? car,
     String? location,
-    String? uuid,
+    String? uid,
   }) {
     _createdAt = createdAt;
     _startedAt = startedAt;
@@ -28,7 +28,7 @@ class Rent {
     _requestStatus = requestStatus;
     _car = car;
     _location = location;
-    _uuid = uuid;
+    _uid = uid;
   }
 
   Rent.fromJson(dynamic json) {
@@ -39,7 +39,7 @@ class Rent {
     _requestStatus = json['requestStatus'];
     _car = json['car'];
     _location = json['location'];
-    _uuid = json['uid'];
+    _uid = json['uid'];
   }
 
   factory Rent.fromFirestore(
@@ -54,7 +54,7 @@ class Rent {
       requestStatus: data?['requestStatus'],
       car: data?['car'],
       location: data?['location'],
-      uuid: data?['uuid'],
+      uid: data?['uid'],
     );
   }
 
@@ -65,7 +65,7 @@ class Rent {
   String? _requestStatus;
   Map<String,dynamic>? _car;
   String? _location;
-  String? _uuid;
+  String? _uid;
 
   Rent copyWith({
     Timestamp? createdAt,
@@ -85,7 +85,7 @@ class Rent {
         requestStatus: requestStatus ?? _requestStatus,
         car: car ?? _car,
         location: location ?? _location,
-        uuid: uid ?? _uuid,
+        uid: uid ?? _uid,
       );
 
   Timestamp? get createdAt => _createdAt;
@@ -102,7 +102,7 @@ class Rent {
 
   String? get location => _location;
 
-  String? get uid => _uuid;
+  String? get uid => _uid;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -113,7 +113,7 @@ class Rent {
     map['requestStatus'] = _requestStatus;
     map['car'] = _car;
     map['location'] = _location;
-    map['uid'] = _uuid;
+    map['uid'] = _uid;
     return map;
   }
 

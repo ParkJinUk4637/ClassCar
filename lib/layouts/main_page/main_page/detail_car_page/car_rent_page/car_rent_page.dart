@@ -60,7 +60,7 @@ class _CarRentPage extends State<CarRentPage> {
                   requestStatus: "대여상태",
                   car: car.toJson(),
                   location: "장소",
-                  uuid: const Uuid().v4()
+                  uid: const Uuid().v4()
                 );
                 print('${rent.toJson()}');
                 await db.collection('Rent').add(rent.toJson());

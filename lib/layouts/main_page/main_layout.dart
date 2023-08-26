@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/main_page/main_page.dart';
 import 'package:my_classcar/layouts/main_page/my_page/my_page.dart';
+import 'package:my_classcar/layouts/main_page/my_rental/my_rental.dart';
 
 import '../../component/const/name_const.dart';
 
@@ -17,7 +18,7 @@ class _MainLayoutState extends State<MainLayout> {
   final String projectName = NameConst.projectName.name;
   final List<Widget> _widgetOptions = <Widget>[
     const MainPage(),
-    const Text('대여 현황'),
+    const MyRental(),
     const Text('DM'),
     const MyPage(),
   ];

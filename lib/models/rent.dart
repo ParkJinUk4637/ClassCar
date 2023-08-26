@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'car.dart';
+
 /// createdAt : "Timestamp"
 /// startedAt : "Timestamp"
 /// endedAt : "Timestamp"
@@ -15,7 +17,7 @@ class Rent {
     Timestamp? endedAt,
     String? totalPrice,
     String? requestStatus,
-    String? car,
+    Map<String,dynamic>? car,
     String? location,
     String? uuid,
   }) {
@@ -61,7 +63,7 @@ class Rent {
   Timestamp? _endedAt;
   String? _totalPrice;
   String? _requestStatus;
-  String? _car;
+  Map<String,dynamic>? _car;
   String? _location;
   String? _uuid;
 
@@ -71,7 +73,7 @@ class Rent {
     Timestamp? endedAt,
     String? totalPrice,
     String? requestStatus,
-    String? car,
+    Map<String,dynamic>? car,
     String? location,
     String? uid,
   }) =>
@@ -96,7 +98,7 @@ class Rent {
 
   String? get requestStatus => _requestStatus;
 
-  String? get car => _car;
+  Map<String,dynamic>? get car => _car;
 
   String? get location => _location;
 
@@ -114,4 +116,5 @@ class Rent {
     map['uid'] = _uuid;
     return map;
   }
+
 }

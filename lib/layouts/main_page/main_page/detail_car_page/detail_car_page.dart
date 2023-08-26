@@ -20,7 +20,7 @@ class _DetailCarPage extends State<DetailCarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: closeAppBar("${car.carModel}", context),
+      appBar: backAppBar("${car.carModel}", context),
       body: ListView(
         controller: null,
         children: [

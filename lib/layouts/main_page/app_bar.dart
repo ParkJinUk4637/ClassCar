@@ -33,3 +33,19 @@ PreferredSizeWidget closeAppBar(String appBarName, BuildContext context) {
     title: Text(appBarName),
   );
 }
+
+PreferredSizeWidget backAppBar(String appBarName, BuildContext context){
+  return AppBar(
+    elevation: 1,
+    leading: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: (){
+        // 뒤로가기
+        Navigator.pop(context);
+      },
+    ),
+    foregroundColor: Colors.black,
+    backgroundColor: Colors.white,
+    title: Text(appBarName),
+  );
+}

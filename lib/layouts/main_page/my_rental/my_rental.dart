@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/models/rent.dart';
 
+import 'datail_rental_page/detail_rental_page.dart';
+
 class MyRental extends StatefulWidget{
   const MyRental({super.key});
 
@@ -40,6 +42,9 @@ class _MyRental extends State<MyRental>{
                         itemCount: _suggestions.length,
                         itemBuilder: (context, index) => ListTile(
                             title: _suggestions[index].toListTile(),
+                          onTap: () {
+                              Navigator.push(context,MaterialPageRoute(builder: (context) => DetailRentalPage(rent: _suggestions[index])));
+                          },
                         ))
                 ),
                 if (_isLoadMoreRunning == true)

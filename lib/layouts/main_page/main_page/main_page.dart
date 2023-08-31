@@ -51,7 +51,7 @@ class _MainPage extends State<MainPage> {
                                     },
                                     child: Column(
                                       children: [
-                                        const Logo('Item'),
+                                        const Logo('Item',140,140),
                                         Text(
                                             "차량 모델 : ${_suggestions[index].carModel}"),
                                         Text(

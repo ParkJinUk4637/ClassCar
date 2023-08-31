@@ -4,7 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class Logo extends StatelessWidget {
   final String title;
-  const Logo(this.title, {super.key});
+  final double width;
+  final double height;
+  const Logo(this.title, this.width, this.height, {super.key});
 
   @override
   Widget build(BuildContext context){
@@ -13,8 +15,8 @@ class Logo extends StatelessWidget {
         SizedBox(
           child: SvgPicture.asset(
             'images/Logo.svg',
-            width: 140,
-            height: 140,
+            width: width,
+            height: height,
             colorFilter: const ColorFilter.mode(Color(0xff1200b3), BlendMode.srcIn),
           ),
         )

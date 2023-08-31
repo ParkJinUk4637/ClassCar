@@ -129,6 +129,8 @@ class Rent {
   }
 
   Container toListTile(){
+    final start = startedAt?.toDate();
+    final end = endedAt?.toDate();
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -169,7 +171,16 @@ class Rent {
                   const SizedBox(height: 10,),
                   Text('${car?['carModel'] ?? 'Car Model'}'),
                   const SizedBox(height: 10,),
-                  Text('$startedAt ~ $endedAt'),
+                  Text('대여 기간 ${start?.year ?? '0000'}년 '
+                      '${start?.month ?? '00'}월 '
+                      '${start?.day ?? '00'}일 '
+                      '${start?.hour ?? '00'}시 '
+                      '${start?.minute ?? '00'}분 '
+                      '~ ${end?.year ?? '0000'}년 '
+                      '${end?.month ?? '00'}월 '
+                      '${end?.day ?? '00'}일 '
+                      '${end?.hour ?? '00'}시 '
+                      '${end?.minute ?? '00'}분 '),
                   const SizedBox(height: 10,),
                   Text('$location')
                 ],

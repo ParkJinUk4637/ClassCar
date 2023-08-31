@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import 'car.dart';
 
@@ -18,6 +19,7 @@ class Rent {
     String? totalPrice,
     String? requestStatus,
     Map<String,dynamic>? car,
+    String? ownerName,
     String? location,
     String? uid,
   }) {
@@ -27,6 +29,7 @@ class Rent {
     _totalPrice = totalPrice;
     _requestStatus = requestStatus;
     _car = car;
+    _ownerName = ownerName;
     _location = location;
     _uid = uid;
   }
@@ -38,6 +41,7 @@ class Rent {
     _totalPrice = json['totalPrice'];
     _requestStatus = json['requestStatus'];
     _car = json['car'];
+    _ownerName = json['ownerName'];
     _location = json['location'];
     _uid = json['uid'];
   }
@@ -53,6 +57,7 @@ class Rent {
       totalPrice: data?['totalPrice'],
       requestStatus: data?['requestStatus'],
       car: data?['car'],
+      ownerName: data?['ownerName'],
       location: data?['location'],
       uid: data?['uid'],
     );
@@ -64,6 +69,7 @@ class Rent {
   String? _totalPrice;
   String? _requestStatus;
   Map<String,dynamic>? _car;
+  String? _ownerName;
   String? _location;
   String? _uid;
 
@@ -74,6 +80,7 @@ class Rent {
     String? totalPrice,
     String? requestStatus,
     Map<String,dynamic>? car,
+    String? ownerName,
     String? location,
     String? uid,
   }) =>
@@ -84,6 +91,7 @@ class Rent {
         totalPrice: totalPrice ?? _totalPrice,
         requestStatus: requestStatus ?? _requestStatus,
         car: car ?? _car,
+        ownerName: ownerName ?? _ownerName,
         location: location ?? _location,
         uid: uid ?? _uid,
       );
@@ -100,6 +108,8 @@ class Rent {
 
   Map<String,dynamic>? get car => _car;
 
+  String? get ownerName => _ownerName;
+
   String? get location => _location;
 
   String? get uid => _uid;
@@ -112,9 +122,62 @@ class Rent {
     map['totalPrice'] = _totalPrice;
     map['requestStatus'] = _requestStatus;
     map['car'] = _car;
+    map['ownerName'] = _ownerName;
     map['location'] = _location;
     map['uid'] = _uid;
     return map;
+  }
+
+  Container toListTile(){
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0,2)
+          )
+        ]
+      ),
+      child: Row(
+        children: [
+          // 첫 번째 Column
+          Expanded(
+              flex : 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("$requestStatus"),
+                  const SizedBox(height: 10,),
+                  Icon(Icons.car_rental),
+                  const SizedBox(height: 10,),
+                  Text("${car?['carNumber'] ?? 'Car Number'}"),
+                ],
+              )
+          ),
+          // 두 번째 Column
+          Expanded(
+              flex : 7,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('이동 거리'),
+                  const SizedBox(height: 10,),
+                  Text('${car?['carModel'] ?? 'Car Model'}'),
+                  const SizedBox(height: 10,),
+                  Text('$startedAt ~ $endedAt'),
+                  const SizedBox(height: 10,),
+                  Text('$location')
+                ],
+              )
+          )
+        ],
+      ),
+    );
   }
 
 }

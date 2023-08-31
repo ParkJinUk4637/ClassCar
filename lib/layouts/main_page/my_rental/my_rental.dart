@@ -39,23 +39,8 @@ class _MyRental extends State<MyRental>{
                         controller: _controller,
                         itemCount: _suggestions.length,
                         itemBuilder: (context, index) => ListTile(
-                            title: OutlinedButton(
-                              onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => DetailCarPage(car: _suggestions[index]),
-                                //   ),
-                                // );
-                              },
-                              child: Column(
-                                children: [
-                                  Text("${_suggestions[index].startedAt}"),
-                                  Text("${_suggestions[index].uid}"),
-                                  Text("${_suggestions[index].car}")
-                                ],
-                              ),
-                            )))
+                            title: _suggestions[index].toListTile(),
+                        ))
                 ),
                 if (_isLoadMoreRunning == true)
                   Container(
@@ -73,6 +58,7 @@ class _MyRental extends State<MyRental>{
               ],
             )));
   }
+
   @override
   void initState() {
     super.initState();

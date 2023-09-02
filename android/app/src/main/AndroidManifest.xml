@@ -4,7 +4,12 @@
         android:label="my_classcar"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <activity
+
+       <!-- TODO: Add your Google Maps API key here -->
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyDFcIezxEJ6WkYac6MxD4cb5seDaOUTH78"/>
+
+       <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
@@ -30,5 +35,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
     </application>
 </manifest>

@@ -38,7 +38,7 @@ class _LoginPage extends State<LoginPage> {
         child: ListView(
           children: [
             const SizedBox(height: 30),
-            const Logo('Login'),
+            const Logo('Login',140,140),
             const SizedBox(height: 20),
             _userId(),
             const SizedBox(height: 20),

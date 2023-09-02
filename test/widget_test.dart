@@ -5,6 +5,9 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-void main() {
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+void main() {
+  final CameraPosition _initialPosition = const CameraPosition(target: LatLng(41.017901, 28.847953)); // 초기 위치
+  GoogleMap(initialCameraPosition: _initialPosition);
 }

@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/component/logo.dart';
 import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/detail_car_page.dart';
-import 'package:uuid/uuid.dart';
 import '../../../models/car.dart';
 
 class MainPage extends StatefulWidget {
@@ -52,7 +51,7 @@ class _MainPage extends State<MainPage> {
                                     },
                                     child: Column(
                                       children: [
-                                        const Logo('Item'),
+                                        const Logo('Item',140,140),
                                         Text(
                                             "차량 모델 : ${_suggestions[index].carModel}"),
                                         Text(

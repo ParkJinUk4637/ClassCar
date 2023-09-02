@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+import 'car.dart';
 
 /// createdAt : "Timestamp"
 /// startedAt : "Timestamp"
@@ -15,9 +18,10 @@ class Rent {
     Timestamp? endedAt,
     String? totalPrice,
     String? requestStatus,
-    String? car,
+    Map<String,dynamic>? car,
+    String? ownerName,
     String? location,
-    String? uuid,
+    String? uid,
   }) {
     _createdAt = createdAt;
     _startedAt = startedAt;
@@ -25,8 +29,9 @@ class Rent {
     _totalPrice = totalPrice;
     _requestStatus = requestStatus;
     _car = car;
+    _ownerName = ownerName;
     _location = location;
-    _uuid = uuid;
+    _uid = uid;
   }
 
   Rent.fromJson(dynamic json) {
@@ -36,8 +41,9 @@ class Rent {
     _totalPrice = json['totalPrice'];
     _requestStatus = json['requestStatus'];
     _car = json['car'];
+    _ownerName = json['ownerName'];
     _location = json['location'];
-    _uuid = json['uid'];
+    _uid = json['uid'];
   }
 
   factory Rent.fromFirestore(
@@ -51,8 +57,9 @@ class Rent {
       totalPrice: data?['totalPrice'],
       requestStatus: data?['requestStatus'],
       car: data?['car'],
+      ownerName: data?['ownerName'],
       location: data?['location'],
-      uuid: data?['uuid'],
+      uid: data?['uid'],
     );
   }
 
@@ -61,9 +68,10 @@ class Rent {
   Timestamp? _endedAt;
   String? _totalPrice;
   String? _requestStatus;
-  String? _car;
+  Map<String,dynamic>? _car;
+  String? _ownerName;
   String? _location;
-  String? _uuid;
+  String? _uid;
 
   Rent copyWith({
     Timestamp? createdAt,
@@ -71,7 +79,8 @@ class Rent {
     Timestamp? endedAt,
     String? totalPrice,
     String? requestStatus,
-    String? car,
+    Map<String,dynamic>? car,
+    String? ownerName,
     String? location,
     String? uid,
   }) =>
@@ -82,8 +91,9 @@ class Rent {
         totalPrice: totalPrice ?? _totalPrice,
         requestStatus: requestStatus ?? _requestStatus,
         car: car ?? _car,
+        ownerName: ownerName ?? _ownerName,
         location: location ?? _location,
-        uuid: uid ?? _uuid,
+        uid: uid ?? _uid,
       );
 
   Timestamp? get createdAt => _createdAt;
@@ -96,11 +106,13 @@ class Rent {
 
   String? get requestStatus => _requestStatus;
 
-  String? get car => _car;
+  Map<String,dynamic>? get car => _car;
+
+  String? get ownerName => _ownerName;
 
   String? get location => _location;
 
-  String? get uid => _uuid;
+  String? get uid => _uid;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -110,8 +122,73 @@ class Rent {
     map['totalPrice'] = _totalPrice;
     map['requestStatus'] = _requestStatus;
     map['car'] = _car;
+    map['ownerName'] = _ownerName;
     map['location'] = _location;
-    map['uid'] = _uuid;
+    map['uid'] = _uid;
     return map;
   }
+
+  Container toListTile(){
+    final start = startedAt?.toDate();
+    final end = endedAt?.toDate();
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0,2)
+          )
+        ]
+      ),
+      child: Row(
+        children: [
+          // 첫 번째 Column
+          Expanded(
+              flex : 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("$requestStatus"),
+                  const SizedBox(height: 10,),
+                  Icon(Icons.car_rental),
+                  const SizedBox(height: 10,),
+                  Text("${car?['carNumber'] ?? 'Car Number'}"),
+                ],
+              )
+          ),
+          // 두 번째 Column
+          Expanded(
+              flex : 7,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('이동 거리'),
+                  const SizedBox(height: 10,),
+                  Text('${car?['carModel'] ?? 'Car Model'}'),
+                  const SizedBox(height: 10,),
+                  Text('대여 기간 ${start?.year ?? '0000'}년 '
+                      '${start?.month ?? '00'}월 '
+                      '${start?.day ?? '00'}일 '
+                      '${start?.hour ?? '00'}시 '
+                      '${start?.minute ?? '00'}분 '
+                      '~ ${end?.year ?? '0000'}년 '
+                      '${end?.month ?? '00'}월 '
+                      '${end?.day ?? '00'}일 '
+                      '${end?.hour ?? '00'}시 '
+                      '${end?.minute ?? '00'}분 '),
+                  const SizedBox(height: 10,),
+                  Text('$location')
+                ],
+              )
+          )
+        ],
+      ),
+    );
+  }
+
 }

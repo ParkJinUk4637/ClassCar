@@ -474,7 +474,7 @@ class _RegistPage extends State<RegistPage> {
               onPressed: () {
                 check();
               try{
-                createUser(emailController.text,passwordController.text,nameController.text);
+                createUser(emailController.text,passwordController.text,nameController.text,phoneNumberController.text);
                 print("Login Success!");
                 Get.offAll(() => const LoginPage());
               } on FirebaseAuthException catch (e) {
@@ -500,7 +500,7 @@ class _RegistPage extends State<RegistPage> {
     );
   }
 
-  Future<bool> createUser(String email, String password, String name) async {
+  Future<bool> createUser(String email, String password, String name, String phoneNumber) async {
     try {
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(

@@ -94,7 +94,7 @@ class _LoginPage extends State<LoginPage> {
                 MaterialPageRoute(builder: (context) => const find_id_page()),);
           },
           child: const Text(
-            "아이디 찾기 |  ", style: TextStyle(color: Colors.black),),
+            "아이디 찾기      |", style: TextStyle(color: Colors.black),),
         ),
         TextButton(
           onPressed: () {
@@ -102,7 +102,7 @@ class _LoginPage extends State<LoginPage> {
               MaterialPageRoute(builder: (context) => const find_pw_page()),);
           },
           child: const Text(
-            "비밀번호 찾기 |  ", style: TextStyle(color: Colors.black),),
+            "비밀번호 찾기      |", style: TextStyle(color: Colors.black),),
         ),
         TextButton(
           onPressed: () {

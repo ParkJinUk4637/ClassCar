@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 
+import '../../main.dart';
+
 class find_pw_page extends StatefulWidget {
   const find_pw_page({super.key});
 
@@ -12,6 +14,16 @@ class find_pw_page extends StatefulWidget {
 
 class _find_pw extends State<find_pw_page> {
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  TextEditingController emailController = TextEditingController();
+
+
+  Future<void> send_mail(String email)  async {
+    String emailAddress = email;
+    await FirebaseAuth.instance
+        .sendPasswordResetEmail(email: emailAddress);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +48,11 @@ class _find_pw extends State<find_pw_page> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text("비밀번호를 잃어버리셨나요?"),
-        const Text("회원정보에 등록한 이메일로 비밀번호를 찾으세요"),
+        const Text("회원정보에 등록한 이메일로 비밀번호를 재설정하세요"),
+        const Text("재설정을 완료했으면, 창을 닫고 다시 로그인 해주세요"),
         const SizedBox(height: 30,),
         TextFormField(
+          controller: emailController,
           autovalidateMode: AutovalidateMode.always,
           keyboardType: TextInputType.emailAddress,
           validator: (String? value) {
@@ -78,11 +92,51 @@ class _find_pw extends State<find_pw_page> {
             /// 버튼 스타일 설정
             onPressed: () =>
             {
-
+             send_mail(emailController.text)
             },
-            child: const Text("조회하기", style: TextStyle(color: Colors.white),)
+            child: const Text("비밀번호 재발급", style: TextStyle(color: Colors.white),)
         ),
       ],
     );
+  }
+
+  Future<bool> find_login(String email, String password) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+      // Get.offAll(() => const MainLayout());
+    } on FirebaseAuthException catch (e) {
+      String m = '';
+      if (e.code == 'user-not-found') {
+        logger.w('No user found for that email.');
+        m = '*이메일을 확인해주세요*';
+      } else if (e.code == 'wrong-password') {
+        logger.w('Wrong password provided for that user.');
+        m = '*비밀번호를 확인해주세요*';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(m),
+          backgroundColor: const Color(0xff1200B3),
+        ),
+      );
+    } catch (e) {
+      logger.e(e);
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // 해당 클래스 사라질 때
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
-import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/password_reset.dart';
+import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/reauth_password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_page.dart';
 
 class MyPage extends StatefulWidget {
@@ -87,17 +87,17 @@ class _MyPage extends State<MyPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("이용 내역(아직 미구현)", const PasswordReset(), context),
+        listTileButton("이용 내역(아직 미구현)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("쿠폰(아직 미구현)", const PasswordReset(), context),
+        listTileButton("쿠폰(아직 미구현)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("이벤트/혜택(아직 미구현)", const PasswordReset(), context),
+        listTileButton("이벤트/혜택(아직 미구현)", const ReauthPasswordReset(), context),
       ],
     );
   }
@@ -106,18 +106,18 @@ class _MyPage extends State<MyPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("문의 내역(아직 미구현)", const PasswordReset(), context),
+        listTileButton("문의 내역(아직 미구현)", const  ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
         listTileButton(
-            "고객센터 (QnA, FAQ)(아직 미구현)", const PasswordReset(), context),
+            "고객센터 (QnA, FAQ)(아직 미구현)", const  ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("공지사항(아직 미구현)", const PasswordReset(), context),
+        listTileButton("공지사항(아직 미구현)", const  ReauthPasswordReset(), context),
       ],
     );
   }

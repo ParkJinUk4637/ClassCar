@@ -8,7 +8,7 @@ import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
 import 'package:my_classcar/layouts/main_page/my_page/middle_title.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/delete_user.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/license_manage.dart';
-import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/password_reset.dart';
+import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/reauth_password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/phone_number_reset.dart';
 
 class SettingPage extends StatefulWidget {
@@ -74,7 +74,7 @@ class _SettingPage extends State<SettingPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("비밀번호 변경", const PasswordReset(), context),
+        listTileButton("비밀번호 변경", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
@@ -93,12 +93,12 @@ class _SettingPage extends State<SettingPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("결제 및 할인(아직 미구현)", const PasswordReset(), context),
+        listTileButton("결제 및 할인(아직 미구현)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("면허 등록(아직 미구현)", const PasswordReset(), context),
+        listTileButton("면허 등록(아직 미구현)", const ReauthPasswordReset(), context),
       ],
     );
   }
@@ -107,17 +107,17 @@ class _SettingPage extends State<SettingPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("약관 및 정책(아직 미구현)", const PasswordReset(), context),
+        listTileButton("약관 및 정책(아직 미구현)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("사용 메뉴얼(아직 미구현)", const PasswordReset(), context),
+        listTileButton("사용 메뉴얼(아직 미구현)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("앱 버전(아직 미구현)", const PasswordReset(), context),
+        listTileButton("앱 버전(아직 미구현)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,

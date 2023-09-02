@@ -1,23 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
-import '../../../../../main.dart';
 
-class PasswordReset extends StatefulWidget{
+import '../../my_page.dart';
+
+class PasswordReset extends StatefulWidget {
   const PasswordReset({super.key});
 
   State<PasswordReset> createState() => _PasswordReset();
 }
 
-class _PasswordReset extends State<PasswordReset>{
+class _PasswordReset extends State<PasswordReset> {
   final _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +25,7 @@ class _PasswordReset extends State<PasswordReset>{
         child: ListView(
           children: [
             const SizedBox(height: 20,),
-            _explain(),
-            const SizedBox(height: 20,),
-            _reAuth_Pw(),
+            _text(),
             const SizedBox(height: 30,),
             TextButton(
                 style: TextButton.styleFrom(
@@ -46,7 +39,7 @@ class _PasswordReset extends State<PasswordReset>{
                 /// 버튼 스타일 설정
                 onPressed: () =>
                 {
-
+                  _updatePassword(passwordController.text),
                 },
                 child: const Text("확인", style: TextStyle(color: Colors.white),)
             ),
@@ -56,25 +49,26 @@ class _PasswordReset extends State<PasswordReset>{
     );
   }
 
-  Widget _explain() {
+  Widget _text(){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("사용자 인증을 위해 다시 로그인 합니다."),
+        const Text("새로운 비밀번호를 입력해주세요"),
         const SizedBox(height: 30,),
         TextFormField(
-          controller: emailController,
+          controller: passwordController,
           autovalidateMode: AutovalidateMode.always,
           keyboardType: TextInputType.emailAddress,
+          obscureText: true,
           validator: (String? value) {
             if(value!.isEmpty){
-              return '아이디(이메일)을 입력하세요';
+              return '비밀번호를 입력하세요';
             }
             return null;
           },
           decoration: InputDecoration(
-              labelText: '아이디',
-              hintText: "이메일 입력",
+              labelText: '비밀번호',
+              hintText: "비밀번호 입력",
               enabledBorder: OutlineInputBorder(
                 // 기본 모양
                 borderRadius: BorderRadius.circular(20),
@@ -94,46 +88,46 @@ class _PasswordReset extends State<PasswordReset>{
     );
   }
 
-  Widget _reAuth_Pw() {
-    String pw = '비밀번호';
-    return Column(
-      key: _formKey,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(pw),
-        const SizedBox(height: 10),
-        TextFormField(
-          controller: passwordController,
-          autovalidateMode: AutovalidateMode.always,
-          obscureText: true,
-          validator: (String? value) {
-            if (value!.isEmpty) {
-              return '비밀번호를 입력하세요';
-            }
-            return null;
-          },
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-              hintText: "비밀번호 입력",
-              enabledBorder: OutlineInputBorder(
-                // 기본 모양
-                borderRadius: BorderRadius.circular(20),
-              ),
-              focusedBorder: OutlineInputBorder(
-                // 포커스 되었을 경우 모양
-                borderRadius: BorderRadius.circular(20),
-              ),
-              errorBorder: OutlineInputBorder(
-                // 에러 발생 시 모양
-                  borderRadius: BorderRadius.circular(20)
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                // 에러 발생 후 포커스 되었을 경우 모양
-                  borderRadius: BorderRadius.circular(20)
-              )
+  Future<void> _updatePassword(String newPassword) async {
+    String password = newPassword;
+
+    await FirebaseAuth.instance.currentUser?.updatePassword(newPassword);
+    _dialog();
+  }
+
+  Future<void> _dialog() async {
+    return showDialog<void>(
+      //다이얼로그 위젯 소환
+      context: context,
+      barrierDismissible: false, // 다이얼로그 이외의 바탕 눌러도 안꺼지도록 설정
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('비밀번호 변경'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              //List Body를 기준으로 Text 설정
+              children: <Widget>[
+                Text('비밀번호를 변경하시겠습니까?'),
+              ],
+            ),
           ),
-        ),
-      ],
+          actions: [
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () {
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MyPage()),);
+              },
+            ),
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

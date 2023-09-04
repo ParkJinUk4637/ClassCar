@@ -7,13 +7,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../../models/car.dart';
+import '../../../../../models/car_info_model.dart';
 import '../../../../../models/rent.dart';
 
 class CarRentPage extends StatefulWidget {
   const CarRentPage({Key? key, required this.car}) : super(key: key);
 
-  final Car car;
+  final CarInfoModel car;
 
   @override
   State<StatefulWidget> createState() => _CarRentPage();
@@ -25,7 +25,7 @@ class _CarRentPage extends State<CarRentPage> {
       Completer<GoogleMapController>(); // 맵 이동 컨트롤러
   final CameraPosition _initialPosition = const CameraPosition(
       target: LatLng(35.163339, 129.158061), zoom: 20); // 초기 위치
-  late Car car = widget.car;
+  late CarInfoModel car = widget.car;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _CarRentPage extends State<CarRentPage> {
                   endedAt: Timestamp.now(),
                   totalPrice: "가격",
                   requestStatus: "대여상태",
-                  car: car.toJson(),
+                  car: car.toFirestore(),
                   location: "장소",
                   uid: const Uuid().v4()
                 );

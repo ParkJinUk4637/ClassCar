@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'car.dart';
-
 /// createdAt : "Timestamp"
 /// startedAt : "Timestamp"
 /// endedAt : "Timestamp"

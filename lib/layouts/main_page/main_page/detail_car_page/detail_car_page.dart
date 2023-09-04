@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/car_rent_page/car_rent_page.dart';
 
-import '../../../../models/car.dart';
+import '../../../../models/car_info_model.dart';
 
 class DetailCarPage extends StatefulWidget {
   const DetailCarPage({Key? key, required this.car}) : super(key: key);
 
-  final Car car;
+  final CarInfoModel car;
 
   @override
   State<StatefulWidget> createState() => _DetailCarPage();
 }
 
 class _DetailCarPage extends State<DetailCarPage> {
-  late Car car = widget.car;
+  late CarInfoModel car = widget.car;
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +27,7 @@ class _DetailCarPage extends State<DetailCarPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(
-                "https://taegon.kim/wp-content/uploads/2018/05/image-5.png",
-                width: 500,
-                fit: BoxFit.fitHeight,
-              ),
+              Image.asset('images/test_pic.png'),
               _info()
             ],
           ),

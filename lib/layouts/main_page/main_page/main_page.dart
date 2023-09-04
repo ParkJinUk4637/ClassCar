@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/component/logo.dart';
 import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/detail_car_page.dart';
-import '../../../models/car.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../../models/car_info_model.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,7 +19,7 @@ class _MainPage extends State<MainPage> {
   final db = FirebaseFirestore.instance;
   final CollectionReference<Map<String, dynamic>> _collectionReference =
       FirebaseFirestore.instance.collection("Car");
-  final _suggestions = <Car>[];
+  final _suggestions = <CarInfoModel>[];
   late Timestamp? lastVisible;
   final int _limit = 10;
   bool _hasNextPage = true;
@@ -56,8 +58,6 @@ class _MainPage extends State<MainPage> {
                                             "차량 모델 : ${_suggestions[index].carModel}"),
                                         Text(
                                             "메이커 : ${_suggestions[index].maker}"),
-                                        Text(
-                                            "별점 : ${_suggestions[index].score}"),
                                       ],
                                     ),
                                   )))
@@ -82,6 +82,13 @@ class _MainPage extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    for(int i =0;i<10;i++) {
+      db.collection('Car').withConverter(
+          fromFirestore: CarInfoModel.fromFirestore,
+          toFirestore: (snapshot, options) => CarInfoModel().toFirestore())
+          .add(CarInfoModel(
+      ));
+    }
     _initLoad();
     _controller = ScrollController()..addListener(_nextLoad);
   }
@@ -97,12 +104,12 @@ class _MainPage extends State<MainPage> {
       _isFirstLoadRunning = true;
     });
     try {
-      QuerySnapshot<Car> querySnapshot = await _collectionReference
+      QuerySnapshot<CarInfoModel> querySnapshot = await _collectionReference
           .orderBy("createdAt")
           .limit(_limit)
           .withConverter(
-              fromFirestore: Car.fromFirestore,
-              toFirestore: (Car car, _) => car.toJson())
+              fromFirestore: CarInfoModel.fromFirestore,
+              toFirestore: (CarInfoModel car, _) => car.toFirestore())
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -134,13 +141,13 @@ class _MainPage extends State<MainPage> {
       });
 
       try {
-        QuerySnapshot<Car> querySnapshot = await _collectionReference
+        QuerySnapshot<CarInfoModel> querySnapshot = await _collectionReference
             .orderBy("createdAt")
             .startAfter([lastVisible])
             .limit(_limit)
             .withConverter(
-                fromFirestore: Car.fromFirestore,
-                toFirestore: (Car car, _) => car.toJson())
+                fromFirestore: CarInfoModel.fromFirestore,
+                toFirestore: (CarInfoModel car, _) => car.toFirestore())
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {

@@ -79,11 +79,11 @@ class _SettingPage extends State<SettingPage> {
           height: 1,
           thickness: 1,
         ),
-        listTileButton("휴대전화 번호 변경", const PhoneNumberReset(), context),
-        const Divider(
-          height: 1,
-          thickness: 1,
-        ),
+        // listTileButton("휴대전화 번호 변경", const PhoneNumberReset(), context),
+        // const Divider(
+        //   height: 1,
+        //   thickness: 1,
+        // ),
         listTileButton("면허 관리", const LicenseManage(), context),
       ],
     );
@@ -107,21 +107,21 @@ class _SettingPage extends State<SettingPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("약관 및 정책(아직 미구현)", const ReauthPasswordReset(), context),
-        const Divider(
-          height: 1,
-          thickness: 1,
-        ),
-        listTileButton("사용 메뉴얼(아직 미구현)", const ReauthPasswordReset(), context),
-        const Divider(
-          height: 1,
-          thickness: 1,
-        ),
-        listTileButton("앱 버전(아직 미구현)", const ReauthPasswordReset(), context),
-        const Divider(
-          height: 1,
-          thickness: 1,
-        ),
+        // listTileButton("약관 및 정책(아직 미구현)", const ReauthPasswordReset(), context),
+        // const Divider(
+        //   height: 1,
+        //   thickness: 1,
+        // ),
+        // listTileButton("사용 메뉴얼(아직 미구현)", const ReauthPasswordReset(), context),
+        // const Divider(
+        //   height: 1,
+        //   thickness: 1,
+        // ),
+        // listTileButton("앱 버전(아직 미구현)", const ReauthPasswordReset(), context),
+        // const Divider(
+        //   height: 1,
+        //   thickness: 1,
+        // ),
         listTileButton("회원 탈퇴", const DeleteUser(), context),
       ],
     );

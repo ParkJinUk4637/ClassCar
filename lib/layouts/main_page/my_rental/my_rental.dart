@@ -87,7 +87,7 @@ class _MyRental extends State<MyRental>{
           .limit(_limit)
           .withConverter(
           fromFirestore: Rent.fromFirestore,
-          toFirestore: (Rent rent, _) => rent.toJson())
+          toFirestore: (Rent rent, _) => rent.toFirestore())
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -125,7 +125,7 @@ class _MyRental extends State<MyRental>{
             .limit(_limit)
             .withConverter(
             fromFirestore: Rent.fromFirestore,
-            toFirestore: (Rent rent, _) => rent.toJson())
+            toFirestore: (Rent rent, _) => rent.toFirestore())
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {

@@ -62,8 +62,8 @@ class _CarRentPage extends State<CarRentPage> {
                   location: "장소",
                   uid: const Uuid().v4()
                 );
-                print('${rent.toJson()}');
-                await db.collection('Rent').add(rent.toJson());
+                print('${rent.toFirestore()}');
+                await db.collection('Rent').add(rent.toFirestore());
               },
               child: const Text("대여하기"),
             ),

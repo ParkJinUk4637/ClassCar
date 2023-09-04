@@ -71,28 +71,28 @@ class Rent {
   String? _location;
   String? _uid;
 
-  Rent copyWith({
-    Timestamp? createdAt,
-    Timestamp? startedAt,
-    Timestamp? endedAt,
-    String? totalPrice,
-    String? requestStatus,
-    Map<String,dynamic>? car,
-    String? ownerName,
-    String? location,
-    String? uid,
-  }) =>
-      Rent(
-        createdAt: createdAt ?? _createdAt,
-        startedAt: startedAt ?? _startedAt,
-        endedAt: endedAt ?? _endedAt,
-        totalPrice: totalPrice ?? _totalPrice,
-        requestStatus: requestStatus ?? _requestStatus,
-        car: car ?? _car,
-        ownerName: ownerName ?? _ownerName,
-        location: location ?? _location,
-        uid: uid ?? _uid,
-      );
+  // Rent copyWith({
+  //   Timestamp? createdAt,
+  //   Timestamp? startedAt,
+  //   Timestamp? endedAt,
+  //   String? totalPrice,
+  //   String? requestStatus,
+  //   Map<String,dynamic>? car,
+  //   String? ownerName,
+  //   String? location,
+  //   String? uid,
+  // }) =>
+  //     Rent(
+  //       createdAt: createdAt ?? _createdAt,
+  //       startedAt: startedAt ?? _startedAt,
+  //       endedAt: endedAt ?? _endedAt,
+  //       totalPrice: totalPrice ?? _totalPrice,
+  //       requestStatus: requestStatus ?? _requestStatus,
+  //       car: car ?? _car,
+  //       ownerName: ownerName ?? _ownerName,
+  //       location: location ?? _location,
+  //       uid: uid ?? _uid,
+  //     );
 
   Timestamp? get createdAt => _createdAt;
 
@@ -112,7 +112,7 @@ class Rent {
 
   String? get uid => _uid;
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toFirestore() {
     final map = <String, dynamic>{};
     map['createdAt'] = _createdAt;
     map['startedAt'] = _startedAt;
@@ -125,6 +125,7 @@ class Rent {
     map['uid'] = _uid;
     return map;
   }
+
 
   Container toListTile(){
     final start = startedAt?.toDate();
@@ -153,7 +154,7 @@ class Rent {
                 children: [
                   Text("$requestStatus"),
                   const SizedBox(height: 10,),
-                  Icon(Icons.car_rental),
+                  Image.network("${car?['carImgURL'][0]}",width: 80,),
                   const SizedBox(height: 10,),
                   Text("${car?['carNumber'] ?? 'Car Number'}"),
                 ],

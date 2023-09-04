@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/reauth_password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_page.dart';
@@ -12,7 +17,9 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPage extends State<MyPage> {
+  final db = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
+  String? profileUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +60,37 @@ class _MyPage extends State<MyPage> {
         ));
   }
 
+  Future<void> pickImage() async{
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null){
+      final Reference storageRef = FirebaseStorage.instance.ref().child('profile_pics/${DateTime.now().toIso8601String()}');
+      final UploadTask uploadTask = storageRef.putFile(File(pickedFile.path));
+
+      final TaskSnapshot downloadUrl = (await uploadTask.whenComplete(() => null));
+      final String url = await downloadUrl.ref.getDownloadURL();
+
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('userINFO')
+          .where('email', isEqualTo: user?.email)
+          .get();
+
+      if(querySnapshot.docs.isNotEmpty){
+        // 문서 있으면 프사 업데이트
+        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(documentSnapshot.id)
+            .update({'profile_pic': url});
+
+        setState(() {
+          profileUrl = url;
+        });
+      }
+
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +105,9 @@ class _MyPage extends State<MyPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const Icon(
+        (profileUrl != null)
+        ? Image.network(profileUrl!)
+        :const Icon(
           Icons.person,
           size: 140,
         ),

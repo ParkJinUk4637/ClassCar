@@ -59,6 +59,7 @@ class _DetailRentalPage extends State<DetailRentalPage> {
             ),
             child: Center(
               child: Image.network("${imageUrls[index]}",
+                fit: BoxFit.cover,
               ),
             ),
           );

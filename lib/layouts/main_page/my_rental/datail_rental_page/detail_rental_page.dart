@@ -41,10 +41,33 @@ class _DetailRentalPage extends State<DetailRentalPage> {
             )));
   }
 
-  Widget textContainer(String text) {
+  Widget titleText(String text) {
     return Container(
       margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
-      child: Text(text),
+      child: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+      ),
+    );
+  }
+
+  Widget miniTitleText(String text) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
+      child: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+    );
+  }
+
+  Widget contentsText(String text) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 16),
+      ),
     );
   }
 
@@ -55,60 +78,62 @@ class _DetailRentalPage extends State<DetailRentalPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            textContainer(
-                "(완전큰볼드)${rent.car?['carModel'] ?? '차 모델'} | ${rent
-                    .car?['carNumber'] ?? '차 번호'}"),
-            textContainer(""),
-            textContainer("(조금크게)결제 방식"),
-            textContainer("크레딧 결제"),
-            textContainer(""),
-            textContainer("(조금크게)대여/반납 위치"),
-            textContainer("${rent.car?['carLocation'] ?? '대여/반납 위치'}"),
-            textContainer(""),
-            textContainer("(조금크게)기름 종류"),
-            textContainer("${rent.car?['oilType'] ?? '기름 종류'}"),
-            textContainer(""),
-            textContainer("(조금크게)연비"),
-            textContainer("${rent.car?['carGasMil'] ?? '연비'}"),
-            textContainer(""),
-            textContainer("(조금크게)차 종류"),
-            textContainer("${rent.car?['carType'] ?? "차 종류"}"),
-            textContainer(""),
-            textContainer("(조금크게)내부 옵션"),
-            textContainer((rent.car?['insideOption']['가죽시트'] ? "가죽시트 " : "")
-                + (rent.car?['insideOption']['블랙박스'] ? "블랙박스 " : "")
-                + (rent.car?['insideOption']['열선시트'] ? "열선시트 " : "")
-                + (rent.car?['insideOption']['통풍시트'] ? "통풍시트 " : "")),
-            textContainer(""),
-            textContainer("(조금 크게)메이커"),
-            textContainer("${rent.car?['maker'] ?? "메이커"}"),
-            textContainer(""),
-            textContainer("(조금 크게)안전 장치"),
-            textContainer(""
+            titleText(
+                "${rent.car?['carModel'] ?? '차 모델'} | ${rent.car?['carNumber'] ?? '차 번호'}"),
+            contentsText(""),
+            miniTitleText("결제 방식"),
+            contentsText("크레딧 결제"),
+            contentsText(""),
+            miniTitleText("대여/반납 위치"),
+            contentsText("${rent.car?['carLocation'] ?? '대여/반납 위치'}"),
+            contentsText(""),
+            miniTitleText("기름 종류"),
+            contentsText("${rent.car?['oilType'] ?? '기름 종류'}"),
+            contentsText(""),
+            miniTitleText("연비"),
+            contentsText("${rent.car?['carGasMil'] ?? '연비'}"),
+            contentsText(""),
+            miniTitleText("차 종류"),
+            contentsText("${rent.car?['carType'] ?? "차 종류"}"),
+            contentsText(""),
+            miniTitleText("내부 옵션"),
+            contentsText((rent.car?['insideOption']['가죽시트'] ? "가죽시트 " : "") +
+                (rent.car?['insideOption']['블랙박스'] ? "블랙박스 " : "") +
+                (rent.car?['insideOption']['열선시트'] ? "열선시트 " : "") +
+                (rent.car?['insideOption']['통풍시트'] ? "통풍시트 " : "")),
+            contentsText(""),
+            miniTitleText("메이커"),
+            contentsText("${rent.car?['maker'] ?? "메이커"}"),
+            contentsText(""),
+            miniTitleText("안전 장치"),
+            contentsText(""
                 "${rent.car?['safeOption']['긴급제동시스템'] ? "긴급제동 시스템 " : ""}"
                 "${rent.car?['safeOption']['에어백'] ? "에어백 " : ""}"
                 "${rent.car?['safeOption']['후방감지센서'] ? "후방감지센서 " : ""}"
                 "${rent.car?['safeOption']['후방카메라'] ? "후방카메라 " : ""}"),
-            textContainer(""),
-            textContainer("(조금 크게)좌석"),
-            textContainer((rent.car?['seats'] != null? "${rent.car?['seats']}인승" : "인승")),
-            textContainer(""),
-            textContainer("(조금 크게)총 대여 가격"),
-            textContainer((rent.totalPrice != null? "${rent.totalPrice}원" : "총 대여 가격")),
-            textContainer(""),
-            textContainer("(조금크게)기타 옵션"),
-            textContainer(""
+            contentsText(""),
+            miniTitleText("좌석"),
+            contentsText((rent.car?['seats'] != null
+                ? "${rent.car?['seats']}인승"
+                : "인승")),
+            contentsText(""),
+            miniTitleText("총 대여 가격"),
+            contentsText(
+                (rent.totalPrice != null ? "${rent.totalPrice}원" : "총 대여 가격")),
+            contentsText(""),
+            miniTitleText("기타 옵션"),
+            contentsText(""
                 "${rent.car?['usabilityOption']['AV시스템'] ? "AV시스템 " : ""}"
                 "${rent.car?['usabilityOption']['USB단자'] ? "USB단자 " : ""}"
                 "${rent.car?['usabilityOption']['네비게이션'] ? "네비게이션 " : ""}"
                 "${rent.car?['usabilityOption']['블루투스'] ? "블루투스" : ""}"
                 "${rent.car?['usabilityOption']['하이패스'] ? "하이패스 " : ""}"),
-            textContainer(""),
-            textContainer("(조금크게)연식"),
-            textContainer("${rent.car?['years'] ?? "연식"} "),
-            textContainer(""),
-            textContainer("(조금크게)설명"),
-            textContainer("${rent.car?['description'] ?? "설"}")
+            contentsText(""),
+            miniTitleText("연식"),
+            contentsText("${rent.car?['years'] ?? "연식"} "),
+            contentsText(""),
+            miniTitleText("설명"),
+            contentsText("${rent.car?['description'] ?? "설"}")
           ]),
     );
   }

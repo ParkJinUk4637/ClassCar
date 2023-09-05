@@ -26,7 +26,7 @@ class _LoadPage extends State<LoadPage> {
     super.initState();
 
     // _permission();
-    _logout();
+    // _logout();
     _auth();
 
   }
@@ -58,5 +58,4 @@ class _LoadPage extends State<LoadPage> {
   _logout() async{
     await FirebaseAuth.instance.signOut();
   }
-
 }

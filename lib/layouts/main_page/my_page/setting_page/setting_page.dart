@@ -25,7 +25,7 @@ class _SettingPage extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: closeAppBar("설정", context),
+        appBar: backAppBar("설정", context),
         body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: ListView(

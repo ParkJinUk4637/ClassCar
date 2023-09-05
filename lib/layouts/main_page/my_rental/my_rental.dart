@@ -31,7 +31,7 @@ class _MyRental extends State<MyRental>{
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(0,16.0,0,0),
             child: _isFirstLoadRunning
                 ? const Center(child: CircularProgressIndicator())
                 : Column(

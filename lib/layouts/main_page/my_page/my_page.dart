@@ -42,32 +42,36 @@ class _MyPage extends State<MyPage> {
                 color: Colors.black,
               ),
               _part2(),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingPage()),
-                  );
-                },
-                child: const Text(
-                  "설정",
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
+              // TextButton(
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => const SettingPage()),
+              //     );
+              //   },
+              //   child: const Text(
+              //     "설정",
+              //     style: TextStyle(color: Colors.black),
+              //   ),
+              // ),
             ],
           ),
         ));
   }
 
-  Future<void> pickImage() async{
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future<void> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null){
-      final Reference storageRef = FirebaseStorage.instance.ref().child('profile_pics/${DateTime.now().toIso8601String()}');
+    if (pickedFile != null) {
+      final Reference storageRef = FirebaseStorage.instance
+          .ref()
+          .child('profile_pics/${DateTime.now().toIso8601String()}');
       final UploadTask uploadTask = storageRef.putFile(File(pickedFile.path));
 
-      final TaskSnapshot downloadUrl = (await uploadTask.whenComplete(() => null));
+      final TaskSnapshot downloadUrl =
+          (await uploadTask.whenComplete(() => null));
       final String url = await downloadUrl.ref.getDownloadURL();
 
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -75,7 +79,7 @@ class _MyPage extends State<MyPage> {
           .where('email', isEqualTo: user?.email)
           .get();
 
-      if(querySnapshot.docs.isNotEmpty){
+      if (querySnapshot.docs.isNotEmpty) {
         // 문서 있으면 프사 업데이트
         DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
         FirebaseFirestore.instance
@@ -87,7 +91,6 @@ class _MyPage extends State<MyPage> {
           profileUrl = url;
         });
       }
-
     }
   }
 
@@ -104,19 +107,45 @@ class _MyPage extends State<MyPage> {
   Widget _profile() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        (profileUrl != null)
-        ? Image.network(profileUrl!)
-        :const Icon(
-          Icons.person,
-          size: 140,
+        Container(
+          margin: const EdgeInsets.fromLTRB(16.0, 16.0, 32.0, 32.0),
+          child: InkWell(
+            onTap: () => pickImage(),
+            child: CircleAvatar(
+                radius: 50,
+                backgroundImage: (profileUrl != null)
+                    ? NetworkImage(profileUrl!)
+                    : const AssetImage('images/default_profile.png')
+                        as ImageProvider // 기본 프로필 이미지
+                ),
+          ),
         ),
         Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const SizedBox(
+              height: 40,
+            ),
             Text('${user?.displayName}'),
             Text('${user?.email}'),
             const Text("Credit : (TestCredit)"),
+          ],
+        ),
+        const SizedBox(
+          width: 60,
+        ),
+        Column(
+          children: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingPage()),
+                  );
+                },
+                icon: const Icon(Icons.settings)),
           ],
         )
       ],
@@ -146,18 +175,18 @@ class _MyPage extends State<MyPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("문의 내역(아직 미구현)", const  ReauthPasswordReset(), context),
+        listTileButton("문의 내역(아직 미구현)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
         listTileButton(
-            "고객센터 (QnA, FAQ)(아직 미구현)", const  ReauthPasswordReset(), context),
+            "고객센터 (QnA, FAQ)(아직 미구현)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("공지사항(아직 미구현)", const  ReauthPasswordReset(), context),
+        listTileButton("공지사항(아직 미구현)", const ReauthPasswordReset(), context),
       ],
     );
   }

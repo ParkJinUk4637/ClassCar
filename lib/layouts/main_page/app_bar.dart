@@ -3,6 +3,7 @@ import 'package:my_classcar/component/logo.dart';
 
 PreferredSizeWidget customAppBar(String appBarName, [BuildContext? context]) {
   return AppBar(
+    centerTitle: true,
     elevation: 1,
     leading: const IconButton(icon: Logo('logo',40,40), onPressed: null),
     actions: const [
@@ -19,6 +20,7 @@ PreferredSizeWidget customAppBar(String appBarName, [BuildContext? context]) {
 
 PreferredSizeWidget closeAppBar(String appBarName, BuildContext context) {
   return AppBar(
+    centerTitle: true,
     elevation: 1,
     leading: const IconButton(icon: Logo('logo',40,40), onPressed: null),
     actions: [
@@ -37,6 +39,7 @@ PreferredSizeWidget closeAppBar(String appBarName, BuildContext context) {
 
 PreferredSizeWidget backAppBar(String appBarName, BuildContext context){
   return AppBar(
+    centerTitle: true,
     elevation: 1,
     leading: IconButton(
       icon: const Icon(Icons.arrow_back),

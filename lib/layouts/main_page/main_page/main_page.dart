@@ -26,7 +26,6 @@ class _MainPage extends State<MainPage> {
   bool _isLoadMoreRunning = false;
   late ScrollController _controller;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,45 +37,56 @@ class _MainPage extends State<MainPage> {
                 : Column(
                     children: [
                       Expanded(
-                          child: ListView.builder(
-                              controller: _controller,
-                              itemCount: _suggestions.length,
-                              itemBuilder: (context, index) => ListTile(
-                                  title: OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: Colors.white10,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:  BorderRadius.circular(30),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => DetailCarPage(car: _suggestions[index]),
-                                      ),
-                                      );
-                                    },
-                                    child: Column(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(30),
-                                          child: FittedBox(
-                                            fit: BoxFit.fitHeight,
-                                            child: Image.network("${_suggestions[index].carImgURL?[0]}",
-                                            width: 500,),
+                          child: SizedBox(
+                              height: 200.0,
+                              child: ListView.builder(
+                                  controller: _controller,
+                                  itemCount: _suggestions.length,
+                                  itemBuilder: (context, index) => ListTile(
+                                          title: OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: Colors.white10,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
                                           ),
                                         ),
-                                        const SizedBox(height: 20,),
-                                        Text(
-                                            "차량 모델 : ${_suggestions[index].carModel}"),
-                                        Text(
-                                            "메이커 : ${_suggestions[index].maker}"),
-                                        const SizedBox(height: 20,),
-                                      ],
-                                    ),
-                                  )))
-                      ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailCarPage(
+                                                      car: _suggestions[index]),
+                                            ),
+                                          );
+                                        },
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              child: FittedBox(
+                                                fit: BoxFit.fitHeight,
+                                                child: Image.network(
+                                                  "${_suggestions[index].carImgURL?[0]}",
+                                                  width: 500,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            Text(
+                                                "차량 모델 : ${_suggestions[index].carModel}"),
+                                            Text(
+                                                "메이커 : ${_suggestions[index].maker}"),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                          ],
+                                        ),
+                                      ))))),
                       if (_isLoadMoreRunning == true)
                         Container(
                           padding: const EdgeInsets.all(16.0),
@@ -97,12 +107,13 @@ class _MainPage extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    for(int i =0;i<10;i++) {
-      db.collection('Car').withConverter(
-          fromFirestore: CarInfoModel.fromFirestore,
-          toFirestore: (snapshot, options) => CarInfoModel().toFirestore())
-          .add(CarInfoModel(
-      ));
+    for (int i = 0; i < 10; i++) {
+      db
+          .collection('Car')
+          .withConverter(
+              fromFirestore: CarInfoModel.fromFirestore,
+              toFirestore: (snapshot, options) => CarInfoModel().toFirestore())
+          .add(CarInfoModel());
     }
     _initLoad();
     _controller = ScrollController()..addListener(_nextLoad);
@@ -141,8 +152,8 @@ class _MainPage extends State<MainPage> {
     } catch (e) {
       print(e.toString());
     }
-     setState(() {
-       _isFirstLoadRunning = false;
+    setState(() {
+      _isFirstLoadRunning = false;
     });
   }
 

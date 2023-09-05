@@ -19,7 +19,7 @@ class _MainLayoutState extends State<MainLayout> {
   final List<Widget> _widgetOptions = <Widget>[
     const MainPage(),
     const MyRental(),
-    const Text('DM'),
+    // const Text('DM'),
     const MyPage(),
   ];
   int _selectedIndex = 0;
@@ -67,10 +67,10 @@ class _MainLayoutState extends State<MainLayout> {
           icon: Icon(Icons.car_rental),
           label: '대여 현황',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.message),
-          label: 'DM',
-        ),
+        // BottomNavigationBarItem(
+        //   icon: Icon(Icons.message),
+        //   label: 'DM',
+        // ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'My Page',

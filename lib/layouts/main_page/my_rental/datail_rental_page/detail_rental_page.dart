@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import '../../../../models/rent.dart';
+import '../../custom_text.dart';
 
 class DetailRentalPage extends StatefulWidget {
   const DetailRentalPage({Key? key, required this.rent}) : super(key: key);
@@ -39,36 +40,6 @@ class _DetailRentalPage extends State<DetailRentalPage> {
                 // carInfo(),
               ],
             )));
-  }
-
-  Widget titleText(String text) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
-      child: Text(
-        text,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-    );
-  }
-
-  Widget miniTitleText(String text) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
-      child: Text(
-        text,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-      ),
-    );
-  }
-
-  Widget contentsText(String text) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 16),
-      ),
-    );
   }
 
   Widget rentInfo() {

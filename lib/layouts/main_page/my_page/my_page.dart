@@ -133,7 +133,7 @@ class _MyPage extends State<MyPage> {
           ],
         ),
         const SizedBox(
-          width: 60,
+          width: 55,
         ),
         Column(
           children: [

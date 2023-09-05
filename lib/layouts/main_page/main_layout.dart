@@ -7,9 +7,9 @@ import '../../component/const/name_const.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({
-    super.key,
-  });
-
+    Key? key, required this.index
+  }) : super(key:key);
+  final int index;
   @override
   State<StatefulWidget> createState() => _MainLayoutState();
 }
@@ -22,7 +22,7 @@ class _MainLayoutState extends State<MainLayout> {
     // const Text('DM'),
     const MyPage(),
   ];
-  int _selectedIndex = 0;
+  late int _selectedIndex = widget.index;
 
   void _onItemTapped(int index) {
     setState(() {

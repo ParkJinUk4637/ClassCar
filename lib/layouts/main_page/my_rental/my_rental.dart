@@ -58,7 +58,7 @@ class _MyRental extends State<MyRental>{
                   Container(
                       padding: const EdgeInsets.all(20),
                       child: const Center(
-                        child: Text("검색된 차량이 없습니다."),
+                        child: Text("대여 현황이 없습니다"),
                       ))
               ],
             )));

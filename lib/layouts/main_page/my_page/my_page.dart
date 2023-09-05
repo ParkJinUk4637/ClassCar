@@ -156,17 +156,17 @@ class _MyPage extends State<MyPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("이용 내역(아직 미구현)", const ReauthPasswordReset(), context),
+        listTileButton("이용 내역", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("쿠폰(아직 미구현)", const ReauthPasswordReset(), context),
+        listTileButton("쿠폰", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("이벤트/혜택(아직 미구현)", const ReauthPasswordReset(), context),
+        listTileButton("이벤트/혜택", const ReauthPasswordReset(), context),
       ],
     );
   }
@@ -175,18 +175,18 @@ class _MyPage extends State<MyPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("문의 내역(아직 미구현)", const ReauthPasswordReset(), context),
+        listTileButton("문의 내역", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
         listTileButton(
-            "고객센터 (QnA, FAQ)(아직 미구현)", const ReauthPasswordReset(), context),
+            "고객센터 (QnA, FAQ)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,
         ),
-        listTileButton("공지사항(아직 미구현)", const ReauthPasswordReset(), context),
+        listTileButton("공지사항", const ReauthPasswordReset(), context),
       ],
     );
   }

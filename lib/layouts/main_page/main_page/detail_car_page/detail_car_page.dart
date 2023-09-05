@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/car_rent_page/car_rent_page.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../models/car_info_model.dart';
+import '../../../../models/rent.dart';
+import '../../main_layout.dart';
 
 class DetailCarPage extends StatefulWidget {
   const DetailCarPage({Key? key, required this.car}) : super(key: key);
@@ -14,6 +18,7 @@ class DetailCarPage extends StatefulWidget {
 }
 
 class _DetailCarPage extends State<DetailCarPage> {
+  final FirebaseFirestore db = FirebaseFirestore.instance;
   late CarInfoModel car = widget.car;
 
   @override
@@ -63,6 +68,23 @@ class _DetailCarPage extends State<DetailCarPage> {
             ],
           ),
           SizedBox(width: MediaQuery.of(context).size.width / 360 * 200),
+          // TextButton(
+          //   style: TextButton.styleFrom(
+          //     padding: const EdgeInsets.all(12.0),
+          //     foregroundColor: Colors.white,
+          //     backgroundColor: const Color(0xff1200b3),
+          //     textStyle: const TextStyle(fontSize: 16),
+          //   ),
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => CarRentPage(car: car),
+          //       ),
+          //     );
+          //   },
+          //   child: const Text("대여하기"),
+          // )
           TextButton(
             style: TextButton.styleFrom(
               padding: const EdgeInsets.all(12.0),
@@ -70,16 +92,49 @@ class _DetailCarPage extends State<DetailCarPage> {
               backgroundColor: const Color(0xff1200b3),
               textStyle: const TextStyle(fontSize: 16),
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CarRentPage(car: car),
-                ),
+            onPressed: () async {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context){
+                    return AlertDialog(
+                      title: const Text("대여"),
+                      content: const Text("대여 하시겠습니까?"),
+                      actions: [
+                        TextButton(
+                          onPressed: (){
+                            Navigator.of(context).pop();
+                          }, child: const Text("취소"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            final Rent rent = Rent(
+                                createdAt: Timestamp.now(),
+                                startedAt: Timestamp.now(),
+                                endedAt: Timestamp.now(),
+                                totalPrice: "가격",
+                                requestStatus: "대여상태",
+                                car: car.toFirestore(),
+                                location: "장소",
+                                uid: const Uuid().v4()
+                            );
+                            await db.collection('Rent').add(rent.toFirestore());
+                            if(!mounted) return;
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const MainLayout(index: 1,),
+                              ),
+                            );
+
+                          }, child: const Text("확인"),
+                        )
+                      ],
+                    );
+                  }
               );
             },
             child: const Text("대여하기"),
-          )
+          ),
         ],
       ),
     );

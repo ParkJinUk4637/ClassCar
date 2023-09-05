@@ -50,7 +50,7 @@ class _LoadPage extends State<LoadPage> {
       if(FirebaseAuth.instance.currentUser == null){
         Get.offAll(() => const LoginPage());
       } else {
-        Get.offAll(() => const MainLayout());
+        Get.offAll(() => const MainLayout(index: 0,));
       }
     });
   }

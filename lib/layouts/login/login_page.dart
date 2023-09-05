@@ -209,7 +209,7 @@ class _LoginPage extends State<LoginPage> {
           email: email,
           password: password
       );
-      Get.offAll(() => const MainLayout());
+      Get.offAll(() => const MainLayout(index: 0,));
     } on FirebaseAuthException catch (e) {
       String m = '';
       if (e.code == 'user-not-found') {

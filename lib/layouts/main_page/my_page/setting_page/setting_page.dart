@@ -94,12 +94,12 @@ class _SettingPage extends State<SettingPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("결제 및 할인(아직 미구현)", const ReauthPasswordReset(), context),
-        const Divider(
-          height: 1,
-          thickness: 1,
-        ),
-        listTileButton("면허 등록(아직 미구현)", const ReauthPasswordReset(), context),
+        listTileButton("결제 및 할인", const ReauthPasswordReset(), context),
+        // const Divider(
+        //   height: 1,
+        //   thickness: 1,
+        // ),
+        // listTileButton("면허 등록", const ReauthPasswordReset(), context),
       ],
     );
   }

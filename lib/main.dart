@@ -34,6 +34,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Class Car',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'SUITE'
       ),
       home: const LoadPage(),
     );

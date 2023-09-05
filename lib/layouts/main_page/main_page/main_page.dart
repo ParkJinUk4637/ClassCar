@@ -1,5 +1,4 @@
 // 메인 페이지 위젯 작업 예정
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/component/logo.dart';
@@ -27,6 +26,7 @@ class _MainPage extends State<MainPage> {
   bool _isLoadMoreRunning = false;
   late ScrollController _controller;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +42,13 @@ class _MainPage extends State<MainPage> {
                               controller: _controller,
                               itemCount: _suggestions.length,
                               itemBuilder: (context, index) => ListTile(
-                                      title: OutlinedButton(
+                                  title: OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: Colors.white10,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:  BorderRadius.circular(30),
+                                      ),
+                                    ),
                                     onPressed: () {
                                       Navigator.push(
                                         context,
@@ -53,25 +59,34 @@ class _MainPage extends State<MainPage> {
                                     },
                                     child: Column(
                                       children: [
-                                        const Logo('Item',140,140),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(30),
+                                          child: FittedBox(
+                                            fit: BoxFit.fitHeight,
+                                            child: Image.network("${_suggestions[index].carImgURL?[0]}",
+                                            width: 500,),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20,),
                                         Text(
                                             "차량 모델 : ${_suggestions[index].carModel}"),
                                         Text(
                                             "메이커 : ${_suggestions[index].maker}"),
+                                        const SizedBox(height: 20,),
                                       ],
                                     ),
                                   )))
                       ),
                       if (_isLoadMoreRunning == true)
                         Container(
-                          padding: const EdgeInsets.all(30),
+                          padding: const EdgeInsets.all(16.0),
                           child: const Center(
                             child: CircularProgressIndicator(),
                           ),
                         ),
                       if (_hasNextPage == false && _suggestions.isEmpty)
                         Container(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(16.0),
                             child: const Center(
                               child: Text("검색된 차량이 없습니다."),
                             ))

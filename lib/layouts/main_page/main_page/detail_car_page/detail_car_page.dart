@@ -27,7 +27,12 @@ class _DetailCarPage extends State<DetailCarPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset('images/test_pic.png'),
+              ClipRRect(
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Image.network("${car.carImgURL?[0]}"),
+                ),
+              ),
               _info()
             ],
           ),

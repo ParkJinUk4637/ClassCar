@@ -67,10 +67,10 @@ class _MainPage extends State<MainPage> {
                                               borderRadius:
                                                   BorderRadius.circular(30),
                                               child: FittedBox(
-                                                fit: BoxFit.fitHeight,
+                                                fit: BoxFit.fitWidth,
                                                 child: Image.network(
                                                   "${_suggestions[index].carImgURL?[0]}",
-                                                  width: 500,
+                                                  height: 250,
                                                 ),
                                               ),
                                             ),

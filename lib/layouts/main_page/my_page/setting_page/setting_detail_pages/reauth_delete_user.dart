@@ -6,13 +6,13 @@ import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detai
 import '../../../../../main.dart';
 import 'delete_user.dart';
 
-class ReauthPasswordReset extends StatefulWidget{
-  const ReauthPasswordReset({super.key});
+class ReauthDeleteUser extends StatefulWidget{
+  const ReauthDeleteUser({super.key});
 
-  State<ReauthPasswordReset> createState() => _ReauthPasswordReset();
+  State<ReauthDeleteUser> createState() => _ReauthDeleteUser();
 }
 
-class _ReauthPasswordReset extends State<ReauthPasswordReset>{
+class _ReauthDeleteUser extends State<ReauthDeleteUser>{
   final _formKey1  = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
@@ -54,7 +54,7 @@ class _ReauthPasswordReset extends State<ReauthPasswordReset>{
     );
   }
 
-   Future<void>reauth(String useremail, String userpassword) async {
+  Future<void>reauth(String useremail, String userpassword) async {
     String email = useremail;
     String password = userpassword;
 
@@ -63,7 +63,7 @@ class _ReauthPasswordReset extends State<ReauthPasswordReset>{
     try{
       await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential(credential);
       Navigator.push(context,
-        MaterialPageRoute(builder: (context) => PasswordReset()),);
+        MaterialPageRoute(builder: (context) => DeleteUser()),);
     } on FirebaseAuthException catch(e) {
       _dialog();
     }
@@ -72,7 +72,7 @@ class _ReauthPasswordReset extends State<ReauthPasswordReset>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: closeAppBar("비밀번호 변경", context),
+      appBar: closeAppBar("회원탈퇴", context),
       resizeToAvoidBottomInset: true,
       body: Padding(
         key: _formKey1,

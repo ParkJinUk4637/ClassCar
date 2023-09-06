@@ -17,7 +17,7 @@ class Rent {
     String? totalPrice,
     String? requestStatus,
     Map<String,dynamic>? car,
-    String? ownerName,
+    String? ownerMail,
     String? location,
     String? uid,
   }) {
@@ -27,7 +27,7 @@ class Rent {
     _totalPrice = totalPrice;
     _requestStatus = requestStatus;
     _car = car;
-    _ownerName = ownerName;
+    _ownerMail = ownerMail;
     _location = location;
     _uid = uid;
   }
@@ -39,7 +39,7 @@ class Rent {
     _totalPrice = json['totalPrice'];
     _requestStatus = json['requestStatus'];
     _car = json['car'];
-    _ownerName = json['ownerName'];
+    _ownerMail = json['ownerMail'];
     _location = json['location'];
     _uid = json['uid'];
   }
@@ -55,7 +55,7 @@ class Rent {
       totalPrice: data?['totalPrice'],
       requestStatus: data?['requestStatus'],
       car: data?['car'],
-      ownerName: data?['ownerName'],
+      ownerMail: data?['ownerMail'],
       location: data?['location'],
       uid: data?['uid'],
     );
@@ -67,7 +67,7 @@ class Rent {
   String? _totalPrice;
   String? _requestStatus;
   Map<String,dynamic>? _car;
-  String? _ownerName;
+  String? _ownerMail;
   String? _location;
   String? _uid;
 
@@ -78,7 +78,7 @@ class Rent {
   //   String? totalPrice,
   //   String? requestStatus,
   //   Map<String,dynamic>? car,
-  //   String? ownerName,
+  //   String? ownerMail,
   //   String? location,
   //   String? uid,
   // }) =>
@@ -89,7 +89,7 @@ class Rent {
   //       totalPrice: totalPrice ?? _totalPrice,
   //       requestStatus: requestStatus ?? _requestStatus,
   //       car: car ?? _car,
-  //       ownerName: ownerName ?? _ownerName,
+  //       ownerMail: ownerMail ?? _ownerMail,
   //       location: location ?? _location,
   //       uid: uid ?? _uid,
   //     );
@@ -106,7 +106,7 @@ class Rent {
 
   Map<String,dynamic>? get car => _car;
 
-  String? get ownerName => _ownerName;
+  String? get ownerMail => _ownerMail;
 
   String? get location => _location;
 
@@ -120,7 +120,7 @@ class Rent {
     map['totalPrice'] = _totalPrice;
     map['requestStatus'] = _requestStatus;
     map['car'] = _car;
-    map['ownerName'] = _ownerName;
+    map['ownerMail'] = _ownerMail;
     map['location'] = _location;
     map['uid'] = _uid;
     return map;

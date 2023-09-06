@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -20,6 +21,7 @@ class _MyPage extends State<MyPage> {
   final db = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
   String? profileUrl;
+  String? downloadUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +67,8 @@ class _MyPage extends State<MyPage> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      final Reference storageRef = FirebaseStorage.instance
-          .ref()
-          .child('profile_pics/${DateTime.now().toIso8601String()}');
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child('profile_pics/${user?.email}');
       final UploadTask uploadTask = storageRef.putFile(File(pickedFile.path));
 
       final TaskSnapshot downloadUrl =
@@ -96,12 +97,20 @@ class _MyPage extends State<MyPage> {
 
   @override
   void initState() {
+    profileUrl = user?.email;
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<String> _loadImage() async {
+    final ref =
+        FirebaseStorage.instance.ref().child('profile_pics/${user?.email}');
+    final url = await ref.getDownloadURL();
+    return url;
   }
 
   Widget _profile() {
@@ -113,13 +122,47 @@ class _MyPage extends State<MyPage> {
           margin: const EdgeInsets.fromLTRB(16.0, 16.0, 32.0, 32.0),
           child: InkWell(
             onTap: () => pickImage(),
-            child: CircleAvatar(
-                radius: 50,
-                backgroundImage: (profileUrl != null)
-                    ? NetworkImage(profileUrl!)
-                    : const AssetImage('images/default_profile.png')
-                        as ImageProvider // 기본 프로필 이미지
-                ),
+            child: FutureBuilder(
+              future: _loadImage(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError || snapshot.data == null) {
+                  return const CircleAvatar(
+                      radius: 50,
+                      backgroundImage:
+                          AssetImage('images/default_profile.png') // 기본 프로필 이미지
+                      );
+                } else {
+                  return SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) => AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: imageProvider, fit: BoxFit.cover),
+                          ))),
+                      imageUrl: snapshot.data as String,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.person),
+                    ),
+                  );
+                }
+              },
+            ),
+            // CircleAvatar(
+            //     radius: 50,
+            //     backgroundImage: (profileUrl != null)
+            //         ? NetworkImage("")
+            //         : const AssetImage('images/default_profile.png')
+            //             as ImageProvider // 기본 프로필 이미지
+            //     ),
           ),
         ),
         Column(
@@ -180,8 +223,7 @@ class _MyPage extends State<MyPage> {
           height: 1,
           thickness: 1,
         ),
-        listTileButton(
-            "고객센터 (QnA, FAQ)", const ReauthPasswordReset(), context),
+        listTileButton("고객센터 (QnA, FAQ)", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,

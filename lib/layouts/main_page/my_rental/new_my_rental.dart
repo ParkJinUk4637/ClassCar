@@ -21,7 +21,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
     QuerySnapshot<Map<String, dynamic>> _snapshot = await _firestore
         .collection("Rent")
-    // .orderBy("createdAt")
+        // .orderBy("createdAt")
         .limit(10)
         .where("ownerMail", isEqualTo: user?.email)
         .get();
@@ -36,7 +36,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
     QuerySnapshot<Map<String, dynamic>> _snapshot = await _firestore
         .collection("Rent")
-    // .orderBy("createdAt")
+        // .orderBy("createdAt")
         .startAfterDocument(lastSnapshot!)
         .limit(10)
         .where("ownerMail", isEqualTo: user?.email)
@@ -68,12 +68,18 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
       body: ListView.separated(
         itemCount: rentData.length,
         itemBuilder: (context, index) {
-          return DefaultTextStyle(
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.accents[index % 15]),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+          return Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2))
+                  ]),
+              padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -84,31 +90,29 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                       SizedBox(
                         height: 100,
                         child: Center(
-                            child: IconButton(
-                              onPressed: () async {
-                                await _infinityScroll();
-                              },
-                              icon: const Icon(
-                                Icons.add_circle_outline,
-                                size: 30,
-                              ),
+                          child: IconButton(
+                            onPressed: () async {
+                              await _infinityScroll();
+                            },
+                            icon: const Icon(
+                              Icons.add_circle_outline,
+                              size: 30,
                             ),
+                          ),
                         ),
                       ),
                     ],
                   ],
                 ),
-              ));
+              );
         },
         separatorBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Container(
               height: 1,
-              width: MediaQueryData
-                  .fromView(
-                  WidgetsBinding.instance.platformDispatcher.views.single
-              )
+              width: MediaQueryData.fromView(
+                      WidgetsBinding.instance.platformDispatcher.views.single)
                   .size
                   .width,
               color: const Color.fromRGBO(91, 91, 91, 1),

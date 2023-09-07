@@ -17,7 +17,7 @@ class MyPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MyPage();
 }
 
-class _MyPage extends State<MyPage> {
+class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
   final db = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
   String? profileUrl;
@@ -232,4 +232,9 @@ class _MyPage extends State<MyPage> {
       ],
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  // bool get wantKeepAlive => throw UnimplementedError();
+  bool get wantKeepAlive => true;
 }

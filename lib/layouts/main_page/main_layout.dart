@@ -6,10 +6,9 @@ import 'package:my_classcar/layouts/main_page/my_rental/my_rental.dart';
 import '../../component/const/name_const.dart';
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({
-    Key? key, required this.index
-  }) : super(key:key);
+  const MainLayout({Key? key, required this.index}) : super(key: key);
   final int index;
+
   @override
   State<StatefulWidget> createState() => _MainLayoutState();
 }
@@ -23,8 +22,13 @@ class _MainLayoutState extends State<MainLayout> {
     const MyPage(),
   ];
   late int _selectedIndex = widget.index;
+  final PageController pageController = PageController();
 
   void _onItemTapped(int index) {
+    pageController.jumpToPage(index);
+  }
+
+  void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -35,7 +39,12 @@ class _MainLayoutState extends State<MainLayout> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       //appBar: customAppBar(projectName),
-      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+      body: PageView(
+        controller: pageController,
+        onPageChanged: _onPageChanged,
+        physics: const NeverScrollableScrollPhysics(),
+        children: _widgetOptions,
+      ),
       bottomNavigationBar: _bottomNavigationBar(),
     );
   }

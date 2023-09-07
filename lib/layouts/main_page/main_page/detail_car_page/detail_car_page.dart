@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/car_rent_page/car_rent_page.dart';
@@ -111,11 +112,12 @@ class _DetailCarPage extends State<DetailCarPage> {
                                 createdAt: Timestamp.now(),
                                 startedAt: Timestamp.now(),
                                 endedAt: Timestamp.now(),
-                                totalPrice: "가격",
+                                totalPrice: 100000,
                                 requestStatus: "대여상태",
-                                car: car.toFirestore(),
+                                carUuid: car.uuid,
                                 location: "장소",
-                                uid: const Uuid().v4()
+                                uid: const Uuid().v4(),
+                              ownerMail: FirebaseAuth.instance.currentUser?.email,
                             );
                             await db.collection('Rent').add(rent.toFirestore());
                             if(!mounted) return;

@@ -14,7 +14,8 @@ class MainPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MainPage();
 }
 
-class _MainPage extends State<MainPage> {
+// with AutomaticKeepAliveClientMixin : bottom navigation bar로 페이지 바꿀 때 리로딩 안하게 하는 거 (My Page는 무조건 필요)
+class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin{
   final db = FirebaseFirestore.instance;
   final CollectionReference<Map<String, dynamic>> _collectionReference =
       FirebaseFirestore.instance.collection("Car");
@@ -196,4 +197,9 @@ class _MainPage extends State<MainPage> {
       });
     }
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  // bool get wantKeepAlive => throw UnimplementedError();
+  bool get wantKeepAlive => true;
 }

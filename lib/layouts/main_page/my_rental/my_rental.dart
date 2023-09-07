@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/models/rent.dart';
-
 import 'datail_rental_page/detail_rental_page.dart';
 
 class MyRental extends StatefulWidget {
@@ -14,7 +13,7 @@ class MyRental extends StatefulWidget {
   State<StatefulWidget> createState() => _MyRental();
 }
 
-class _MyRental extends State<MyRental> {
+class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin{
   final user = FirebaseAuth.instance.currentUser;
   final db = FirebaseFirestore.instance;
   final CollectionReference<Map<String, dynamic>> _collectionReference =
@@ -32,7 +31,7 @@ class _MyRental extends State<MyRental> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 16.0),
             child: _isFirstLoadRunning
                 ? const Center(child: CircularProgressIndicator())
                 : Column(
@@ -42,7 +41,7 @@ class _MyRental extends State<MyRental> {
                               controller: _controller,
                               itemCount: _suggestions.length,
                               itemBuilder: (context, index) => ListTile(
-                                    title: _suggestions[index].toListTile(),
+                                    title: _suggestions[index].toListTile(_suggestions[index].carUuid),
                                     onTap: () {
                                       Navigator.push(
                                           context,
@@ -117,10 +116,11 @@ class _MyRental extends State<MyRental> {
   }
 
   void _nextLoad() async {
+    print("@@@@@@@@@");
     if (_hasNextPage &&
         !_isFirstLoadRunning &&
         !_isLoadMoreRunning &&
-        _controller.position.extentAfter < 100) {
+        _controller.position.extentAfter < 10) {
       setState(() {
         _isLoadMoreRunning = true;
       });
@@ -156,4 +156,9 @@ class _MyRental extends State<MyRental> {
       });
     }
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  // bool get wantKeepAlive => throw UnimplementedError();
+  bool get wantKeepAlive => true;
 }

@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import '../../../../models/car_info_model.dart';
@@ -18,8 +17,9 @@ class DetailRentalPage extends StatefulWidget {
 
 class _DetailRentalPage extends State<DetailRentalPage> {
   final _pageController = PageController(viewportFraction: 0.877);
-  int currentPage = 0;
+  num currentPage = 0;
   late Rent rent = widget.rent;
+  bool isInit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,40 +28,59 @@ class _DetailRentalPage extends State<DetailRentalPage> {
         appBar: backAppBar("대여 상세 내역", context),
         body: FutureBuilder(
           future: loadCar(rent.carUuid),
-          builder: (context, snapshot){
-            final data = snapshot.data?.docs.first.data();
-            return Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: ListView(
-                  children: [
-                    pageView(data?.carImgURL),
-                    Container(
-                      height: 10,
-                      // color: const Color.fromARGB(255,242,242,242)
-                    ),
-                    // const Divider(
-                    //   height: 1,
-                    //   thickness: 1,
-                    // ),
-                    rentInfo(data),
-                    // carInfo(),
-                  ],
-                ));
+          builder: (context, snapshot) {
+            if (snapshot.hasError || snapshot.data == null && (snapshot.connectionState != ConnectionState.waiting)) {
+              return const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.not_listed_location),
+                      Text("대여 상세 내역을 불러올 수 없습니다."),
+                    ],
+                  ));
+            } else if  (!isInit && snapshot.connectionState == ConnectionState.waiting){ // isInit 없으면 이미지 넘길 때 마다 FutureBuilder가 로딩중으로 인식함.
+              return const CircularProgressIndicator();
+            } else {
+              final data = snapshot.data?.docs.first.data();
+              isInit = true; // 이미지 넘길 때 waiting 상태의 위젯 실행 방지용
+              return Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: ListView(
+                    children: [
+                      pageView(data?.carImgURL),
+                      Container(
+                        height: 10,
+                        // color: const Color.fromARGB(255,242,242,242)
+                      ),
+                      // const Divider(
+                      //   height: 1,
+                      //   thickness: 1,
+                      // ),
+                      rentInfo(data),
+                      // carInfo(),
+                    ],
+                  ));
+            }
           },
         ));
   }
 
-  Future<QuerySnapshot<CarInfoModel>> loadCar(String? carUuid) async {
-    QuerySnapshot<CarInfoModel> querySnapshot = await FirebaseFirestore.instance
-        .collection("Car")
-        .where("uuid",isEqualTo: carUuid)
-        .withConverter(
-        fromFirestore: CarInfoModel.fromFirestore,
-        toFirestore: (CarInfoModel car, _) => car.toFirestore())
-        .get();
+  Future<QuerySnapshot<CarInfoModel>?> loadCar(String? carUuid) async {
+      QuerySnapshot<CarInfoModel> querySnapshot = await FirebaseFirestore
+          .instance
+          .collection("Car")
+          .where("uuid", isEqualTo: carUuid)
+          .withConverter(
+          fromFirestore: CarInfoModel.fromFirestore,
+          toFirestore: (CarInfoModel car, _) => car.toFirestore())
+          .get();
+
+      if(querySnapshot.docs.isEmpty){
+        return null;
+      }
+
     return querySnapshot;
   }
-
 
   Widget rentInfo(CarInfoModel? car) {
     return Container(
@@ -89,10 +108,11 @@ class _DetailRentalPage extends State<DetailRentalPage> {
             contentsText(car?.carType ?? "차 종류"),
             contentsText(""),
             miniTitleText("내부 옵션"),
-            contentsText( (car?.insideOption['가죽시트']!=null && true ? "가죽시트 " : "") +
-                (car?.insideOption['블랙박스']!=null && true ? "블랙박스 " : "") +
-                (car?.insideOption['열선시트']!=null && true ? "열선시트 " : "") +
-                (car?.insideOption['통풍시트']!=null && true ? "통풍시트 " : "")),
+            contentsText(
+                (car?.insideOption['가죽시트'] != null && true ? "가죽시트 " : "") +
+                    (car?.insideOption['블랙박스'] != null && true ? "블랙박스 " : "") +
+                    (car?.insideOption['열선시트'] != null && true ? "열선시트 " : "") +
+                    (car?.insideOption['통풍시트'] != null && true ? "통풍시트 " : "")),
             contentsText(""),
             miniTitleText("메이커"),
             contentsText(car?.maker ?? "메이커"),
@@ -105,9 +125,7 @@ class _DetailRentalPage extends State<DetailRentalPage> {
             //     "${car?.safeOption['후방카메라'] ? "후방카메라 " : ""}"),
             contentsText(""),
             miniTitleText("좌석"),
-            contentsText((car?.seats != null
-                ? "${car?.seats}인승"
-                : "0인승")),
+            contentsText((car?.seats != null ? "${car?.seats}인승" : "0인승")),
             contentsText(""),
             miniTitleText("총 대여 가격"),
             contentsText(
@@ -168,11 +186,14 @@ class _DetailRentalPage extends State<DetailRentalPage> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Center(
-                child:CachedNetworkImage(
-                  errorWidget: (context, url,error) => const CircularProgressIndicator(),
+                  child:
+                  CachedNetworkImage(
+                    errorWidget: (context, url, error) =>
+                    const CircularProgressIndicator(),
                     imageUrl: "${imageUrls?[index]}",
-                placeholder: (context, url) =>
-                const CircularProgressIndicator(),)
+                    placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                  )
                 // Image.network(
                 //   "${imageUrls?[index]}",
                 //   fit: BoxFit.cover,
@@ -187,8 +208,7 @@ class _DetailRentalPage extends State<DetailRentalPage> {
   void initState() {
     _pageController.addListener(() {
       setState(() {
-        currentPage = _pageController.page as int;
-        print(currentPage);
+        currentPage = _pageController.page as num;
       });
     });
     super.initState();

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:my_classcar/component/app_snackbar.dart';
 
 import '../../../models/rent.dart';
+import 'datail_rental_page/detail_rental_page.dart';
 
 class MyRental extends StatefulWidget {
   const MyRental({super.key});
@@ -30,6 +31,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     setState(() {
       lastSnapshot = snapshot.docs.last;
       rentData = snapshot.docs.map((e) => Rent.fromJson(e.data())).toList();
+
       if (snapshot.docs.isEmpty) {
         const SnackBar(
           content: Text(
@@ -53,14 +55,15 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
         .get();
 
     setState(() {
+      if(snapshot.docs.isEmpty){
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(classcarSnackBar("대여 현황이 더 이상 없습니다."));
+      }
       lastSnapshot = snapshot.docs.last;
       rentData
           .addAll(snapshot.docs.map((e) => Rent.fromJson(e.data())).toList());
     });
-
-    if (!mounted) return;
-    ScaffoldMessenger.of(context)
-        .showSnackBar(classcarSnackBar("대여 현황이 더 이상 없습니다."));
   }
 
   @override
@@ -146,6 +149,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: ListView.builder(
+          key: const PageStorageKey('myListView'), // 이 페이지 스크롤 위치, 상태 유지
           // padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
           itemCount: rentData.length,
           itemBuilder: (context, index) {
@@ -165,21 +169,29 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                 ),
               );
             }
-            return Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2))
-                  ]),
-              padding: const EdgeInsets.all(16.0),
-              margin: const EdgeInsets.fromLTRB(16.0,16.0,16.0,0),
-              child: _listTile(index),
-            );
+            return ListTile(
+                title: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 2))
+                      ]),
+                  padding: const EdgeInsets.all(16.0),
+                  margin: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 0),
+                  child: _listTile(index),
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DetailRentalPage(rent: rentData[index])));
+                });
           },
           // separator 쓸라면 Listview.builder -> Listview.separated
           // separatorBuilder: null,

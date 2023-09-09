@@ -37,7 +37,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
         .collection("Rent")
         // .orderBy("createdAt")
         .where("DriverUID", isEqualTo: driverDocNum)
-        .orderBy("RequestDate")
+        .orderBy("RequestDate",descending: true)
         .limit(10)
         .get();
 
@@ -56,24 +56,6 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     setState(() {
 
     });
-
-    // setState(() {
-    //   // for(var doc in snapshot.docs){
-    //   //   rentData.add(Rent.fromJson(doc.data()));
-    //   //
-    //   // }
-    //
-    //   if (snapshot.docs.isEmpty) {
-    //     const SnackBar(
-    //       content: Text(
-    //         "대여 현황이 없습니다.",
-    //         style: TextStyle(color: Color(0xff1200B3)),
-    //       ),
-    //       // backgroundColor: Color(0xff1200B3),
-    //     );
-    //   }
-    //
-    // });
   }
 
   Future<void> _infinityScroll() async {
@@ -82,7 +64,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
         .collection("Rent")
         // .orderBy("createdAt")
         .where("DriverUID", isEqualTo: driverDocNum)
-        .orderBy("RequestDate")
+        .orderBy("RequestDate",descending: true)
         .startAfterDocument(lastSnapshot!)
         .limit(10)
         .get();
@@ -105,11 +87,8 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
       lastSnapshot = snapshot.docs.last;
     }
 
-
-
     setState(() {
       if(rentList.isNotEmpty) {
-        print("@@@NotEmpty");
         for (var car in carList) {
           carData.add(car);
         }
@@ -117,7 +96,6 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
           rentData.add(rent);
         }
       }else{
-        print("@@@@대여현황X");
         ScaffoldMessenger.of(context)
             .showSnackBar(classcarSnackBar("대여 현황이 더 이상 없습니다."));
       }
@@ -186,7 +164,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text(car.carModel ?? 'Car Model'),
+                    Text(car.carModel),
                     const SizedBox(
                       height: 10,
                     ),
@@ -203,7 +181,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text('${car.carLocation}') // 차량 정보 불러와야 가능
+                    Text(car.carLocation) // 차량 정보 불러와야 가능
                   ],
                 ))
           ],

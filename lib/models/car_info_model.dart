@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CarInfoModel {
-  late String docID;
-  late String uuid;
+  late String docID; // 문서번호 (DB상에는 없고 앱 속에서만 보여짐)
+  late String uuid; // 차주의 문서번호
   late bool isExhibit;
   late bool carState;
   late double carGasMil;

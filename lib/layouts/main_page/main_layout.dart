@@ -16,8 +16,8 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   final String projectName = NameConst.projectName.name;
   final List<Widget> _widgetOptions = <Widget>[
-    // const MainPage(),
-    Text("h"),
+    const MainPage(),
+    // Text("h"),
     const MyRental(),
     // const Text('DM'),
     const MyPage(),

@@ -68,7 +68,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
 
     if (pickedFile != null) {
       final Reference storageRef =
-          FirebaseStorage.instance.ref().child('profile_pics/${user?.email}');
+          FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
       final UploadTask uploadTask = storageRef.putFile(File(pickedFile.path));
 
       final TaskSnapshot downloadUrl =
@@ -108,7 +108,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
 
   Future<String> _loadImage() async {
     final ref =
-        FirebaseStorage.instance.ref().child('profile_pics/${user?.email}');
+        FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
     final url = await ref.getDownloadURL();
     return url;
   }

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_classcar/component/app_snackbar.dart';
+import 'package:my_classcar/models/car_info_model.dart';
 
 import '../../../models/rent.dart';
 import 'datail_rental_page/detail_rental_page.dart';
@@ -17,20 +18,41 @@ class MyRental extends StatefulWidget {
 class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
   User? user = FirebaseAuth.instance.currentUser;
   List<Rent> rentData = [];
+  List<CarInfoModel> carData = [];
   DocumentSnapshot? lastSnapshot;
+  final db = FirebaseFirestore.instance;
+  late String driverDocNum;
 
   Future<void> _initData() async {
+    QuerySnapshot<Object> userSnapshot = await db
+        .collection("userINFO")
+        .where("email", isEqualTo: user?.email)
+        .get();
+
+    driverDocNum = userSnapshot.docs.first.id;
+
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     QuerySnapshot<Map<String, dynamic>> snapshot = await firestore
         .collection("Rent")
         // .orderBy("createdAt")
+        .where("DriverUID", isEqualTo: driverDocNum)
+        .orderBy("RequestDate")
         .limit(10)
-        .where("ownerMail", isEqualTo: user?.email)
         .get();
 
+    lastSnapshot = snapshot.docs.last;
+    // rentData = snapshot.docs.map((e) => Rent.fromJson(e.data())).toList();
+    for(var doc in snapshot.docs){
+      final data = Rent.fromJson(doc.data());
+      rentData.add(data);
+      getCarInfo(data.carUid).then((value) => carData.add(value!));
+    }
+
     setState(() {
-      lastSnapshot = snapshot.docs.last;
-      rentData = snapshot.docs.map((e) => Rent.fromJson(e.data())).toList();
+      // for(var doc in snapshot.docs){
+      //   rentData.add(Rent.fromJson(doc.data()));
+      //
+      // }
 
       if (snapshot.docs.isEmpty) {
         const SnackBar(
@@ -41,6 +63,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
           // backgroundColor: Color(0xff1200B3),
         );
       }
+
     });
   }
 
@@ -49,21 +72,43 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     QuerySnapshot<Map<String, dynamic>> snapshot = await firestore
         .collection("Rent")
         // .orderBy("createdAt")
+        .where("DriverUID", isEqualTo: driverDocNum)
+        .orderBy("RequestDate")
         .startAfterDocument(lastSnapshot!)
         .limit(10)
-        .where("ownerMail", isEqualTo: user?.email)
         .get();
 
+    lastSnapshot = snapshot.docs.last;
+    // rentData = snapshot.docs.map((e) => Rent.fromJson(e.data())).toList();
+    for(var doc in snapshot.docs){
+      final data = Rent.fromJson(doc.data());
+      rentData.add(data);
+      getCarInfo(data.carUid).then((value) => carData.add(value!));
+    }
+
     setState(() {
-      if(snapshot.docs.isEmpty){
+      if (snapshot.docs.isEmpty) {
         if (!mounted) return;
         ScaffoldMessenger.of(context)
             .showSnackBar(classcarSnackBar("대여 현황이 더 이상 없습니다."));
       }
-      lastSnapshot = snapshot.docs.last;
-      rentData
-          .addAll(snapshot.docs.map((e) => Rent.fromJson(e.data())).toList());
+
+      // lastSnapshot = snapshot.docs.last;
+      // rentData
+      //     .addAll(snapshot.docs.map((e) => Rent.fromJson(e.data())).toList());
+
     });
+  }
+
+  Future<CarInfoModel?> getCarInfo(String? carUid) async {
+    DocumentSnapshot<CarInfoModel?> doc = await FirebaseFirestore.instance
+        .collection('Car')
+        .doc(carUid)
+        .withConverter(
+            fromFirestore: CarInfoModel.fromFirestore,
+            toFirestore: (CarInfoModel car, _) => car.toFirestore())
+        .get();
+    return doc.data();
   }
 
   @override
@@ -79,8 +124,9 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
 
   Widget _listTile(int index) {
     final rent = rentData[index];
-    final start = rent.startedAt?.toDate();
-    final end = rent.endedAt?.toDate();
+    final start = rent.rentalStartTime?.toDate();
+    final end = rent.rentalEndTime?.toDate();
+    // final car = carData[index];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -92,18 +138,18 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("${rent.requestStatus}"),
+                    Text("${rent.situation}"),
                     const SizedBox(
                       height: 10,
                     ),
                     // Image.network(
-                    //   "${car?.carImgURL?[0]}",
+                    //   "${car.carImgURL?[0]}",
                     //   width: 80,
                     // ),
                     const SizedBox(
                       height: 10,
                     ),
-                    // Text(car!.carNumber),
+                    // Text("${car.carNumber} "),
                   ],
                 )),
             // 두 번째 Column
@@ -120,7 +166,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text('대여 기간 ${rent.startedAt?.toDate().year ?? '0000'}년 '
+                    Text('대여 기간 ${start?.year ?? '0000'}년 '
                         '${start?.month ?? '00'}월 '
                         '${start?.day ?? '00'}일 '
                         '${start?.hour ?? '00'}시 '
@@ -133,7 +179,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text('${rent.location}')
+                    // Text('${rent.location}') // 차량 정보 불러와야 가능
                   ],
                 ))
           ],
@@ -189,8 +235,10 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              DetailRentalPage(rent: rentData[index])));
+                          builder: (context) => DetailRentalPage(
+                                rent: rentData[index],
+                                car: carData[index],
+                              )));
                 });
           },
           // separator 쓸라면 Listview.builder -> Listview.separated

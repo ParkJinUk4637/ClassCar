@@ -7,9 +7,11 @@ import '../../../../models/rent.dart';
 import '../../custom_text.dart';
 
 class DetailRentalPage extends StatefulWidget {
-  const DetailRentalPage({Key? key, required this.rent}) : super(key: key);
+  const DetailRentalPage({Key? key, required this.rent, required this.car})
+      : super(key: key);
 
   final Rent rent;
+  final CarInfoModel? car;
 
   @override
   State<StatefulWidget> createState() => _DetailRentalPage();
@@ -19,6 +21,7 @@ class _DetailRentalPage extends State<DetailRentalPage> {
   final _pageController = PageController(viewportFraction: 0.877);
   num currentPage = 0;
   late Rent rent = widget.rent;
+  late CarInfoModel? car = widget.car;
   bool isInit = false;
 
   @override
@@ -26,60 +29,23 @@ class _DetailRentalPage extends State<DetailRentalPage> {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: backAppBar("대여 상세 내역", context),
-        body: FutureBuilder(
-          future: loadCar(rent.carUuid),
-          builder: (context, snapshot) {
-            if (snapshot.hasError || snapshot.data == null && (snapshot.connectionState != ConnectionState.waiting)) {
-              return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.not_listed_location),
-                      Text("대여 상세 내역을 불러올 수 없습니다."),
-                    ],
-                  ));
-            } else if  (!isInit && snapshot.connectionState == ConnectionState.waiting){ // isInit 없으면 이미지 넘길 때 마다 FutureBuilder가 로딩중으로 인식함.
-              return const CircularProgressIndicator();
-            } else {
-              final data = snapshot.data?.docs.first.data();
-              isInit = true; // 이미지 넘길 때 waiting 상태의 위젯 실행 방지용
-              return Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  child: ListView(
-                    children: [
-                      pageView(data?.carImgURL),
-                      Container(
-                        height: 10,
-                        // color: const Color.fromARGB(255,242,242,242)
-                      ),
-                      // const Divider(
-                      //   height: 1,
-                      //   thickness: 1,
-                      // ),
-                      rentInfo(data),
-                      // carInfo(),
-                    ],
-                  ));
-            }
-          },
-        ));
-  }
-
-  Future<QuerySnapshot<CarInfoModel>?> loadCar(String? carUuid) async {
-      QuerySnapshot<CarInfoModel> querySnapshot = await FirebaseFirestore
-          .instance
-          .collection("Car")
-          .where("uuid", isEqualTo: carUuid)
-          .withConverter(
-          fromFirestore: CarInfoModel.fromFirestore,
-          toFirestore: (CarInfoModel car, _) => car.toFirestore())
-          .get();
-
-      if(querySnapshot.docs.isEmpty){
-        return null;
-      }
-
-    return querySnapshot;
+        body: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+            child: ListView(
+              children: [
+                pageView(car?.carImgURL),
+                Container(
+                  height: 10,
+                  // color: const Color.fromARGB(255,242,242,242)
+                ),
+                // const Divider(
+                //   height: 1,
+                //   thickness: 1,
+                // ),
+                rentInfo(car),
+                // carInfo(),
+              ],
+            )));
   }
 
   Widget rentInfo(CarInfoModel? car) {
@@ -129,7 +95,7 @@ class _DetailRentalPage extends State<DetailRentalPage> {
             contentsText(""),
             miniTitleText("총 대여 가격"),
             contentsText(
-                (rent.totalPrice != null ? "${rent.totalPrice}원" : "총 대여 가격")),
+                (rent.rentalCost != null ? "${rent.rentalCost}원" : "총 대여 가격")),
             contentsText(""),
             miniTitleText("기타 옵션"),
             // contentsText(""
@@ -186,19 +152,18 @@ class _DetailRentalPage extends State<DetailRentalPage> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Center(
-                  child:
-                  CachedNetworkImage(
-                    errorWidget: (context, url, error) =>
+                  child: CachedNetworkImage(
+                errorWidget: (context, url, error) =>
                     const CircularProgressIndicator(),
-                    imageUrl: "${imageUrls?[index]}",
-                    placeholder: (context, url) =>
+                imageUrl: "${imageUrls?[index]}",
+                placeholder: (context, url) =>
                     const CircularProgressIndicator(),
-                  )
-                // Image.network(
-                //   "${imageUrls?[index]}",
-                //   fit: BoxFit.cover,
-                // ),
-              ),
+              )
+                  // Image.network(
+                  //   "${imageUrls?[index]}",
+                  //   fit: BoxFit.cover,
+                  // ),
+                  ),
             );
           },
         ));

@@ -82,7 +82,7 @@ class _find_pw extends State<find_pw_page> {
         const SizedBox(height: 30,),
         TextButton(
             style: TextButton.styleFrom(
-                backgroundColor: const Color(0xff1200B3),
+                backgroundColor: Theme.of(context).focusColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -119,7 +119,7 @@ class _find_pw extends State<find_pw_page> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(m),
-          backgroundColor: const Color(0xff1200B3),
+          backgroundColor: Theme.of(context).focusColor,
         ),
       );
     } catch (e) {

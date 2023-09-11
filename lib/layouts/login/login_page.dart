@@ -47,7 +47,8 @@ class _LoginPage extends State<LoginPage> {
             _autoLogin(),
             TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xff1200B3),
+                    backgroundColor: Theme.of(context).focusColor,
+                    // const Color(0xff1200B3),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -222,7 +223,8 @@ class _LoginPage extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(m),
-          backgroundColor: const Color(0xff1200B3),
+          backgroundColor: Theme.of(context).focusColor,
+          // const Color(0xff1200B3),
         ),
       );
     } catch (e) {

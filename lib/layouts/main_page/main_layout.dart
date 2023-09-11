@@ -65,7 +65,7 @@ class _MainLayoutState extends State<MainLayout> {
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.white,
       unselectedItemColor: Colors.black,
-      selectedItemColor: Colors.blue,
+      selectedItemColor: Theme.of(context).focusColor,
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: const <BottomNavigationBarItem>[

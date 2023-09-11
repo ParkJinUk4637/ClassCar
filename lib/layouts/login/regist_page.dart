@@ -347,7 +347,7 @@ class _RegistPage extends State<RegistPage> {
             child: const Text("인증완료",style: TextStyle(color: Colors.white)),) :
           TextButton(
               style: TextButton.styleFrom(
-                  backgroundColor:  const Color(0xff1200B3),
+                  backgroundColor:  Theme.of(context).focusColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -441,7 +441,7 @@ class _RegistPage extends State<RegistPage> {
           flex: 3,
           child: TextButton(
               style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xff1200B3),
+                  backgroundColor: Theme.of(context).focusColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -466,7 +466,7 @@ class _RegistPage extends State<RegistPage> {
         children: [
           allCheck ? TextButton(
               style: TextButton.styleFrom(
-              backgroundColor: const Color(0xff1200B3),
+              backgroundColor: Theme.of(context).focusColor,
               shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30,)
               ),

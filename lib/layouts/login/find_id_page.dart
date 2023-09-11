@@ -71,7 +71,7 @@ class _find_id extends State<find_id_page> {
             const SizedBox(height: 20,),
             TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xff1200B3),
+                    backgroundColor: Theme.of(context).focusColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -183,7 +183,8 @@ class _find_id extends State<find_id_page> {
               child: const Text("인증완료",style: TextStyle(color: Colors.white)),) :
             TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor:  const Color(0xff1200B3),
+                    backgroundColor: Theme.of(context).focusColor,
+                    // const Color(0xff1200B3),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -276,7 +277,8 @@ class _find_id extends State<find_id_page> {
           flex: 3,
           child: TextButton(
               style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xff1200B3),
+                  backgroundColor: Theme.of(context).focusColor,
+                  // const Color(0xff1200B3),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),

@@ -91,7 +91,7 @@ class _LicenseManage extends State<LicenseManage>{
       children: [
         TextButton(
             style: TextButton.styleFrom(
-                backgroundColor: const Color(0xff1200B3),
+                backgroundColor: Theme.of(context).focusColor,
                 // disabledBackgroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30,)

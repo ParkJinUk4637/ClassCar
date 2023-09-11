@@ -97,7 +97,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
         }
       }else{
         ScaffoldMessenger.of(context)
-            .showSnackBar(classcarSnackBar("대여 현황이 더 이상 없습니다."));
+            .showSnackBar(classcarSnackBar("대여 현황이 더 이상 없습니다.",context));
       }
     });
   }
@@ -210,7 +210,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                     },
                     child: const Text(
                       "더 보기",
-                      style: TextStyle(fontSize: 14),
+                      style: TextStyle(fontSize: 14,color: Color(0xff1200b3),),
                     ),
                   ),
                 ),

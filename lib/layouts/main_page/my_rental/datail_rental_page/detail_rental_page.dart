@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../models/car_info_model.dart';
 import '../../../../models/rent.dart';
-import '../../custom_text.dart';
+import 'custom_text.dart';
 
 class DetailRentalPage extends StatefulWidget {
   const DetailRentalPage({Key? key, required this.rent, required this.car})
@@ -170,10 +169,9 @@ class _DetailRentalPage extends State<DetailRentalPage> {
           },
         ),
       ),
-      const SizedBox(
-        height: 8,
-      ),
-      SmoothPageIndicator(
+      Container(
+          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+      child:SmoothPageIndicator(
         controller: _pageController,
         count: imageUrls!.length,
         onDotClicked: (index) {
@@ -184,15 +182,23 @@ class _DetailRentalPage extends State<DetailRentalPage> {
           );
         },
         effect: WormEffect(
-            activeDotColor: Theme.of(context).primaryColor,
-            dotColor: Colors.grey,
+            activeDotColor: Theme.of(context).focusColor,
+            dotColor: const Color(0xFFD0D0D0),
             // Theme.of(context)
             //     .colorScheme
             //     .background,
             radius: 6,
             dotHeight: 10,
             dotWidth: 10),
-      )
+      )),
+      Container(
+        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+        child: const Divider(
+          color : Color(0xFFD0D0D0),
+          height: 1,
+          thickness: 1,
+        ),
+      ),
     ]);
   }
 

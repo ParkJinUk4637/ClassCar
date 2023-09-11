@@ -17,7 +17,7 @@ class Logo extends StatelessWidget {
             'images/Logo.svg',
             width: width,
             height: height,
-            colorFilter: const ColorFilter.mode(Color(0xff1200b3), BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(Theme.of(context).focusColor, BlendMode.srcIn),
           ),
         )
       ],

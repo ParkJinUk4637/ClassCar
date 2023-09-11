@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/car_rent_page/car_rent_page.dart';
+import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/car_rent_page/payment_page.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../models/car_info_model.dart';
@@ -10,7 +11,8 @@ import '../../../../models/rent.dart';
 import '../../main_layout.dart';
 
 class DetailCarPage extends StatefulWidget {
-  const DetailCarPage({Key? key, required this.car, required this.driverUid}) : super(key: key);
+  const DetailCarPage({Key? key, required this.car, required this.driverUid})
+      : super(key: key);
 
   final CarInfoModel car;
   final String driverUid;
@@ -92,49 +94,53 @@ class _DetailCarPage extends State<DetailCarPage> {
             style: TextButton.styleFrom(
               padding: const EdgeInsets.all(12.0),
               foregroundColor: Colors.white,
-              backgroundColor: const Color(0xff1200b3),
+              backgroundColor: Theme.of(context).focusColor,
               textStyle: const TextStyle(fontSize: 16),
             ),
-            onPressed: () async {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context){
-                    return AlertDialog(
-                      title: const Text("대여"),
-                      content: const Text("대여 하시겠습니까?"),
-                      actions: [
-                        TextButton(
-                          onPressed: (){
-                            Navigator.of(context).pop();
-                          }, child: const Text("취소"),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            final Rent rent = Rent(
-                              carUid: car.docID,
-                              driverUid: widget.driverUid,
-                              rentalCost: 100000, // 작업필요
-                              rentalEndTime: Timestamp.now(), // 작업필요
-                              rentalStartTime: Timestamp.now(), // 작업필요
-                              requestDate: Timestamp.now(),
-                              situation: "수락대기",
-                              ownerUid: car.uuid
-                            );
-                            await db.collection('Rent').add(rent.toJson());
-                            if(!mounted) return;
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const MainLayout(index: 0,),
-                              ),
-                            );
-
-                          }, child: const Text("확인"),
-                        )
-                      ],
-                    );
-                  }
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SecondRoute()),
               );
+              // showDialog(
+              //     context: context,
+              //     builder: (BuildContext context){
+              //       return AlertDialog(
+              //         title: const Text("대여"),
+              //         content: const Text("대여 하시겠습니까?"),
+              //         actions: [
+              //           TextButton(
+              //             onPressed: (){
+              //               Navigator.of(context).pop();
+              //             }, child: const Text("취소"),
+              //           ),
+              //           TextButton(
+              //             onPressed: () async {
+              //               final Rent rent = Rent(
+              //                 carUid: car.docID,
+              //                 driverUid: widget.driverUid,
+              //                 rentalCost: 100000, // 작업필요
+              //                 rentalEndTime: Timestamp.now(), // 작업필요
+              //                 rentalStartTime: Timestamp.now(), // 작업필요
+              //                 requestDate: Timestamp.now(),
+              //                 situation: "수락대기",
+              //                 ownerUid: car.uuid
+              //               );
+              //               await db.collection('Rent').add(rent.toJson());
+              //               if(!mounted) return;
+              //               Navigator.of(context).pop();
+              //               Navigator.of(context).push(
+              //                 MaterialPageRoute(
+              //                   builder: (context) => const MainLayout(index: 0,),
+              //                 ),
+              //               );
+              //               },
+              //             child: const Text("확인"),
+              //           )
+              //         ],
+              //       );
+              //     }
+              // );
             },
             child: const Text("대여하기"),
           ),

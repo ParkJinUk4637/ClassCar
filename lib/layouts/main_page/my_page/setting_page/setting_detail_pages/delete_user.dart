@@ -60,7 +60,7 @@ class _DeleteUser extends State<DeleteUser>{
             const SizedBox(height: 40,),
             TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xff1200B3),
+                    backgroundColor: Theme.of(context).focusColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

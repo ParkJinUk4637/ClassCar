@@ -29,7 +29,7 @@ class _PasswordReset extends State<PasswordReset> {
             const SizedBox(height: 30,),
             TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xff1200B3),
+                    backgroundColor: Theme.of(context).focusColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

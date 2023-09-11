@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../models/car_info_model.dart';
 import '../../../../models/rent.dart';
 import '../../custom_text.dart';
@@ -34,10 +35,10 @@ class _DetailRentalPage extends State<DetailRentalPage> {
             child: ListView(
               children: [
                 pageView(car?.carImgURL),
-                Container(
-                  height: 10,
-                  // color: const Color.fromARGB(255,242,242,242)
-                ),
+                // Container(
+                //   height: 5,
+                //   // color: const Color.fromARGB(255,242,242,242)
+                // ),
                 // const Divider(
                 //   height: 1,
                 //   thickness: 1,
@@ -50,7 +51,7 @@ class _DetailRentalPage extends State<DetailRentalPage> {
 
   Widget rentInfo(CarInfoModel? car) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +132,8 @@ class _DetailRentalPage extends State<DetailRentalPage> {
   // }
 
   Widget pageView(List<dynamic>? imageUrls) {
-    return SizedBox(
+    return Column(children: [
+      SizedBox(
         height: 200,
         child: PageView.builder(
           physics: const BouncingScrollPhysics(),
@@ -166,7 +168,32 @@ class _DetailRentalPage extends State<DetailRentalPage> {
                   ),
             );
           },
-        ));
+        ),
+      ),
+      const SizedBox(
+        height: 8,
+      ),
+      SmoothPageIndicator(
+        controller: _pageController,
+        count: imageUrls!.length,
+        onDotClicked: (index) {
+          _pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.ease,
+          );
+        },
+        effect: WormEffect(
+            activeDotColor: Theme.of(context).primaryColor,
+            dotColor: Colors.grey,
+            // Theme.of(context)
+            //     .colorScheme
+            //     .background,
+            radius: 6,
+            dotHeight: 10,
+            dotWidth: 10),
+      )
+    ]);
   }
 
   @override

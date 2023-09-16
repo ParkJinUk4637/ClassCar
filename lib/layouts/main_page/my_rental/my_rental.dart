@@ -23,6 +23,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
   late String driverDocNum;
   DocumentSnapshot? lastSnapshot;
   final ScrollController _scrollController = ScrollController();
+  bool isLoaded = false;
 
   Future<void> _initData() async {
     QuerySnapshot<Object> userSnapshot = await db
@@ -52,6 +53,8 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
       CarInfoModel car = CarInfoModel.fromFirestore(carSnap as DocumentSnapshot<Map<String, dynamic>>, SnapshotOptions());
       carData.add(car);
     }
+
+    isLoaded = true;
 
     setState(() {
 
@@ -194,7 +197,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: ListView.builder(
+        child: !isLoaded ? const Center(child: CircularProgressIndicator(),) : ((isLoaded) && (rentData.isEmpty)) ? const Text("없음") : ListView.builder(
           controller: _scrollController,
           itemCount: rentData.length,
           itemBuilder: (context, index) {

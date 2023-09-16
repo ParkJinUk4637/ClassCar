@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/reauth_password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_page.dart';
+import 'package:my_classcar/models/user_model.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -21,7 +22,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
   final db = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
   String? profileUrl;
-  String? downloadUrl;
+  int? credit;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +107,15 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
     super.dispose();
   }
 
-  Future<String> _loadImage() async {
+  Future<String> _loadInfo() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('userINFO')
+        .where('email', isEqualTo: user?.email)
+        .get();
+
+    final data = querySnapshot.docs.first.data() as Map<String, dynamic>;
+    credit = data['credit'];
+
     final ref =
         FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
     final url = await ref.getDownloadURL();
@@ -114,92 +123,93 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
   }
 
   Widget _profile() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.fromLTRB(16.0, 16.0, 32.0, 32.0),
-          child: InkWell(
-            onTap: () => pickImage(),
-            child: FutureBuilder(
-              future: _loadImage(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError || snapshot.data == null) {
-                  return const CircleAvatar(
-                      radius: 50,
-                      backgroundImage:
-                          AssetImage('images/default_profile.png') // 기본 프로필 이미지
-                      );
-                } else {
-                  return SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: CachedNetworkImage(
-                      imageBuilder: (context, imageProvider) => AspectRatio(
-                          aspectRatio: 1,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover),
-                          ))),
-                      imageUrl: snapshot.data as String,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.person),
-                    ),
-                  );
-                }
-              },
+    return FutureBuilder(
+      future: _loadInfo(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError || snapshot.data == null) {
+          return const CircleAvatar(
+              radius: 50,
+              backgroundImage:
+              AssetImage('images/default_profile.png') // 기본 프로필 이미지
+          );
+        } else {
+          return SizedBox(
+            width: 200,
+            height: 150,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  margin: const EdgeInsets.fromLTRB(16.0, 16.0, 32.0, 32.0),
+                  child: InkWell(
+                      onTap: () => pickImage(),
+                      child: CachedNetworkImage(
+                        imageBuilder: (context, imageProvider) => AspectRatio(
+                            aspectRatio: 1,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover),
+                                ))),
+                        imageUrl: snapshot.data as String,
+                        placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                        const Icon(Icons.person),
+                      ),
+                    // CircleAvatar(
+                    //     radius: 50,
+                    //     backgroundImage: (profileUrl != null)
+                    //         ? NetworkImage("")
+                    //         : const AssetImage('images/default_profile.png')
+                    //             as ImageProvider // 기본 프로필 이미지
+                    //     ),
+                  )
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("${user?.displayName}"),
+                    Text('${user?.email}'),
+                    Text("credit : $credit"),
+                  ],
+                ),
+                const SizedBox(
+                  width: 55,
+                ),
+                Column(
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SettingPage()),
+                          );
+                        },
+                        icon: const Icon(Icons.settings)),
+                  ],
+                )
+              ],
             ),
-            // CircleAvatar(
-            //     radius: 50,
-            //     backgroundImage: (profileUrl != null)
-            //         ? NetworkImage("")
-            //         : const AssetImage('images/default_profile.png')
-            //             as ImageProvider // 기본 프로필 이미지
-            //     ),
-          ),
-        ),
-        Column(
-          children: [
-            const SizedBox(
-              height: 40,
-            ),
-            Text('${user?.displayName}'),
-            Text('${user?.email}'),
-            const Text("Credit : (TestCredit)"),
-          ],
-        ),
-        const SizedBox(
-          width: 55,
-        ),
-        Column(
-          children: [
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingPage()),
-                  );
-                },
-                icon: const Icon(Icons.settings)),
-          ],
-        )
-      ],
+          );
+        }
+      },
     );
+
   }
 
   Widget _part1() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("이용 내역", const ReauthPasswordReset(), context),
+        listTileButton("충전", const ReauthPasswordReset(), context),
         const Divider(
           height: 1,
           thickness: 1,

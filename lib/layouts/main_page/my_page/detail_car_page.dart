@@ -6,9 +6,9 @@ import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/car_rent
 import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/car_rent_page/payment_page.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../models/car_info_model.dart';
-import '../../../../models/rent.dart';
-import '../../main_layout.dart';
+import '../../../models/car_info_model.dart';
+import '../../../models/rent.dart';
+import '../main_layout.dart';
 
 class DetailCarPage extends StatefulWidget {
   const DetailCarPage({Key? key, required this.car, required this.driverUid})
@@ -98,10 +98,12 @@ class _DetailCarPage extends State<DetailCarPage> {
               textStyle: const TextStyle(fontSize: 16),
             ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SecondRoute()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => SecondRoute()),
+              // );
+
+
               // showDialog(
               //     context: context,
               //     builder: (BuildContext context){

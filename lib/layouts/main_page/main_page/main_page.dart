@@ -1,13 +1,11 @@
-// 메인 페이지 위젯 작업 예정
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_classcar/component/logo.dart';
-import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/detail_car_page.dart';
-import 'package:my_classcar/models/user_model.dart';
-import 'package:uuid/uuid.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import '../../../component/app_snackbar.dart';
 import '../../../models/car_info_model.dart';
+import 'detail_car_page/detail_car_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -16,191 +14,207 @@ class MainPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MainPage();
 }
 
-// with AutomaticKeepAliveClientMixin : bottom navigation bar로 페이지 바꿀 때 리로딩 안하게 하는 거 (My Page는 무조건 필요)
-class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin{
+class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
   final db = FirebaseFirestore.instance;
-  final CollectionReference<Map<String, dynamic>> _collectionReference =
-      FirebaseFirestore.instance.collection("Car");
-  final _suggestions = <CarInfoModel>[];
-  late Timestamp? lastVisible;
-  final int _limit = 10;
-  bool _hasNextPage = true;
-  bool _isFirstLoadRunning = false;
-  bool _isLoadMoreRunning = false;
-  late ScrollController _controller;
+  List<CarInfoModel> carData = [];
+  DocumentSnapshot? lastSnapshot;
+  final ScrollController _scrollController = ScrollController();
+  bool isLoaded = false;
   late String driverDocNum;
+
+  Future<void> _initData() async {
+    QuerySnapshot<CarInfoModel> snapshot = await db
+        .collection("Car")
+        .orderBy("createdAt")
+        .limit(10)
+        .withConverter(
+            fromFirestore: CarInfoModel.fromFirestore,
+            toFirestore: (CarInfoModel car, _) => car.toFirestore())
+        .get();
+
+    lastSnapshot = snapshot.docs.last;
+
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    QuerySnapshot<Object> userSnapshot = await db
+        .collection("userINFO")
+        .where("email", isEqualTo: user?.email)
+        .get();
+
+    driverDocNum = userSnapshot.docs.first.id;
+
+    for (var car in snapshot.docs) {
+      carData.add(car.data());
+    }
+
+    isLoaded = true;
+
+    setState(() {});
+  }
+
+  Future<void> _infinityScroll() async {
+    QuerySnapshot<CarInfoModel> snapshot = await db
+        .collection("Car")
+        .orderBy("createdAt")
+        .startAfterDocument(lastSnapshot!)
+        .limit(10)
+        .withConverter(
+            fromFirestore: CarInfoModel.fromFirestore,
+            toFirestore: (CarInfoModel car, _) => car.toFirestore())
+        .get();
+
+    List<CarInfoModel> carList = [];
+
+    if (snapshot.docs.isNotEmpty) {
+      for (var car in snapshot.docs) {
+        carList.add(car.data());
+      }
+
+      lastSnapshot = snapshot.docs.last;
+    }
+
+    setState(() {
+      if (carList.isNotEmpty) {
+        for (var car in carList) {
+          carData.add(car);
+        }
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(classcarSnackBar("차량이 더 이상 없습니다.", context));
+      }
+    });
+  }
+
+  Widget _listTile(CarInfoModel car) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Image.network(
+            "${car.carImgURL?[0]}",
+            width: 320,
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Text(car.carModel),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: RatingBar(
+                          itemSize: 20,
+                            initialRating: car.score!.toDouble(),
+                            direction: Axis.horizontal,
+                            allowHalfRating: false,
+                            itemCount: 5,
+                            ratingWidget: RatingWidget(
+                                full: const Icon(Icons.star,color: Colors.orange,),
+                                half: const Icon(Icons.star_half),
+                                empty: const Icon(Icons.star_border)),
+                            onRatingUpdate: (rating) {}),
+                      ),
+                      Expanded(
+                        flex: 1,
+                          child: Text("(${car.sharedCount})"))
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(children: [
+                Text("가격(1일) : ${car.sharingPrice}원"),
+              ]),
+            )
+          ],
+        )
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: _isFirstLoadRunning
-                ? const Center(child: CircularProgressIndicator())
-                : Column(
-                    children: [
-                      Expanded(
-                          child: SizedBox(
-                              height: 200.0,
-                              child: ListView.builder(
-                                  controller: _controller,
-                                  itemCount: _suggestions.length,
-                                  itemBuilder: (context, index) => ListTile(
-                                          title: OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                          backgroundColor: Colors.white10,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DetailCarPage(
-                                                      car: _suggestions[index],
-                                                  driverUid: driverDocNum,),
-                                            ),
-                                          );
-                                        },
-                                        child: Column(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              child: FittedBox(
-                                                fit: BoxFit.fitWidth,
-                                                child: Image.network(
-                                                  "${_suggestions[index].carImgURL?[0]}",
-                                                  height: 250,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            Text(
-                                                "차량 모델 : ${_suggestions[index].carModel}"),
-                                            Text(
-                                                "메이커 : ${_suggestions[index].maker}"),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ))))),
-                      if (_isLoadMoreRunning == true)
-                        Container(
-                          padding: const EdgeInsets.all(16.0),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      if (_hasNextPage == false && _suggestions.isEmpty)
-                        Container(
-                            padding: const EdgeInsets.all(16.0),
-                            child: const Center(
-                              child: Text("검색된 차량이 없습니다."),
-                            ))
-                    ],
-                  )));
+        body: SafeArea(
+            child: !isLoaded
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ((isLoaded) && (carData.isEmpty))
+                    ? const Text("없음")
+                    : ListView.builder(
+                        controller: _scrollController,
+                        itemCount: carData.length,
+                        itemBuilder: (context, index) {
+                          final car = carData[index];
+                          if (carData.length == index) {
+                            return SizedBox(
+                              child: Center(
+                                  child: TextButton(
+                                onPressed: () async {
+                                  await _infinityScroll();
+                                },
+                                child: const Text(
+                                  "더 보기",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xff1200b3),
+                                  ),
+                                ),
+                              )),
+                            );
+                          }
+
+                          return ListTile(
+                            title: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 2))
+                                  ]),
+                              padding: const EdgeInsets.all(16.0),
+                              margin:
+                                  const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 0),
+                              child: _listTile(car),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetailCarPage(
+                                            car: car,
+                                            driverUid: driverDocNum,
+                                          )));
+                            },
+                          );
+                        },
+                      )));
   }
 
   @override
   void initState() {
+    _initData();
     super.initState();
-    _initLoad();
-    _controller = ScrollController()..addListener(_nextLoad);
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_nextLoad);
     super.dispose();
-  }
-
-  void _initLoad() async {
-    setState(() {
-      _isFirstLoadRunning = true;
-    });
-    try {
-      QuerySnapshot<CarInfoModel> querySnapshot = await _collectionReference
-          .orderBy("createdAt")
-          .limit(_limit)
-          .withConverter(
-              fromFirestore: CarInfoModel.fromFirestore,
-              toFirestore: (CarInfoModel car, _) => car.toFirestore())
-          .get();
-
-      final User? user = FirebaseAuth.instance.currentUser;
-
-      QuerySnapshot<Object> userSnapshot = await db
-      .collection("userINFO")
-      .where("email",isEqualTo: user?.email)
-      .get();
-
-      driverDocNum = userSnapshot.docs.first.id;
-
-      if (querySnapshot.docs.isNotEmpty) {
-        for (var snapshot in querySnapshot.docs) {
-          _suggestions.add(snapshot.data());
-        }
-        lastVisible =
-            querySnapshot.docs[querySnapshot.size - 1].data().createdAt;
-      } else {
-        setState(() {
-          _hasNextPage = false;
-        });
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-    setState(() {
-      _isFirstLoadRunning = false;
-    });
-  }
-
-  void _nextLoad() async {
-    if (_hasNextPage &&
-        !_isFirstLoadRunning &&
-        !_isLoadMoreRunning &&
-        _controller.position.extentAfter < 100) {
-      setState(() {
-        _isLoadMoreRunning = true;
-      });
-
-      try {
-        QuerySnapshot<CarInfoModel> querySnapshot = await _collectionReference
-            .orderBy("createdAt")
-            .startAfter([lastVisible])
-            .limit(_limit)
-            .withConverter(
-                fromFirestore: CarInfoModel.fromFirestore,
-                toFirestore: (CarInfoModel car, _) => car.toFirestore())
-            .get();
-
-        if (querySnapshot.docs.isNotEmpty) {
-          for (var snapshot in querySnapshot.docs) {
-            _suggestions.add(snapshot.data());
-          }
-          lastVisible =
-              querySnapshot.docs[querySnapshot.size - 1].data().createdAt;
-        } else {
-          setState(() {
-            _hasNextPage = false;
-          });
-        }
-      } catch (e) {
-        print(e.toString());
-      }
-
-      setState(() {
-        _isLoadMoreRunning = false;
-      });
-    }
   }
 
   @override

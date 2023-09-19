@@ -3,7 +3,7 @@ import 'package:my_classcar/layouts/main_page/my_page/my_page.dart';
 import 'package:my_classcar/layouts/main_page/my_rental/my_rental.dart';
 
 import '../../component/const/name_const.dart';
-import 'main_page/new_main_page.dart';
+import 'main_page/main_page.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({Key? key, required this.index}) : super(key: key);

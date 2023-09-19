@@ -70,6 +70,7 @@ class _DetailCarPage extends State<DetailCarPage> {
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(textAlign: TextAlign.left, "${car.sharingPrice}원/일"),
               Text(textAlign: TextAlign.left, "합계요금 : $totalPrice"),
@@ -171,14 +172,14 @@ class _DetailCarPage extends State<DetailCarPage> {
         if (!mounted) return;
         final selectEnd = await showDatePicker(
           context: context,
-          initialDate : selectStart!,
-          firstDate: selectStart,
+          initialDate : DateTime(DateTime.now().year,DateTime.now().month,selectStart!.day+1),
+          firstDate: DateTime(DateTime.now().year,DateTime.now().month,selectStart!.day+1),
           lastDate: DateTime(DateTime.now().year,
               DateTime.now().month + 1, DateTime.now().day),
         );
 
         if (selectEnd!=null &&
-            endDate.day != selectStart.day) {
+            selectEnd.day != selectStart.day) {
           setState(() {
             startDate = selectStart;
             endDate = selectEnd;

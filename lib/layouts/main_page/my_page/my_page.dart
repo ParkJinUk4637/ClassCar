@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/reauth_password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_page.dart';
-import 'package:my_classcar/models/user_model.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -26,6 +25,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: Padding(
@@ -65,15 +65,15 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
 
   Future<void> pickImage() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final Reference storageRef =
-          FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
+      FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
       final UploadTask uploadTask = storageRef.putFile(File(pickedFile.path));
 
       final TaskSnapshot downloadUrl =
-          (await uploadTask.whenComplete(() => null));
+      (await uploadTask.whenComplete(() => null));
       final String url = await downloadUrl.ref.getDownloadURL();
 
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -117,7 +117,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
     credit = data['credit'];
 
     final ref =
-        FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
+    FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
     final url = await ref.getDownloadURL();
     return url;
   }
@@ -143,10 +143,10 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 100,
-                  height: 100,
-                  margin: const EdgeInsets.fromLTRB(16.0, 16.0, 32.0, 32.0),
-                  child: InkWell(
+                    width: 100,
+                    height: 100,
+                    margin: const EdgeInsets.fromLTRB(16.0, 16.0, 32.0, 32.0),
+                    child: InkWell(
                       onTap: () => pickImage(),
                       child: CachedNetworkImage(
                         imageBuilder: (context, imageProvider) => AspectRatio(
@@ -163,14 +163,14 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
                         errorWidget: (context, url, error) =>
                         const Icon(Icons.person),
                       ),
-                    // CircleAvatar(
-                    //     radius: 50,
-                    //     backgroundImage: (profileUrl != null)
-                    //         ? NetworkImage("")
-                    //         : const AssetImage('images/default_profile.png')
-                    //             as ImageProvider // 기본 프로필 이미지
-                    //     ),
-                  )
+                      // CircleAvatar(
+                      //     radius: 50,
+                      //     backgroundImage: (profileUrl != null)
+                      //         ? NetworkImage("")
+                      //         : const AssetImage('images/default_profile.png')
+                      //             as ImageProvider // 기본 프로필 이미지
+                      //     ),
+                    )
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -38,7 +38,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
         .collection("Rent")
         // .orderBy("createdAt")
         .where("DriverUID", isEqualTo: driverDocNum)
-        .orderBy("RequestDate",descending: true)
+        .orderBy("RequestDate", descending: true)
         .limit(10)
         .get();
 
@@ -49,16 +49,16 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
       Rent rent = Rent.fromJson(rentDoc.data());
       rentData.add(rent);
 
-      DocumentSnapshot carSnap = await firestore.collection('Car').doc(rent.carUid).get();
-      CarInfoModel car = CarInfoModel.fromFirestore(carSnap as DocumentSnapshot<Map<String, dynamic>>, SnapshotOptions());
+      DocumentSnapshot carSnap =
+          await firestore.collection('Car').doc(rent.carUid).get();
+      CarInfoModel car = CarInfoModel.fromFirestore(
+          carSnap as DocumentSnapshot<Map<String, dynamic>>, SnapshotOptions());
       carData.add(car);
     }
 
     isLoaded = true;
 
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   Future<void> _infinityScroll() async {
@@ -67,7 +67,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
         .collection("Rent")
         // .orderBy("createdAt")
         .where("DriverUID", isEqualTo: driverDocNum)
-        .orderBy("RequestDate",descending: true)
+        .orderBy("RequestDate", descending: true)
         .startAfterDocument(lastSnapshot!)
         .limit(10)
         .get();
@@ -75,13 +75,13 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     List<Rent> rentList = [];
     List<CarInfoModel> carList = [];
 
-    if(snapshot.docs.isNotEmpty) {
+    if (snapshot.docs.isNotEmpty) {
       for (var rentDoc in snapshot.docs) {
         Rent rent = Rent.fromJson(rentDoc.data());
         rentList.add(rent);
 
-        DocumentSnapshot carSnap = await firestore.collection('Car').doc(
-            rent.carUid).get();
+        DocumentSnapshot carSnap =
+            await firestore.collection('Car').doc(rent.carUid).get();
         CarInfoModel car = CarInfoModel.fromFirestore(
             carSnap as DocumentSnapshot<Map<String, dynamic>>,
             SnapshotOptions());
@@ -91,16 +91,16 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     }
 
     setState(() {
-      if(rentList.isNotEmpty) {
+      if (rentList.isNotEmpty) {
         for (var car in carList) {
           carData.add(car);
         }
         for (var rent in rentList) {
           rentData.add(rent);
         }
-      }else{
+      } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(classcarSnackBar("대여 현황이 더 이상 없습니다.",context));
+            .showSnackBar(classcarSnackBar("대여 현황이 더 이상 없습니다.", context));
       }
     });
   }
@@ -197,55 +197,96 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: !isLoaded ? const Center(child: CircularProgressIndicator(),) : ((isLoaded) && (rentData.isEmpty)) ? const Text("없음") : ListView.builder(
-          controller: _scrollController,
-          itemCount: rentData.length,
-          itemBuilder: (context, index) {
-            final car = carData[index];
-            final rent = rentData[index];
-            if (rentData.length - 1 == index) {
-              return SizedBox(
-                // height: 100,
-                child: Center(
-                  child: TextButton(
-                    onPressed: () async {
-                      await _infinityScroll();
+        child: !isLoaded
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ((isLoaded) && (rentData.isEmpty))
+                ? const Text("없음")
+                : ListView.builder(
+                    controller: _scrollController,
+                    itemCount: rentData.length,
+                    itemBuilder: (context, index) {
+                      final car = carData[index];
+                      final rent = rentData[index];
+                      if (rentData.length - 1 == index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                                title: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 2,
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 2))
+                                      ]),
+                                  padding: const EdgeInsets.all(16.0),
+                                  margin: const EdgeInsets.fromLTRB(
+                                      8.0, 16.0, 8.0, 0),
+                                  child: _listTile(rent, car),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              DetailRentalPage(
+                                                rent: rentData[index],
+                                                car: carData[index],
+                                              )));
+                                }),
+                            SizedBox(
+                              // height: 100,
+                              child: Center(
+                                child: TextButton(
+                                  onPressed: () async {
+                                    await _infinityScroll();
+                                  },
+                                  child: const Text(
+                                    "더 보기",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xff1200b3),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return ListTile(
+                          title: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 2))
+                                ]),
+                            padding: const EdgeInsets.all(16.0),
+                            margin:
+                                const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 0),
+                            child: _listTile(rent, car),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DetailRentalPage(
+                                          rent: rentData[index],
+                                          car: carData[index],
+                                        )));
+                          });
                     },
-                    child: const Text(
-                      "더 보기",
-                      style: TextStyle(fontSize: 14,color: Color(0xff1200b3),),
-                    ),
                   ),
-                ),
-              );
-            }
-            return ListTile(
-                title: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 2))
-                      ]),
-                  padding: const EdgeInsets.all(16.0),
-                  margin: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 0),
-                  child: _listTile(rent,car),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DetailRentalPage(
-                            rent: rentData[index],
-                            car: carData[index],
-                          )));
-                });
-          },
-        ),
         // ListView.builder(
         //   key: const PageStorageKey('myListView'), // 이 페이지 스크롤 위치, 상태 유지
         //   // padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),

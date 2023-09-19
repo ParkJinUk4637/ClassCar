@@ -68,15 +68,18 @@ class _DetailCarPage extends State<DetailCarPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
+          Expanded(
+            flex: 3,
+            child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(textAlign: TextAlign.left, "${car.sharingPrice}원/일"),
               Text(textAlign: TextAlign.left, "합계요금 : $totalPrice"),
             ],
-          ),
-          SizedBox(width: MediaQuery.of(context).size.width / 440 * 200),
+          ),),
+
+          // SizedBox(width: MediaQuery.of(context).size.width / 460 * 200),
           // TextButton(
           //   style: TextButton.styleFrom(
           //     padding: const EdgeInsets.all(12.0),
@@ -94,7 +97,9 @@ class _DetailCarPage extends State<DetailCarPage> {
           //   },
           //   child: const Text("대여하기"),
           // )
-          TextButton(
+          Expanded(
+            flex: 1,
+            child: TextButton(
             style: TextButton.styleFrom(
               padding: const EdgeInsets.all(12.0),
               foregroundColor: Colors.white,
@@ -127,9 +132,9 @@ class _DetailCarPage extends State<DetailCarPage> {
                                 driverUid: widget.driverUid,
                                 rentalCost: 100000,
                                 // 작업필요
-                                rentalEndTime: Timestamp.now(),
+                                rentalEndTime: Timestamp.fromDate(endDate),
                                 // 작업필요
-                                rentalStartTime: Timestamp.now(),
+                                rentalStartTime: Timestamp.fromDate(startDate),
                                 // 작업필요
                                 requestDate: Timestamp.now(),
                                 situation: "수락대기",
@@ -140,7 +145,7 @@ class _DetailCarPage extends State<DetailCarPage> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const MainLayout(
-                                  index: 0,
+                                  index: 1,
                                 ),
                               ),
                             );
@@ -152,7 +157,8 @@ class _DetailCarPage extends State<DetailCarPage> {
                   });
             },
             child: const Text("대여하기"),
-          ),
+          ),)
+
         ],
       ),
     );
@@ -166,14 +172,14 @@ class _DetailCarPage extends State<DetailCarPage> {
           initialDate: startDate,
           firstDate: DateTime.now(),
           lastDate: DateTime(DateTime.now().year,
-              DateTime.now().month + 1, DateTime.now().day),
+              DateTime.now().month + 1, DateTime.now().day-1),
         );
 
         if (!mounted) return;
         final selectEnd = await showDatePicker(
           context: context,
-          initialDate : DateTime(DateTime.now().year,DateTime.now().month,selectStart!.day+1),
-          firstDate: DateTime(DateTime.now().year,DateTime.now().month,selectStart!.day+1),
+          initialDate : DateTime(selectStart!.year,selectStart.month,selectStart.day+1),
+          firstDate: DateTime(selectStart.year,selectStart.month,selectStart.day+1),
           lastDate: DateTime(DateTime.now().year,
               DateTime.now().month + 1, DateTime.now().day),
         );
@@ -276,7 +282,7 @@ class _DetailCarPage extends State<DetailCarPage> {
           endDate = DateTime(
               endDate.year, endDate.month, endDate.day, time.hour, time.minute);
 
-          totalPrice = (car.sharingPrice! * (endDate.day - startDate.day));
+          totalPrice = (car.sharingPrice! * int.parse(endDate.difference(startDate).inDays.toString()));
         });
       },
     );

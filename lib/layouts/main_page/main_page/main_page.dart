@@ -111,20 +111,21 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
                       Expanded(
                         flex: 2,
                         child: RatingBar(
-                          itemSize: 20,
+                            itemSize: 20,
                             initialRating: car.score!.toDouble(),
                             direction: Axis.horizontal,
                             allowHalfRating: false,
                             itemCount: 5,
                             ratingWidget: RatingWidget(
-                                full: const Icon(Icons.star,color: Colors.orange,),
+                                full: const Icon(
+                                  Icons.star,
+                                  color: Colors.orange,
+                                ),
                                 half: const Icon(Icons.star_half),
                                 empty: const Icon(Icons.star_border)),
                             onRatingUpdate: (rating) {}),
                       ),
-                      Expanded(
-                        flex: 1,
-                          child: Text("(${car.sharedCount})"))
+                      Expanded(flex: 1, child: Text("(${car.sharedCount})"))
                     ],
                   ),
                 ],
@@ -133,7 +134,7 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
             Expanded(
               flex: 1,
               child: Column(children: [
-                Text("가격(1일) : ${car.sharingPrice}원"),
+                Text("가격/일 : ${car.sharingPrice}원"),
               ]),
             )
           ],
@@ -158,21 +159,52 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
                         itemCount: carData.length,
                         itemBuilder: (context, index) {
                           final car = carData[index];
-                          if (carData.length == index) {
-                            return SizedBox(
-                              child: Center(
-                                  child: TextButton(
-                                onPressed: () async {
-                                  await _infinityScroll();
-                                },
-                                child: const Text(
-                                  "더 보기",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xff1200b3),
+                          if (carData.length -1 == index) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  title: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 2,
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 2))
+                                        ]),
+                                    padding: const EdgeInsets.all(16.0),
+                                    margin: const EdgeInsets.fromLTRB(
+                                        8.0, 16.0, 8.0, 0),
+                                    child: _listTile(car),
                                   ),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => DetailCarPage(
+                                                  car: car,
+                                                  driverUid: driverDocNum,
+                                                )));
+                                  },
                                 ),
-                              )),
+                                SizedBox(
+                                  child: Center(
+                                      child: TextButton(
+                                    onPressed: () async {
+                                      await _infinityScroll();
+                                    },
+                                    child: const Text(
+                                      "더 보기",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xff1200b3),
+                                      ),
+                                    ),
+                                  )),
+                                ),
+                              ],
                             );
                           }
 

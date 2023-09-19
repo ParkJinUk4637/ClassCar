@@ -23,7 +23,7 @@ class _MainLayoutState extends State<MainLayout> {
     const MyPage(),
   ];
   late int _selectedIndex = widget.index;
-  final PageController pageController = PageController();
+  late PageController pageController;
 
   void _onItemTapped(int index) {
     pageController.jumpToPage(index);
@@ -53,6 +53,8 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.index;
+    pageController = PageController(initialPage: _selectedIndex);
   }
 
   @override

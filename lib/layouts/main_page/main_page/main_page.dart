@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_classcar/component/logo.dart';
-import 'package:my_classcar/layouts/main_page/my_page/detail_car_page.dart';
+import 'package:my_classcar/layouts/main_page/main_page/detail_car_page/detail_car_page.dart';
 import 'package:my_classcar/models/user_model.dart';
 import 'package:uuid/uuid.dart';
 

@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
-import '../../../models/car_info_model.dart';
-import '../../../models/rent.dart';
-import '../main_layout.dart';
+import '../../../../models/car_info_model.dart';
+import '../../../../models/rent.dart';
+import '../../main_layout.dart';
 
 class DetailCarPage extends StatefulWidget {
   const DetailCarPage({Key? key, required this.car, required this.driverUid})
@@ -319,5 +319,10 @@ class _DetailCarPage extends State<DetailCarPage> {
   void initState(){
     totalPrice = car.sharingPrice!;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

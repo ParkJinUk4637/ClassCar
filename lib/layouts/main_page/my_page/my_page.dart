@@ -5,7 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_classcar/layouts/main_page/my_page/charge_page.dart';
 import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/reauth_password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_page.dart';
@@ -21,45 +23,62 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
   final db = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
   String? profileUrl;
-  int? credit;
+  String? userDocsNum;
+  num? credit;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ListView(
-            children: [
-              _profile(),
-              const Divider(
-                height: 2,
-                thickness: 2,
-                color: Colors.black,
-              ),
-              _part1(),
-              const Divider(
-                height: 2,
-                thickness: 2,
-                color: Colors.black,
-              ),
-              _part2(),
-              // TextButton(
-              //   onPressed: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) => const SettingPage()),
-              //     );
-              //   },
-              //   child: const Text(
-              //     "설정",
-              //     style: TextStyle(color: Colors.black),
-              //   ),
-              // ),
-            ],
-          ),
+        body: FutureBuilder(
+            future: _loadInfo(),
+            builder: (context, snapshot){
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              else if (snapshot.hasError || snapshot.data == null) {
+                print(snapshot.error);
+                return const Center(
+                    child: Text("페이지를 불러올 수 없습니다."),
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView(
+                  children: [
+                    _profile(snapshot),
+                    const Divider(
+                      height: 2,
+                      thickness: 2,
+                      color: Colors.black,
+                    ),
+                    _part1(),
+                    const Divider(
+                      height: 2,
+                      thickness: 2,
+                      color: Colors.black,
+                    ),
+                    _part2(),
+                    // TextButton(
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => const SettingPage()),
+                    //     );
+                    //   },
+                    //   child: const Text(
+                    //     "설정",
+                    //     style: TextStyle(color: Colors.black),
+                    //   ),
+                    // ),
+                  ],
+                ),
+              );
+            }
         ));
   }
 
@@ -115,6 +134,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
 
     final data = querySnapshot.docs.first.data() as Map<String, dynamic>;
     credit = data['credit'];
+    userDocsNum = querySnapshot.docs.first.id;
 
     final ref =
     FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
@@ -122,20 +142,8 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
     return url;
   }
 
-  Widget _profile() {
-    return FutureBuilder(
-      future: _loadInfo(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError || snapshot.data == null) {
-          return const CircleAvatar(
-              radius: 50,
-              backgroundImage:
-              AssetImage('images/default_profile.png') // 기본 프로필 이미지
-          );
-        } else {
-          return SizedBox(
+  Widget _profile(AsyncSnapshot<String> snapshot) {
+    return SizedBox(
             width: 200,
             height: 150,
             child: Row(
@@ -177,7 +185,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
                   children: [
                     Text("${user?.displayName}"),
                     Text('${user?.email}'),
-                    Text("credit : $credit"),
+                    Text("credit : ${credit?.toInt()}"),
                   ],
                 ),
                 const SizedBox(
@@ -199,17 +207,13 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
               ],
             ),
           );
-        }
-      },
-    );
-
   }
 
   Widget _part1() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        listTileButton("충전", const ReauthPasswordReset(), context),
+        listTileButton("충전", ChargePage(userDocNum: userDocsNum!), context),
         const Divider(
           height: 1,
           thickness: 1,

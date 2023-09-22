@@ -90,23 +90,23 @@ class _RegistPage extends State<RegistPage> {
     }
   }
 
-  UserModel userInfo = UserModel(
-      address: "",
-      backNum: "",
-      birthday: "",
-      detailAddress: "",
-      email: "",
-      isCheckedAgreement: true,
-      isCheckedAgreement2: true,
-      isCheckedAgreementAD: true,
-      name: "",
-      password: "",
-      phoneNumber: "",
-      telecom: "",
-      userID: "",
-      profilePicLink: "",
-      credit: 10000
-  );
+  // UserModel userInfo = UserModel(
+  //     address: "",
+  //     backNum: "",
+  //     birthday: "",
+  //     detailAddress: "",
+  //     email: "",
+  //     isCheckedAgreement: true,
+  //     isCheckedAgreement2: true,
+  //     isCheckedAgreementAD: true,
+  //     name: "",
+  //     password: "",
+  //     phoneNumber: "",
+  //     telecom: "",
+  //     userID: "",
+  //     profilePicLink: "",
+  //     credit: 10000
+  // );
 
 
   @override
@@ -180,7 +180,6 @@ class _RegistPage extends State<RegistPage> {
               blank_check += 0;
               return '이메일을 올바르게 입력하세요';
             }
-            userInfo.email = emailController.text;
             blank_check += 1;
             return null;
           },
@@ -219,7 +218,6 @@ class _RegistPage extends State<RegistPage> {
               blank_check += 0;
               return '비밀번호를 입력하세요';
             }
-            userInfo.password = passwordConfigController.text;
             blank_check += 1;
             return null;
           },
@@ -300,7 +298,6 @@ class _RegistPage extends State<RegistPage> {
             // else if (!RegExp(r'^[가-힣]{2,4}$').hasMatch(value)) {
             //   return '이름은 2글자 이상, 4글자 이하의 한글로 입력하세요';
             // }
-            userInfo.name = nameController.text;
             blank_check += 1;
             return null;
           },
@@ -341,7 +338,6 @@ class _RegistPage extends State<RegistPage> {
                   blank_check += 0;
                   return '주소를 입력하세요';
                 }
-                userInfo.address = _addressController.text;
                 blank_check += 1;
                 return null;
               },
@@ -400,7 +396,6 @@ class _RegistPage extends State<RegistPage> {
             // else if (!RegExp(r'^[가-힣]{2,4}$').hasMatch(value)) {
             //   return '이름은 2글자 이상, 4글자 이하의 한글로 입력하세요';
             // }
-            userInfo.detailAddress = _addressDetailController.text;
             blank_check += 1;
             return null;
           },
@@ -450,7 +445,6 @@ class _RegistPage extends State<RegistPage> {
           // underline: Container(height: 1.4, color: Color(0xffc0c0c0)),
           onChanged: (String? newValue) {
             telcom = newValue!;
-            userInfo.telecom = telcom;
           },
           items:
           ['SKT', 'KT', 'LG U+'].map<DropdownMenuItem<String?>>((String? i) {
@@ -483,7 +477,6 @@ class _RegistPage extends State<RegistPage> {
                  return '휴대전화 번호가 잘못되었습니다';
               }
               blank_check += 1;
-              userInfo.phoneNumber = phoneNumberController.text;
               return null;
             },
             decoration: InputDecoration(
@@ -622,6 +615,7 @@ class _RegistPage extends State<RegistPage> {
                 PhoneAuthCredential phoneAuthCredential =
                     PhoneAuthProvider.credential(verificationId: verificationId, smsCode: OTPController.text);
                 signInWithPhoneAuthCredential(phoneAuthCredential);
+                // To-Do 예외처리에 따른 스낵바 표시해야함
               },
               child: const Text(
                 "확인",
@@ -679,10 +673,35 @@ class _RegistPage extends State<RegistPage> {
         email: email,
         password: password,
       );
+      final UserModel userModel = UserModel(
+          address: _addressController.text,
+          backNum: "",
+          birthday: birthdayController.text,
+          detailAddress: _addressDetailController.text,
+          email: emailController.text,
+          isCheckedAgreement: true,
+          isCheckedAgreement2: true,
+          isCheckedAgreementAD: true,
+          name: nameController.text,
+          password: passwordController.text,
+          phoneNumber: phoneNumberController.text,
+          telecom: telcom,
+          userID: "",
+          profilePicLink: "",
+          credit: 0);
+
+      await FirebaseFirestore.instance.collection("userINFO").add(userModel.toFirestore());
       final initialUserInfo = FirebaseAuth.instance.currentUser;
       initialUserInfo!.updateDisplayName(name);
+
+      setState(() {
+        Get.offAll(() => const LoginPage());
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('패스워드가 약합니다.')), // 기준 알아내서 수정해야함.
+        );
         logger.w('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -691,6 +710,9 @@ class _RegistPage extends State<RegistPage> {
         logger.w('The account already exists for that email.');
       }
     } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('회원가입 오류')),
+      );
       logger.e(e);
       return false;
     }

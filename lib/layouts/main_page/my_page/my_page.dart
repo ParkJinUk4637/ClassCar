@@ -22,7 +22,7 @@ class MyPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MyPage();
 }
 
-class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
+class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin {
   final db = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
   String? profileUrl;
@@ -37,36 +37,35 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
         resizeToAvoidBottomInset: true,
         body: FutureBuilder(
             future: _loadInfo(),
-            builder: (context, snapshot){
+            builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
-              }
-              else if (snapshot.hasError || snapshot.data == null) {
+              } else if (snapshot.hasError || snapshot.data == null) {
                 print(snapshot.error);
-                return Center(
-                    child: Column(
-                      children: [
-                        Text("페이지를 불러올 수 없습니다."),
-                        TextButton(
-                            style: TextButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                minimumSize: const Size(370, 55),
-                                side: const BorderSide(
-                                  color: Colors.redAccent,
-                                )),
-                            onPressed: () async => {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("페이지를 불러올 수 없습니다."),
+                    TextButton(
+                        style: TextButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            minimumSize: const Size(370, 55),
+                            side: const BorderSide(
+                              color: Colors.redAccent,
+                            )),
+                        onPressed: () async => {
                               _signOut(),
                             },
-                            child: const Text(
-                              "로그아웃",
-                              style: TextStyle(color: Colors.redAccent),
-                            )),
-                      ],
-                    )
+                        child: const Text(
+                          "로그아웃",
+                          style: TextStyle(color: Colors.redAccent),
+                        )),
+                  ],
                 );
               }
               return Padding(
@@ -102,21 +101,20 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
                   ],
                 ),
               );
-            }
-        ));
+            }));
   }
 
   Future<void> pickImage() async {
     final pickedFile =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final Reference storageRef =
-      FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
+          FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
       final UploadTask uploadTask = storageRef.putFile(File(pickedFile.path));
 
       final TaskSnapshot downloadUrl =
-      (await uploadTask.whenComplete(() => null));
+          (await uploadTask.whenComplete(() => null));
       final String url = await downloadUrl.ref.getDownloadURL();
 
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -160,77 +158,89 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
     credit = data['credit'];
     userDocsNum = querySnapshot.docs.first.id;
 
-    final ref =
-    FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
-    final url = await ref.getDownloadURL();
-    return url;
+    try {
+      final ref =
+          FirebaseStorage.instance.ref().child('userProfilePic/${user?.email}');
+      final url = await ref.getDownloadURL();
+      return url;
+    } catch (e) {
+      final ref =
+          FirebaseStorage.instance.ref().child('userProfilePic/default.png');
+      final url = await ref.getDownloadURL();
+      return url;
+    }
   }
 
   Widget _profile(AsyncSnapshot<String> snapshot) {
     return SizedBox(
-            width: 200,
-            height: 150,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+      width: 200,
+      height: 150,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 4,
+            child: Container(
+                width: 100,
+                height: 100,
+                margin: const EdgeInsets.fromLTRB(16.0, 16.0, 32.0, 32.0),
+                child: InkWell(
+                  onTap: () => pickImage(),
+                  child: CachedNetworkImage(
+                    imageBuilder: (context, imageProvider) => AspectRatio(
+                        aspectRatio: 1,
+                        child: Container(
+                            decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover),
+                        ))),
+                    imageUrl: snapshot.data as String,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.person),
+                  ),
+                  // CircleAvatar(
+                  //     radius: 50,
+                  //     backgroundImage: (profileUrl != null)
+                  //         ? NetworkImage("")
+                  //         : const AssetImage('images/default_profile.png')
+                  //             as ImageProvider // 기본 프로필 이미지
+                  //     ),
+                )),
+          ),
+          Expanded(
+            flex: 5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                    width: 100,
-                    height: 100,
-                    margin: const EdgeInsets.fromLTRB(16.0, 16.0, 32.0, 32.0),
-                    child: InkWell(
-                      onTap: () => pickImage(),
-                      child: CachedNetworkImage(
-                        imageBuilder: (context, imageProvider) => AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: imageProvider, fit: BoxFit.cover),
-                                ))),
-                        imageUrl: snapshot.data as String,
-                        placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                        const Icon(Icons.person),
-                      ),
-                      // CircleAvatar(
-                      //     radius: 50,
-                      //     backgroundImage: (profileUrl != null)
-                      //         ? NetworkImage("")
-                      //         : const AssetImage('images/default_profile.png')
-                      //             as ImageProvider // 기본 프로필 이미지
-                      //     ),
-                    )
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("${user?.displayName}"),
-                    Text('${user?.email}'),
-                    Text("credit : ${credit?.toInt()}"),
-                  ],
-                ),
-                const SizedBox(
-                  width: 55,
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SettingPage()),
-                          );
-                        },
-                        icon: const Icon(Icons.settings)),
-                  ],
-                )
+                Text("${user?.displayName}"),
+                Text('${user?.email}'),
+                Text("credit : ${credit?.toInt()}"),
               ],
             ),
-          );
+          ),
+          Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SettingPage()),
+                        );
+                      },
+                      icon: const Icon(Icons.settings)),
+                ],
+              ))
+        ],
+      ),
+    );
   }
 
   Widget _part1() {

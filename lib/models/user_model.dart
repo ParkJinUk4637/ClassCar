@@ -1,23 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  final String address;
-  final String backNum;
-  final String birthday;
-  final String detailAddress;
-  final String email;
-  final bool isCheckedAgreement;
-  final bool isCheckedAgreement2;
-  final bool isCheckedAgreementAD;
-  final String name;
-  final String passWord;
-  final String phoneNumber;
-  final String telecom;
-  final String userID;
-  final String profilePicLink;
-  final int credit;
+  String address;
+  String backNum;
+  String birthday;
+  String detailAddress;
+  String email;
+  bool isCheckedAgreement;
+  bool isCheckedAgreement2;
+  bool isCheckedAgreementAD;
+  String name;
+  String password;
+  String phoneNumber;
+  String telecom;
+  String userID;
+  String profilePicLink;
+  int credit;
 
-  const UserModel({
+  UserModel({
     required this.address,
     required this.backNum,
     required this.birthday,
@@ -27,7 +27,7 @@ class UserModel {
     required this.isCheckedAgreement2,
     required this.isCheckedAgreementAD,
     required this.name,
-    required this.passWord,
+    required this.password,
     required this.phoneNumber,
     required this.telecom,
     required this.userID,
@@ -48,7 +48,7 @@ class UserModel {
       isCheckedAgreement2: data['isCheckedAgreement2'],
       isCheckedAgreementAD: data['isCheckedAgreementAD'],
       name: data['name'],
-      passWord: data['passWord'],
+      password: data['passWord'],
       phoneNumber: data['phoneNumber'],
       telecom: data['telecom'],
       userID: data['userID'],
@@ -69,7 +69,7 @@ class UserModel {
       'isCheckedAgreement2': isCheckedAgreement2,
       'isCheckedAgreementAD': isCheckedAgreementAD,
       'name': name,
-      'passWord': passWord,
+      'passWord': password,
       'phoneNumber': phoneNumber,
       'telecom': telecom,
       'userID': userID,

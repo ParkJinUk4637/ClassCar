@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'login_page.dart';
+import 'package:my_classcar/models/user_model.dart';
+import 'package:remedi_kopo/remedi_kopo.dart';
+
 
 class RegistPage extends StatefulWidget {
   const RegistPage({super.key});
@@ -17,18 +22,18 @@ class _RegistPage extends State<RegistPage> {
   var logger = Logger(
     printer: PrettyPrinter(),
   );
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordConfigController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController birthdayController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController OTPController = TextEditingController();
-
-
-  // FocusNode passwordFocusNode = FocusNode();
-  // FocusNode passwordConfigFocusNode = FocusNode();
-  // FocusNode phoneNumberFocusNode = FocusNode();
-
+  TextEditingController _addressController = TextEditingController();
+  TextEditingController _addressDetailController = TextEditingController();
+  String telcom = "";
+  Map<String, String> formData = {};
 
   bool authOk = false;
   bool requestedAuth=false;
@@ -36,8 +41,8 @@ class _RegistPage extends State<RegistPage> {
   bool allCheck = false; // 전체확인
   bool otpCheck = false; //인증번호
   int blank_check = 0;
-  late String verificationId;
 
+  late String verificationId;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void setup() async {
@@ -45,14 +50,14 @@ class _RegistPage extends State<RegistPage> {
   } //빈칸 채크 초기화
 
   void check()  {
-    if (blank_check == 5) {
+    if (blank_check == 7) {
       allCheck = true;
     } else {
       allCheck = false;
     }
   }
 
-  void signInWithPhoneAuthCredential(PhoneAuthCredential phoneAuthCredential) async {
+  void signInWithPhoneAuthCredential(phoneAuthCredential) async {
     check();
     setState(() {
       showLoading = true;
@@ -85,6 +90,25 @@ class _RegistPage extends State<RegistPage> {
     }
   }
 
+  UserModel userInfo = UserModel(
+      address: "",
+      backNum: "",
+      birthday: "",
+      detailAddress: "",
+      email: "",
+      isCheckedAgreement: true,
+      isCheckedAgreement2: true,
+      isCheckedAgreementAD: true,
+      name: "",
+      password: "",
+      phoneNumber: "",
+      telecom: "",
+      userID: "",
+      profilePicLink: "",
+      credit: 10000
+  );
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,6 +127,12 @@ class _RegistPage extends State<RegistPage> {
                 const SizedBox(height: 10),
                 _userName(),
                 const SizedBox(height: 10),
+                _userAddress(),
+                const SizedBox(height: 10),
+                _userDetailaddress(),
+                const SizedBox(height: 10),
+                _userTelecom(),
+                const SizedBox(height: 20),
                 _userPhoneNumber(),
                 const SizedBox(height: 10),
                 _validNumberRequest(),
@@ -150,6 +180,7 @@ class _RegistPage extends State<RegistPage> {
               blank_check += 0;
               return '이메일을 올바르게 입력하세요';
             }
+            userInfo.email = emailController.text;
             blank_check += 1;
             return null;
           },
@@ -188,6 +219,7 @@ class _RegistPage extends State<RegistPage> {
               blank_check += 0;
               return '비밀번호를 입력하세요';
             }
+            userInfo.password = passwordConfigController.text;
             blank_check += 1;
             return null;
           },
@@ -268,6 +300,7 @@ class _RegistPage extends State<RegistPage> {
             // else if (!RegExp(r'^[가-힣]{2,4}$').hasMatch(value)) {
             //   return '이름은 2글자 이상, 4글자 이하의 한글로 입력하세요';
             // }
+            userInfo.name = nameController.text;
             blank_check += 1;
             return null;
           },
@@ -293,6 +326,144 @@ class _RegistPage extends State<RegistPage> {
     );
   }
 
+  Widget _userAddress(){
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+            flex: 7,
+            child: TextFormField(
+              controller: _addressController,
+              autovalidateMode: AutovalidateMode.always,
+              keyboardType: TextInputType.phone,
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  blank_check += 0;
+                  return '주소를 입력하세요';
+                }
+                userInfo.address = _addressController.text;
+                blank_check += 1;
+                return null;
+              },
+              decoration: InputDecoration(
+                  labelText: '주소 입력',
+                  hintText: "주소 입력",
+                  enabledBorder: OutlineInputBorder(
+                    // 기본 모양
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    // 포커스 되었을 경우 모양
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    // 에러 발생 시 모양
+                      borderRadius: BorderRadius.circular(20)),
+                  focusedErrorBorder: OutlineInputBorder(
+                    // 에러 발생 후 포커스 되었을 경우 모양
+                      borderRadius: BorderRadius.circular(20))),
+            )),
+        const SizedBox(width: 5),
+        Expanded(
+          flex: 3,
+          child: TextButton(
+              style: TextButton.styleFrom(
+                  backgroundColor: Theme.of(context).focusColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: const Size(370, 55)),
+              onPressed: () {
+               _searchAddress();
+              },
+              child: const Text(
+                "주소찾기",
+                style: TextStyle(color: Colors.white),
+              )),
+        )
+      ],
+    );
+  }
+
+  Widget _userDetailaddress() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          controller: _addressDetailController,
+          autovalidateMode: AutovalidateMode.always,
+          validator: (String? value) {
+            if (value!.isEmpty) {
+              blank_check += 0;
+              return '상세주소를 입력하세요';
+            }
+            // else if (!RegExp(r'^[가-힣]{2,4}$').hasMatch(value)) {
+            //   return '이름은 2글자 이상, 4글자 이하의 한글로 입력하세요';
+            // }
+            userInfo.detailAddress = _addressDetailController.text;
+            blank_check += 1;
+            return null;
+          },
+          decoration: InputDecoration(
+              labelText: '상세주소',
+              hintText: "상세주소 입력",
+              enabledBorder: OutlineInputBorder(
+                // 기본 모양
+                borderRadius: BorderRadius.circular(20),
+              ),
+              focusedBorder: OutlineInputBorder(
+                // 포커스 되었을 경우 모양
+                borderRadius: BorderRadius.circular(20),
+              ),
+              errorBorder: OutlineInputBorder(
+                // 에러 발생 시 모양
+                  borderRadius: BorderRadius.circular(20)),
+              focusedErrorBorder: OutlineInputBorder(
+                // 에러 발생 후 포커스 되었을 경우 모양
+                  borderRadius: BorderRadius.circular(20))),
+        ),
+      ],
+    );
+  }
+
+  Widget _userTelecom() {
+    return Column(
+      children: [
+        DropdownButtonFormField<String?>(
+          decoration: InputDecoration(
+              labelText: '통신사',
+              hintText: "통신사 선택",
+              enabledBorder: OutlineInputBorder(
+                // 기본 모양
+                borderRadius: BorderRadius.circular(20),
+              ),
+              focusedBorder: OutlineInputBorder(
+                // 포커스 되었을 경우 모양
+                borderRadius: BorderRadius.circular(20),
+              ),
+              errorBorder: OutlineInputBorder(
+                // 에러 발생 시 모양
+                  borderRadius: BorderRadius.circular(20)),
+              focusedErrorBorder: OutlineInputBorder(
+                // 에러 발생 후 포커스 되었을 경우 모양
+                  borderRadius: BorderRadius.circular(20))),
+          // underline: Container(height: 1.4, color: Color(0xffc0c0c0)),
+          onChanged: (String? newValue) {
+            telcom = newValue!;
+            userInfo.telecom = telcom;
+          },
+          items:
+          ['SKT', 'KT', 'LG U+'].map<DropdownMenuItem<String?>>((String? i) {
+            return DropdownMenuItem<String?>(
+              value: i,
+              child: Text({'SKT': 'SKT', 'KT': 'KT', 'LG U+' : 'LG U+'}[i] ?? '통신사'),
+            );
+          }).toList(),
+        )
+      ],
+    );
+  }
+
   Widget _userPhoneNumber() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,6 +483,7 @@ class _RegistPage extends State<RegistPage> {
                  return '휴대전화 번호가 잘못되었습니다';
               }
               blank_check += 1;
+              userInfo.phoneNumber = phoneNumberController.text;
               return null;
             },
             decoration: InputDecoration(
@@ -524,6 +696,29 @@ class _RegistPage extends State<RegistPage> {
     }
     // authPersistence(); // 인증 영속
     return true;
+  }
+
+  _searchAddress() async {
+    KopoModel model = await Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => RemediKopo(),
+      ),
+    );
+
+    if (model != null) {
+      final address = model.address ?? '';
+      _addressController.value = TextEditingValue(
+        text: address,
+      );
+      formData['address'] = address;
+
+      final buildingName = model.buildingName ?? '';
+      _addressDetailController.value = TextEditingValue(
+        text: buildingName,
+      );
+      formData['address_detail'] = buildingName;
+    }
   }
 
   // Future<bool> blankCheck() async {

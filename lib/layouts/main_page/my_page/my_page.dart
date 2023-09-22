@@ -5,12 +5,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_classcar/layouts/main_page/my_page/charge_page.dart';
 import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/reauth_password_reset.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_page.dart';
+
+import '../../login/login_page.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -25,6 +28,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
   String? profileUrl;
   String? userDocsNum;
   num? credit;
+  static const storage = FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +45,28 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
               }
               else if (snapshot.hasError || snapshot.data == null) {
                 print(snapshot.error);
-                return const Center(
-                    child: Text("페이지를 불러올 수 없습니다."),
+                return Center(
+                    child: Column(
+                      children: [
+                        Text("페이지를 불러올 수 없습니다."),
+                        TextButton(
+                            style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                minimumSize: const Size(370, 55),
+                                side: const BorderSide(
+                                  color: Colors.redAccent,
+                                )),
+                            onPressed: () async => {
+                              _signOut(),
+                            },
+                            child: const Text(
+                              "로그아웃",
+                              style: TextStyle(color: Colors.redAccent),
+                            )),
+                      ],
+                    )
                 );
               }
               return Padding(
@@ -245,6 +269,12 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin{
         listTileButton("공지사항", const ReauthPasswordReset(), context),
       ],
     );
+  }
+
+  void _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    storage.deleteAll();
+    Get.offAll(() => const LoginPage());
   }
 
   @override

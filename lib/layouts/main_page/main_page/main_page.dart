@@ -145,6 +145,7 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SafeArea(

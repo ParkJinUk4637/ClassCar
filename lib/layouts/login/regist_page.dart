@@ -58,9 +58,10 @@ class _RegistPage extends State<RegistPage> {
   }
 
   void signInWithPhoneAuthCredential(phoneAuthCredential) async {
-    check();
+
     setState(() {
       showLoading = true;
+      check();
     });
     try {
       final authCredential = await _auth.signInWithCredential(
@@ -80,6 +81,14 @@ class _RegistPage extends State<RegistPage> {
         _auth.signOut();
         print("로그아웃");
         print(blank_check);
+        setState(() {
+          if (blank_check == 7) {
+            allCheck = true;
+          } else {
+            allCheck = false;
+          }
+        });
+        // check();
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -540,6 +549,7 @@ class _RegistPage extends State<RegistPage> {
                   codeSent: (verificationId, resendingToken) async {
                     print("코드 보냄");
                     setState(() {
+                      print("+82${phoneNumberController.text.trim().substring(1)}");
                       requestedAuth = true;
                       showLoading = false;
                       this.verificationId = verificationId;
@@ -615,7 +625,7 @@ class _RegistPage extends State<RegistPage> {
                 PhoneAuthCredential phoneAuthCredential =
                     PhoneAuthProvider.credential(verificationId: verificationId, smsCode: OTPController.text);
                 signInWithPhoneAuthCredential(phoneAuthCredential);
-                // To-Do 예외처리에 따른 스낵바 표시해야함
+                // To-Do 예외처리에 따른 스낵바 표인시해야함
               },
               child: const Text(
                 "확인",

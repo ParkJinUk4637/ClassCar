@@ -704,6 +704,10 @@ class _RegistPage extends State<RegistPage> {
       final initialUserInfo = FirebaseAuth.instance.currentUser;
       initialUserInfo!.updateDisplayName(name);
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('회원가입 성공')),
+      );
+
       setState(() {
         Get.offAll(() => const LoginPage());
       });

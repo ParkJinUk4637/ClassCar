@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 
 import '../../../../login/login_page.dart';
@@ -12,6 +15,7 @@ class DeleteUser extends StatefulWidget{
 }
 
 class _DeleteUser extends State<DeleteUser>{
+  static const storage = FlutterSecureStorage();
 
   Future<void> _dialog() async {
     return showDialog<void>(
@@ -82,7 +86,21 @@ class _DeleteUser extends State<DeleteUser>{
 
   Future<void> _delete_user() async {
     final User? _user = FirebaseAuth.instance?.currentUser;
+    final userEmail = _user?.email;
+
+
+    await FirebaseFirestore.instance.collection("userINFO")
+        .where("email",isEqualTo: userEmail)
+        .get().then((value) async {
+          print("@@@@@$userEmail@@@@@");
+          print("@@@@${value.docs.first.data()['email']}");
+          await FirebaseFirestore.instance.collection("userINFO").doc(value.docs.first.id).delete();
+          await FirebaseStorage.instance.ref().child('userProfilePic/$userEmail').delete();
+        });
+
     await _user?.delete();
+    storage.deleteAll();
+
     _dialog();
   }
 

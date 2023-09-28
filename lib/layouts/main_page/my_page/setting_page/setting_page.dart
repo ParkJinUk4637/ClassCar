@@ -39,14 +39,14 @@ class _SettingPage extends State<SettingPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                middleTitle("결제 및 할인"),
-                const SizedBox(
-                  height: 10,
-                ),
-                _part2(),
-                const SizedBox(
-                  height: 10,
-                ),
+                // middleTitle("결제 및 할인"),
+                // const SizedBox(
+                //   height: 10,
+                // ),
+                // _part2(),
+                // const SizedBox(
+                //   height: 10,
+                // ),
                 middleTitle("이용 정보"),
                 const SizedBox(
                   height: 10,

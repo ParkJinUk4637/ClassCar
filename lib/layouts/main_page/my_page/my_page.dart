@@ -79,12 +79,12 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin {
                       color: Colors.black,
                     ),
                     _part1(),
-                    const Divider(
-                      height: 2,
-                      thickness: 2,
-                      color: Colors.black,
-                    ),
-                    _part2(),
+                    // const Divider(
+                    //   height: 2,
+                    //   thickness: 2,
+                    //   color: Colors.black,
+                    // ),
+                    // _part2(),
                     // TextButton(
                     //   onPressed: () {
                     //     Navigator.push(
@@ -248,16 +248,16 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         listTileButton("충전", ChargePage(userDocNum: userDocsNum!), context),
-        const Divider(
-          height: 1,
-          thickness: 1,
-        ),
-        listTileButton("쿠폰", const ReauthPasswordReset(), context),
-        const Divider(
-          height: 1,
-          thickness: 1,
-        ),
-        listTileButton("이벤트/혜택", const ReauthPasswordReset(), context),
+        // const Divider(
+        //   height: 1,
+        //   thickness: 1,
+        // ),
+        // listTileButton("쿠폰", const ReauthPasswordReset(), context),
+        // const Divider(
+        //   height: 1,
+        //   thickness: 1,
+        // ),
+        // listTileButton("이벤트/혜택", const ReauthPasswordReset(), context),
       ],
     );
   }

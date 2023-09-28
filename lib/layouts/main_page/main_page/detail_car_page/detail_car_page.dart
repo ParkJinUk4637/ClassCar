@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:get/get.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../models/car_info_model.dart';
 import '../../../../models/rent.dart';
 import '../../main_layout.dart';
@@ -20,6 +22,7 @@ class DetailCarPage extends StatefulWidget {
 }
 
 class _DetailCarPage extends State<DetailCarPage> {
+  final _pageController = PageController(viewportFraction: 0.877);
   final User? user = FirebaseAuth.instance.currentUser;
   final FirebaseFirestore db = FirebaseFirestore.instance;
   late CarInfoModel car = widget.car;
@@ -27,6 +30,7 @@ class _DetailCarPage extends State<DetailCarPage> {
   DateTime endDate = DateTime(DateTime.now().year, DateTime.now().month,
       DateTime.now().day + 1, DateTime.now().hour, DateTime.now().minute);
   int totalPrice = 0;
+  num currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +43,7 @@ class _DetailCarPage extends State<DetailCarPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Image.network("${car.carImgURL?[0]}"),
-                ),
-              ),
+              pageView(car?.carImgURL),
               _dateRangePick(),
               _info()
             ],
@@ -365,6 +364,78 @@ class _DetailCarPage extends State<DetailCarPage> {
         ],
       ),
     );
+  }
+
+  Widget pageView(List<dynamic>? imageUrls) {
+    return Column(children: [
+      SizedBox(
+        height: 200,
+        child: PageView.builder(
+          physics: const BouncingScrollPhysics(),
+          controller: _pageController,
+          scrollDirection: Axis.horizontal,
+          itemCount: imageUrls?.length,
+          onPageChanged: (page) {
+            setState(() {
+              currentPage = page;
+            });
+          },
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+              margin: const EdgeInsets.only(right: 15),
+              width: 350,
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Center(
+                  child: CachedNetworkImage(
+                    errorWidget: (context, url, error) =>
+                    const CircularProgressIndicator(),
+                    imageUrl: "${imageUrls?[index]}",
+                    placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                  )
+                // Image.network(
+                //   "${imageUrls?[index]}",
+                //   fit: BoxFit.cover,
+                // ),
+              ),
+            );
+          },
+        ),
+      ),
+      Container(
+          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+          child:SmoothPageIndicator(
+            controller: _pageController,
+            count: imageUrls!.length,
+            onDotClicked: (index) {
+              _pageController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.ease,
+              );
+            },
+            effect: WormEffect(
+                activeDotColor: Theme.of(context).focusColor,
+                dotColor: const Color(0xFFD0D0D0),
+                // Theme.of(context)
+                //     .colorScheme
+                //     .background,
+                radius: 6,
+                dotHeight: 10,
+                dotWidth: 10),
+          )),
+      Container(
+        padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+        child: const Divider(
+          color : Color(0xFFD0D0D0),
+          height: 1,
+          thickness: 1,
+        ),
+      ),
+    ]);
   }
 
   @override

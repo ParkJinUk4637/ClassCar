@@ -42,18 +42,21 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
         .limit(10)
         .get();
 
-    lastSnapshot = snapshot.docs.last;
     // rentData = snapshot.docs.map((e) => Rent.fromJson(e.data())).toList();
 
-    for (var rentDoc in snapshot.docs) {
-      Rent rent = Rent.fromJson(rentDoc.data());
-      rentData.add(rent);
+    if (snapshot.docs.isNotEmpty) {
+      lastSnapshot = snapshot.docs.last;
+      for (var rentDoc in snapshot.docs) {
+        Rent rent = Rent.fromJson(rentDoc.data());
+        rentData.add(rent);
 
-      DocumentSnapshot carSnap =
-          await firestore.collection('Car').doc(rent.carUid).get();
-      CarInfoModel car = CarInfoModel.fromFirestore(
-          carSnap as DocumentSnapshot<Map<String, dynamic>>, SnapshotOptions());
-      carData.add(car);
+        DocumentSnapshot carSnap =
+            await firestore.collection('Car').doc(rent.carUid).get();
+        CarInfoModel car = CarInfoModel.fromFirestore(
+            carSnap as DocumentSnapshot<Map<String, dynamic>>,
+            SnapshotOptions());
+        carData.add(car);
+      }
     }
 
     isLoaded = true;
@@ -202,7 +205,13 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                 child: CircularProgressIndicator(),
               )
             : ((isLoaded) && (rentData.isEmpty))
-                ? const Text("없음")
+                ? const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [Text("대여가 없습니다.")],
+                    ),
+                  )
                 : ListView.builder(
                     controller: _scrollController,
                     itemCount: rentData.length,

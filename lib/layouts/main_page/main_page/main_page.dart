@@ -25,6 +25,7 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
   Future<void> _initData() async {
     QuerySnapshot<CarInfoModel> snapshot = await db
         .collection("Car")
+        .where('isExhibit',isEqualTo: true)
         .orderBy("createdAt")
         .limit(10)
         .withConverter(
@@ -55,6 +56,7 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
   Future<void> _infinityScroll() async {
     QuerySnapshot<CarInfoModel> snapshot = await db
         .collection("Car")
+        .where('isExhibit',isEqualTo: true)
         .orderBy("createdAt")
         .startAfterDocument(lastSnapshot!)
         .limit(10)

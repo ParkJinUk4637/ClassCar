@@ -128,8 +128,9 @@ class _DetailCarPage extends State<DetailCarPage> {
                           ),
                           TextButton(
                             onPressed: () async {
-                              Navigator.of(context).pop();
                               payCredit(totalPrice);
+                              setCarUnvisible();
+                              Navigator.of(context).pop();
                             },
                             child: const Text("확인"),
                           )
@@ -256,6 +257,11 @@ class _DetailCarPage extends State<DetailCarPage> {
         });
       },
     );
+  }
+
+  Future<void> setCarUnvisible() async{
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    await db.collection('Car').doc(car.docID).update({'isExhibit':false});
   }
 
   Future<void> payCredit(int totalPrice) async {

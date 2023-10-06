@@ -43,7 +43,7 @@ class _ChargePage extends State<ChargePage> {
           keyboardType: TextInputType.emailAddress,
           validator: (String? value) {
             if (value!.isEmpty) {
-              return '충전 금액을 입력하세요(천원 단위)';
+              return '충전 금액을 입력하세요';
             }
             return null;
           },

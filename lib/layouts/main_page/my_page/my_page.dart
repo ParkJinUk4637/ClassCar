@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:my_classcar/layouts/main_page/my_page/charge_page.dart';
 import 'package:my_classcar/layouts/main_page/my_page/list_tile_button.dart';
 import 'package:my_classcar/layouts/main_page/my_page/setting_page/setting_detail_pages/reauth_password_reset.dart';
@@ -219,7 +220,7 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin {
               children: [
                 Text("${user?.displayName}"),
                 Text('${user?.email}'),
-                Text("credit : ${credit?.toInt()}"),
+                Text("credit : ${NumberFormat('###,###,###,###').format(credit?.toInt()).replaceAll(' ', '')}원"),
               ],
             ),
           ),

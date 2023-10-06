@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 
 import '../../../component/app_snackbar.dart';
 import '../../../models/car_info_model.dart';
@@ -136,7 +137,7 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
             Expanded(
               flex: 1,
               child: Column(children: [
-                Text("가격/일 : ${car.sharingPrice}원"),
+                Text("가격/일 : ${NumberFormat('###,###,###,###').format(car.sharingPrice).replaceAll(' ', '')}원"),
               ]),
             )
           ],

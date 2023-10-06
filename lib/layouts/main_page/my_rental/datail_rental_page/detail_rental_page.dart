@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../models/car_info_model.dart';
@@ -95,7 +96,7 @@ class _DetailRentalPage extends State<DetailRentalPage> {
             contentsText(""),
             miniTitleText("총 대여 가격"),
             contentsText(
-                (rent.rentalCost != null ? "${rent.rentalCost}원" : "총 대여 가격")),
+                (rent.rentalCost != null ? "${NumberFormat('###,###,###,###').format(rent.rentalCost).replaceAll(' ', '')}원" : "총 대여 가격")),
             contentsText(""),
             miniTitleText("기타 옵션"),
             // contentsText(""

@@ -140,7 +140,7 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
           children: [
             // 첫 번째 Column
             Expanded(
-                flex: 3,
+                flex: 4,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -158,13 +158,22 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
                     Text("${car.carNumber} "),
                   ],
                 )),
+            const Expanded(
+              flex: 1,
+              child: VerticalDivider(
+                width: 20,
+                thickness: 1,
+                indent: 20,
+                endIndent: 0,
+                color: Colors.grey,
+              ),
+            ),
             // 두 번째 Column
             Expanded(
                 flex: 7,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('이동 거리'),
                     const SizedBox(
                       height: 10,
                     ),

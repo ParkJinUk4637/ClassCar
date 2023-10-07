@@ -4,11 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:my_classcar/layouts/main_page/app_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../models/car_info_model.dart';
 import '../../../../models/rent.dart';
 import '../../main_layout.dart';
+import '../../../main_page/my_rental/datail_rental_page/custom_text.dart';
 
 class DetailCarPage extends StatefulWidget {
   const DetailCarPage({Key? key, required this.car, required this.driverUid})
@@ -74,8 +76,8 @@ class _DetailCarPage extends State<DetailCarPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(textAlign: TextAlign.left, "${car.sharingPrice}원/일"),
-                Text(textAlign: TextAlign.left, "합계요금 : $totalPrice"),
+                Text(textAlign: TextAlign.left, "${NumberFormat('###,###,###,###').format(car.sharingPrice).replaceAll(' ', '')}원/일"),
+                Text(textAlign: TextAlign.left, "합계요금 : ${NumberFormat('###,###,###,###').format(totalPrice).replaceAll(' ', '')}"),
               ],
             ),
           ),
@@ -208,6 +210,7 @@ class _DetailCarPage extends State<DetailCarPage> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          miniTitleText('대여 날짜'),
           Text('대여 : ${startDate.year}년 ${startDate.month}월 ${startDate.day}일 '
               '${startDate.weekday == 1 ? '월' : startDate.weekday == 2 ? '화' : startDate.weekday == 3 ? '수' : startDate.weekday == 4 ? '목' : startDate.weekday == 5 ? '금' : startDate.weekday == 6 ? '토' : '일'}요일 ${startDate.hour}시 ${startDate.minute}분'),
           Text('반납 : ${endDate.year}년 ${endDate.month}월 ${endDate.day}일 '
@@ -344,29 +347,24 @@ class _DetailCarPage extends State<DetailCarPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            car.carModel,
-            textAlign: TextAlign.start,
-          ),
-          Text(
-            "${car.score} (${car.sharedCount}회 대여)",
-          ),
+          miniTitleText('차량 정보'),
+          contentsText(car.carModel,),
+          contentsText("${car.score} (${car.sharedCount}회 대여)",),
           const SizedBox(height: 16.0),
-          const Text("대여 날짜"),
-          const Text("날짜 설정"),
+          miniTitleText('차량 추가 정보'),
+          contentsText("좌석 : ${car.seats}인석"),
+          contentsText("기름 종류 : ${car.oilType}"),
+          contentsText("연식 : ${car.years}"),
           const SizedBox(height: 16.0),
-          const Text("대여&반납 위치"),
-          Text(car.carLocation),
+          miniTitleText('대여정보'),
+          contentsText("대여 날짜"),
+          contentsText("날짜 설정"),
           const SizedBox(height: 16.0),
-          const Text("환불 정책"),
-          const Text("환불 정책 내용"),
-          const SizedBox(
-            height: 16.0,
-          ),
-          const Text("차량 추가 정보"),
-          Text("좌석 : ${car.seats}인석"),
-          Text("기름 종류 : ${car.oilType}"),
-          Text("연식 : ${car.years}"),
+          miniTitleText('대여&반난 위치'),
+          contentsText(car.carLocation),
+          const SizedBox(height: 16.0),
+          miniTitleText('환불 정책'),
+          contentsText("환불 정책 내용"),
         ],
       ),
     );

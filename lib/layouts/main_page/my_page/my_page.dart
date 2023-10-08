@@ -23,7 +23,7 @@ class MyPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MyPage();
 }
 
-class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin {
+class _MyPage extends State<MyPage>{
   final db = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
   String? profileUrl;
@@ -33,7 +33,6 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: FutureBuilder(
@@ -287,9 +286,4 @@ class _MyPage extends State<MyPage> with AutomaticKeepAliveClientMixin {
     storage.deleteAll();
     Get.offAll(() => const LoginPage());
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  // bool get wantKeepAlive => throw UnimplementedError();
-  bool get wantKeepAlive => true;
 }

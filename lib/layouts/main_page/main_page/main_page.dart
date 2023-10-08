@@ -15,7 +15,7 @@ class MainPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MainPage();
 }
 
-class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
+class _MainPage extends State<MainPage>{
   final db = FirebaseFirestore.instance;
   List<CarInfoModel> carData = [];
   DocumentSnapshot? lastSnapshot;
@@ -34,7 +34,7 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
             toFirestore: (CarInfoModel car, _) => car.toFirestore())
         .get();
 
-    lastSnapshot = snapshot.docs.last;
+
 
     final User? user = FirebaseAuth.instance.currentUser;
 
@@ -45,8 +45,12 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
     driverDocNum = userSnapshot.docs.first.id;
 
-    for (var car in snapshot.docs) {
-      carData.add(car.data());
+    if(snapshot.docs.isNotEmpty) {
+      lastSnapshot = snapshot.docs.last;
+
+      for (var car in snapshot.docs) {
+        carData.add(car.data());
+      }
     }
 
     isLoaded = true;
@@ -148,7 +152,6 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SafeArea(
@@ -157,7 +160,13 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     child: CircularProgressIndicator(),
                   )
                 : ((isLoaded) && (carData.isEmpty))
-                    ? const Text("없음")
+                    ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [Text("차량이 없습니다.")],
+              ),
+            )
                     : ListView.builder(
                         controller: _scrollController,
                         itemCount: carData.length,
@@ -252,9 +261,4 @@ class _MainPage extends State<MainPage> with AutomaticKeepAliveClientMixin {
   void dispose() {
     super.dispose();
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  // bool get wantKeepAlive => throw UnimplementedError();
-  bool get wantKeepAlive => true;
 }

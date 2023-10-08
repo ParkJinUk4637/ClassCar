@@ -15,7 +15,7 @@ class MyRental extends StatefulWidget {
   State<StatefulWidget> createState() => _MyRental();
 }
 
-class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
+class _MyRental extends State<MyRental>{
   User? user = FirebaseAuth.instance.currentUser;
   List<Rent> rentData = [];
   List<CarInfoModel> carData = [];
@@ -205,7 +205,6 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -370,9 +369,4 @@ class _MyRental extends State<MyRental> with AutomaticKeepAliveClientMixin {
       ),
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  // bool get wantKeepAlive => throw UnimplementedError();
-  bool get wantKeepAlive => true;
 }
